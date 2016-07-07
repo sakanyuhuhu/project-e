@@ -70,7 +70,7 @@ public class CustomAdapter extends BaseAdapter {
         holder.rbtnWard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectedPosition = (Integer) view.getTag();
+
                 notifyDataSetChanged();
             }
         });
