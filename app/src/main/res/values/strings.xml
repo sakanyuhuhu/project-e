@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">EMAM</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="Ward">
+        <item>Ward1</item>
+        <item>Ward2</item>
+        <item>Ward3</item>
+        <item>Ward4</item>
+        <item>Ward5</item>
+        <item>Ward6</item>
+        <item>Ward7</item>
+        <item>Ward8</item>
+        <item>Ward9</item>
+        <item>Ward10</item>
+    </string-array>
+</resources>
