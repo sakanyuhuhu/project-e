@@ -22,9 +22,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.AddNFCDataActivity" />
-        <activity android:name=".activity.SelectWardActivity"></activity>
+        <activity android:name=".activity.SelectWardActivity" />
+        <activity android:name=".activity.MainSelectMenuActivity"></activity>
     </application>
 
 </manifest>

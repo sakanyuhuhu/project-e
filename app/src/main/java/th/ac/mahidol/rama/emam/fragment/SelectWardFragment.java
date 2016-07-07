@@ -1,19 +1,25 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.adapter.CustomAdapter;
+import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
 
 /**
  * Created by mi- on 5/7/2559.
@@ -22,8 +28,6 @@ public class SelectWardFragment extends Fragment{
 
     private ListView listViewAdapter;
     private List<String> listWards = new ArrayList<String>();
-    private CustomAdapter customAdapter;
-
 
     public SelectWardFragment() {
         super();
@@ -58,18 +62,39 @@ public class SelectWardFragment extends Fragment{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-        listWards.add("Ward1");
-        listWards.add("Ward2");
-        listWards.add("Ward3");
-        listWards.add("Ward4");
-        listWards.add("Ward5");
-        listWards.add("Ward6");
-        listWards.add("Ward7");
-        Log.d("check","Size "+listWards.size());
-        listViewAdapter = (ListView) rootView.findViewById(R.id.listViewAdapter);
-        customAdapter = new CustomAdapter(getContext(), listWards);
-        listViewAdapter.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listViewAdapter.setAdapter(customAdapter);
+        final String[] names = new String[] { "Ward1", "Ward2", "Ward3", "Ward4","Ward5", "Ward6", "Ward7", "Ward8","Ward9", "Ward10", "Ward11", "Ward12" };
+
+        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,names);
+        ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
+        listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                Toast.makeText(getContext(),names[position],Toast.LENGTH_SHORT).show();
+                /**
+                 * Show dialog ward selected*/
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Ward selected: "+ names[position]);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int position) {
+                        /**
+                         * set ward is xml file name */
+                        SharedPreferences prefs = getContext().getSharedPreferences("setWard", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("ward", "ward");
+                        editor.commit();
+
+                        Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
+                        getActivity().startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.create();
+                builder.show();
+            }
+        });
     }
 
     @Override
@@ -78,19 +103,8 @@ public class SelectWardFragment extends Fragment{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {

@@ -1,7 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Intent;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,17 +9,12 @@ import android.view.ViewGroup;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.SelectWardActivity;
-import th.ac.mahidol.rama.emam.db.SQLEMAMHelper;
 
 public class MainFragment extends Fragment {
-
-    SQLEMAMHelper dbEMAMHelper;
-    private NfcAdapter mNfcAdapter;
 
     public MainFragment() {
         super();
     }
-
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -36,7 +30,6 @@ public class MainFragment extends Fragment {
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
-
     }
 
     @Override
@@ -47,14 +40,9 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
-    private void init(Bundle savedInstanceState) {
-
-    }
-
     private void initInstances(View rootView, Bundle savedInstanceState) {
         Intent intent = new Intent(getContext(), SelectWardActivity.class);
         getActivity().startActivity(intent);
-
     }
 
     @Override

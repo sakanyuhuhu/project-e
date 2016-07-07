@@ -3,43 +3,44 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
     <LinearLayout
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:id="@+id/linearLayout">
-        <ImageButton
-            android:id="@+id/imgBMedication"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="180dp"
-            android:paddingTop="250dp" />
 
         <ImageButton
+            android:layout_weight="1"
+            android:id="@+id/imgBMedication"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:layout_weight="1"
             android:id="@+id/imgBHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight="180dp"
-            android:paddingTop="250dp"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
         <ImageButton
+            android:layout_weight="1"
             android:id="@+id/imgBSetting"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="180dp"
-            android:paddingBottom="250dp" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
 
         <ImageButton
+            android:layout_weight="1"
             android:id="@+id/imgBLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight="180dp"
-            android:paddingBottom="250dp" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 </LinearLayout>

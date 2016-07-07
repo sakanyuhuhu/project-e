@@ -63,15 +63,15 @@ public class MainActivity extends AppCompatActivity {
 //                intensendNFC.putExtra("tagNFC", nfcTagId);
 //                startActivity(intensendNFC);
 
-
-                SharedPreferences prefs = this.getSharedPreferences("dummy",Context.MODE_PRIVATE);
-                String value = prefs.getString("Hello",null);
-                if(value == null)
+                SharedPreferences prefs = this.getSharedPreferences("setWard",Context.MODE_PRIVATE);
+                String value = prefs.getString("ward", null);
+                if(value == null) {
                     getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainFragment.newInstance()).commit();
-                else
-                  Log.d("check","xxxxxxxxxxxxxxxxx");
-
-
+                }
+                else {
+                    intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
+                    startActivity(intent);
+                }
             }
             else{
                 Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
