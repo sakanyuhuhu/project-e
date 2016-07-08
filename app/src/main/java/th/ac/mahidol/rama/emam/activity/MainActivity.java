@@ -14,13 +14,13 @@ import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
-import th.ac.mahidol.rama.emam.fragment.MainFragment;
+import th.ac.mahidol.rama.emam.manager.StoreManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-
+    private StoreManager storeManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initInstance() {
-
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
@@ -43,10 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
             }
         }
-
-
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -63,13 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
             if(checkRegisterNFC == true){
                 SharedPreferences prefs = this.getSharedPreferences("setWard",Context.MODE_PRIVATE);
-                String value = prefs.getString("ward", null);
-                if(value == null) {
-                    getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainFragment.newInstance()).commit();
+                Boolean value = prefs.getBoolean("ward", false);
+                if(value) {
+                    intent = new Intent(MainActivity.this, SelectWardActivity.class);
+                    startActivity(intent);
                 }
                 else {
-                    intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
-                    startActivity(intent);
+                    Log.d("check","storeManager");
+                    storeManager = new StoreManager();
+                    storeManager.selectData();
+//                    intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
+//                    startActivity(intent);
                 }
             }
             else{
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onNewIntent(intent);
     }
-
 
     private String ByteArrayToHexString(byte [] inarray) {
         int i, j, in;
@@ -109,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
             disableForegroundDispatchSystem();
         super.onPause();
     }
-
 
     private void enableForegroundDispatchSystem(){
         Intent intent = getIntent();

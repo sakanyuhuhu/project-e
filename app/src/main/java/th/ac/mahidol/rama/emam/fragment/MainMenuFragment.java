@@ -6,14 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
 
-/**
- * Created by mi- on 5/7/2559.
- */
-public class MainMenuFragment extends Fragment{
 
+public class MainMenuFragment extends Fragment implements View.OnClickListener{
+    private ImageButton imgBtnMedicationManage;
 
     public MainMenuFragment() {
         super();
@@ -49,15 +49,8 @@ public class MainMenuFragment extends Fragment{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-//        ImageButton btn = (ImageButton) rootView.findViewById(R.id.imgBMedication);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(getActivity(), "You Clicked the button!", Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
+        imgBtnMedicationManage = (ImageButton) rootView.findViewById(R.id.imgBMedication);
+        imgBtnMedicationManage.setOnClickListener(this);
     }
 
 
@@ -70,4 +63,12 @@ public class MainMenuFragment extends Fragment{
     private void onRestoreInstanceState(Bundle savedInstanceState) {
 
     }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == imgBtnMedicationManage.getId())
+            Toast.makeText(getActivity(), "You Clicked the button!", Toast.LENGTH_LONG).show();
+
+    }
+
 }

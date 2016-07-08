@@ -13,38 +13,31 @@ import android.util.Log;
 public class SQLiteManager extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
-    private static final String TABLE_REG = "user"; //table name.
-    private static final String USER_ID = "id"; //column name.
+    private static final String TABLE_REG = "user";
+    private static final String USER_ID = "id";
     private static final String USER_HN = "hn";
     private static final String USER_NFC = "nfc";
 
-    private static final String DB_NAME = "register"; //db name.
+    private static final String DB_NAME = "register";
     private static final int DB_VERSION = 1;
 
     public SQLiteManager(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    /**
-     * method CREATE TABLE.
-     */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_REG + "( " + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_HN + " TEXT," + USER_NFC + " TEXT);");
 
     }
-    /**
-     * method DROP TABLE if new install.
-     */
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         Log.d("check","Upgrading database from version " + oldVersion + "to " + newVersion + ", which will destory all old data");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ TABLE_REG);
         onCreate(sqLiteDatabase);
     }
-    /**
-     * method insert data into DB.
-     */
+
     public void addNFCRegister(String hn, String nfcTagId){
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -53,9 +46,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
         db.insert(TABLE_REG, null, values);
         db.close();
     }
-    /**
-     * get String NFC from DB.
-     */
+
     public boolean getNFCRegister(String nfcTagId){
         db = this.getWritableDatabase();
         String strSQL = "SELECT * FROM " + TABLE_REG;
@@ -74,9 +65,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
         db.close();
         return false;
     }
-    /**
-     * get HN by NFC search from DB.
-     */
+
     public String getHNRegister(String nfcTagId){
         String HN = null;
         db = this.getWritableDatabase();

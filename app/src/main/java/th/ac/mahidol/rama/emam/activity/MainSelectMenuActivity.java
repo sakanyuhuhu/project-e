@@ -2,7 +2,6 @@ package th.ac.mahidol.rama.emam.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,6 +30,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
     }
 
     private void initInstance() {
+
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);

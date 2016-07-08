@@ -3,6 +3,7 @@
     package="th.ac.mahidol.rama.emam">
 
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.AddNFCDataActivity" />
         <activity android:name=".activity.SelectWardActivity" />
         <activity android:name=".activity.MainSelectMenuActivity"></activity>
     </application>

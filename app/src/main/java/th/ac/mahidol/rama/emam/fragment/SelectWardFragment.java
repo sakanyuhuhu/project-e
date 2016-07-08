@@ -15,20 +15,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
 
 /**
  * Created by mi- on 5/7/2559.
  */
-public class SelectWardFragment extends Fragment{
+public class SelectWardFragment extends Fragment {
 
-    private ListView listViewAdapter;
-    private List<String> listWards = new ArrayList<String>();
-    private final String[] names = new String[] { "Ward1", "Ward2", "Ward3", "Ward4","Ward5", "Ward6", "Ward7", "Ward8","Ward9", "Ward10", "Ward11", "Ward12" };
+    private final String[] nameWards = new String[] { "Ward1", "Ward2", "Ward3", "Ward4","Ward5", "Ward6", "Ward7", "Ward8","Ward9", "Ward10" };
+
 
     public SelectWardFragment() {
         super();
@@ -64,8 +60,7 @@ public class SelectWardFragment extends Fragment{
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
 
-
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,names);
+        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,nameWards);
         ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -74,14 +69,14 @@ public class SelectWardFragment extends Fragment{
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Ward selected: "+ names[position]);
+                builder.setTitle("Ward selected: "+ nameWards[position]);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int position) {
-
-                        SharedPreferences prefs = getContext().getSharedPreferences("setWard", Context.MODE_PRIVATE);
+                        SharedPreferences prefs = getContext().getSharedPreferences("SET_WARD", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putBoolean("ward", true);
+                        editor.putBoolean("WARD", true);
+                        editor.putString("WARD_ID", nameWards[position]);
                         editor.commit();
 
                         Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
