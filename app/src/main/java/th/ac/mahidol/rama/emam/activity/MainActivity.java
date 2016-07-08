@@ -13,56 +13,55 @@ import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.db.SQLEMAMHelper;
+import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 import th.ac.mahidol.rama.emam.fragment.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    SQLEMAMHelper dbEMAMHelper;
+    private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        initInstance();
+
+    }
+
+    private void initInstance() {
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
             finish();
-            return;
+        }else{
+            if(!mNfcAdapter.isEnabled()){
+                startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            }
         }
-        if(!mNfcAdapter.isEnabled()){
-            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
-        }
+
+
     }
 
-    /**
-     * method read NFC.*/
+
     @Override
     protected void onNewIntent(Intent intent) {
-        boolean chkregisNFC;
+        boolean checkRegisterNFC;
         String action = intent.getAction();
-//        Log.d("check", "onNewIntent1 = " + intent);
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             String nfcTagId = ByteArrayToHexString(nfcTag.getId());
-            Log.d("check", "nfcTagId = " + nfcTagId);
             Toast.makeText(this, nfcTagId, Toast.LENGTH_LONG).show();
-            /**
-             * send NFC tag to DB for check authen login.*/
-            dbEMAMHelper = new SQLEMAMHelper(this);
-            dbEMAMHelper.addNFCRegister("HN1", nfcTagId);
-            chkregisNFC = dbEMAMHelper.getNFCRegister(nfcTagId);
 
-            /***
-             * Check getregisNFC handle to AddNFCDataActivity.class */
-            if(chkregisNFC == true){
-                Log.d("check", "chkregisNFC = " + chkregisNFC);
-//                Intent intensendNFC = new Intent(MainActivity.this, AddNFCDataActivity.class);
-//                intensendNFC.putExtra("tagNFC", nfcTagId);
-//                startActivity(intensendNFC);
+            dbHelper = new SQLiteManager(this);
+            dbHelper.addNFCRegister("HN1", nfcTagId);
+            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagId);
 
+            if(checkRegisterNFC == true){
                 SharedPreferences prefs = this.getSharedPreferences("setWard",Context.MODE_PRIVATE);
                 String value = prefs.getString("ward", null);
                 if(value == null) {
@@ -80,8 +79,7 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
-    /**
-     * แปลง ID ที่ได้จาก TAG เช่น B@123123 เป็น String.*/
+
     private String ByteArrayToHexString(byte [] inarray) {
         int i, j, in;
         String [] hex = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
@@ -95,24 +93,24 @@ public class MainActivity extends AppCompatActivity {
             i = in & 0x0f;
             out += hex[i];
         }
-//        Log.d("check", "out " + out);
         return out;
     }
 
     @Override
     protected void onResume() {
-        enableForegroundDispatchSystem();
+        if(mNfcAdapter != null)
+            enableForegroundDispatchSystem();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        disableForegroundDispatchSystem();
+        if(mNfcAdapter != null)
+            disableForegroundDispatchSystem();
         super.onPause();
     }
 
-    /**
-     * method ที่สั่งให้เปิดอ่าน NFC tag.*/
+
     private void enableForegroundDispatchSystem(){
         Intent intent = getIntent();
         intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
@@ -121,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
         mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
 
     }
-    /**
-     * method ที่สั่งให้ปิดการอ่าน NFC tag.*/
+
     private void disableForegroundDispatchSystem(){
         mNfcAdapter.disableForegroundDispatch(this);
     }

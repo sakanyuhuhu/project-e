@@ -28,6 +28,7 @@ public class SelectWardFragment extends Fragment{
 
     private ListView listViewAdapter;
     private List<String> listWards = new ArrayList<String>();
+    private final String[] names = new String[] { "Ward1", "Ward2", "Ward3", "Ward4","Ward5", "Ward6", "Ward7", "Ward8","Ward9", "Ward10", "Ward11", "Ward12" };
 
     public SelectWardFragment() {
         super();
@@ -62,7 +63,7 @@ public class SelectWardFragment extends Fragment{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-        final String[] names = new String[] { "Ward1", "Ward2", "Ward3", "Ward4","Ward5", "Ward6", "Ward7", "Ward8","Ward9", "Ward10", "Ward11", "Ward12" };
+
 
         ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,names);
         ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
@@ -71,23 +72,21 @@ public class SelectWardFragment extends Fragment{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                Toast.makeText(getContext(),names[position],Toast.LENGTH_SHORT).show();
-                /**
-                 * Show dialog ward selected*/
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Ward selected: "+ names[position]);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int position) {
-                        /**
-                         * set ward is xml file name */
+
                         SharedPreferences prefs = getContext().getSharedPreferences("setWard", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("ward", "ward");
+                        editor.putBoolean("ward", true);
                         editor.commit();
 
                         Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
                         getActivity().startActivity(intent);
+                        getActivity().finish();
                     }
                 });
                 builder.setNegativeButton("Cancel", null);

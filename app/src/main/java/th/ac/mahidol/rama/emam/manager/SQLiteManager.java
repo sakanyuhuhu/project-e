@@ -1,4 +1,4 @@
-package th.ac.mahidol.rama.emam.db;
+package th.ac.mahidol.rama.emam.manager;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.util.Log;
 /**
  * Created by mi- on 5/7/2559.
  */
-public class SQLEMAMHelper extends SQLiteOpenHelper {
+public class SQLiteManager extends SQLiteOpenHelper {
 
     private SQLiteDatabase db;
     private static final String TABLE_REG = "user"; //table name.
@@ -21,7 +21,7 @@ public class SQLEMAMHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "register"; //db name.
     private static final int DB_VERSION = 1;
 
-    public SQLEMAMHelper(Context context) {
+    public SQLiteManager(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

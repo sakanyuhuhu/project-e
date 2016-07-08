@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.db.SQLEMAMHelper;
+import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 
 /**
  * Created by mi- on 5/7/2559.
@@ -15,7 +15,7 @@ import th.ac.mahidol.rama.emam.db.SQLEMAMHelper;
 public class AddNFCDataActivity extends AppCompatActivity {
 
     private TextView tvHn, tvNfc;
-    SQLEMAMHelper dbEMAMHelper;
+    SQLiteManager dbEMAMHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class AddNFCDataActivity extends AppCompatActivity {
         */
         tagNFC = getIntent().getExtras().getString("tagNFC");
         Log.d("check", tagNFC);
-        dbEMAMHelper = new SQLEMAMHelper(AddNFCDataActivity.this);
+        dbEMAMHelper = new SQLiteManager(AddNFCDataActivity.this);
         HN = dbEMAMHelper.getHNRegister(tagNFC);
         tvHn.setText(HN);
         tvNfc.setText(tagNFC);
