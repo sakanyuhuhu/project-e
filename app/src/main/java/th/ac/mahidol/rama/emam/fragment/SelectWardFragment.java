@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,24 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
+import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
+import th.ac.mahidol.rama.emam.dao.ListWardDao;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 
-/**
- * Created by mi- on 5/7/2559.
- */
 public class SelectWardFragment extends Fragment {
 
-    private final String[] nameWards = new String[] { "Ward1", "Ward2", "Ward3", "Ward4","Ward5", "Ward6", "Ward7", "Ward8","Ward9", "Ward10" };
+    private String[] nameWards;
+    private String[] sdlocID;
+    private ListWardCollectionDao dao;
+    ListWardDao list;
 
 
     public SelectWardFragment() {
@@ -58,43 +68,64 @@ public class SelectWardFragment extends Fragment {
 
     }
 
-    private void initInstances(View rootView, Bundle savedInstanceState) {
-
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,nameWards);
-        ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
-        listView.setAdapter(adapter);
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void initInstances(final View rootView, Bundle savedInstanceState) {
+        Call<ListWardCollectionDao> call = HttpManager.getInstance().getService().loadListWard();
+        call.enqueue(new Callback<ListWardCollectionDao>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onResponse(Call<ListWardCollectionDao> call, Response<ListWardCollectionDao> response) {
+                dao = response.body();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Ward selected: "+ nameWards[position]);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                final List<String> testDaos = new ArrayList<String>();
+                nameWards = new String[dao.getListwardBean().size()];
+                for(int i=0; i<dao.getListwardBean().size();i++) {
+                    testDaos.add(dao.getListwardBean().get(i).getWardName());
+//                    list = dao.getListwardBean().get(i);
+                   // nameWards[i] = dao.getListwardBean().get(i).getWardName();
+//                    sdlocID[i]   = list.getSdlocId(i);
+//                    Log.d("check","WardName "+list.getWardName(i));
+//                    Log.d("check","SdlocId "+ list.getSdlocId(i));
+                }
+
+                ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,testDaos );
+                ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
+                listView.setAdapter(adapter);
+                listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int position) {
-                        SharedPreferences prefs = getContext().getSharedPreferences("SET_WARD", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putBoolean("WARD", true);
-                        editor.putString("WARD_ID", nameWards[position]);
-                        editor.commit();
+                    public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
 
-                        Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Ward selected: "+ testDaos.get(position));
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int positionBtn) {
+                                SharedPreferences prefs = getContext().getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString("sdloc", dao.getListwardBean().get(position).getSdlocId());
+                                editor.apply();
+
+                                Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
+                                getActivity().startActivity(intent);
+                                getActivity().finish();
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", null);
+                        builder.create();
+                        builder.show();
                     }
                 });
-                builder.setNegativeButton("Cancel", null);
-                builder.create();
-                builder.show();
+            }
+
+            @Override
+            public void onFailure(Call<ListWardCollectionDao> call, Throwable t) {
+                Log.d("check","onFailure "+t);
             }
         });
-    }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
 
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

@@ -9,18 +9,17 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
-import th.ac.mahidol.rama.emam.manager.StoreManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private StoreManager storeManager;
+    private ListWardCollectionDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +57,15 @@ public class MainActivity extends AppCompatActivity {
             checkRegisterNFC = dbHelper.getNFCRegister(nfcTagId);
 
             if(checkRegisterNFC == true){
-                SharedPreferences prefs = this.getSharedPreferences("setWard",Context.MODE_PRIVATE);
-                Boolean value = prefs.getBoolean("ward", false);
-                if(value) {
-                    intent = new Intent(MainActivity.this, SelectWardActivity.class);
+                SharedPreferences prefs = this.getSharedPreferences("SETWARD",Context.MODE_PRIVATE);
+                String sdlocId = prefs.getString("sdloc", null);
+                if(sdlocId != null) {
+                    intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
                     startActivity(intent);
                 }
                 else {
-                    Log.d("check","storeManager");
-                    storeManager = new StoreManager();
-                    storeManager.selectData();
-//                    intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
-//                    startActivity(intent);
+                    intent = new Intent(MainActivity.this, SelectWardActivity.class);
+                    startActivity(intent);
                 }
             }
             else{

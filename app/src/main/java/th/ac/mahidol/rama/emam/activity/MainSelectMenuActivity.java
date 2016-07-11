@@ -34,8 +34,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle
-                (MainSelectMenuActivity.this,drawerLayout,R.string.open_drawer,R.string.close_drawer);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(MainSelectMenuActivity.this,drawerLayout,R.string.open_drawer,R.string.close_drawer);
 
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         getSupportActionBar().setHomeButtonEnabled(true);

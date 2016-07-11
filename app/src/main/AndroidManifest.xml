@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="th.ac.mahidol.rama.emam">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -25,7 +26,8 @@
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.SelectWardActivity" />
-        <activity android:name=".activity.MainSelectMenuActivity"></activity>
+        <activity android:name=".activity.MainSelectMenuActivity" />
+        <activity android:name=".activity.TimelineActivity"></activity>
     </application>
 
 </manifest>
