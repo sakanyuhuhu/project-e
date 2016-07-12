@@ -51,6 +51,8 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener{
     private void initInstances(View rootView, Bundle savedInstanceState) {
         imgBtnMedicationManage = (ImageButton) rootView.findViewById(R.id.imgBMedication);
         imgBtnMedicationManage.setOnClickListener(this);
+
+
     }
 
 

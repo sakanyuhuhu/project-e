@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import org.ksoap2.serialization.SoapObject;
+
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
@@ -19,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private ListWardCollectionDao dao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initInstance() {
+
+
+
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
