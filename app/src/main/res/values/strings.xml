@@ -4,16 +4,4 @@
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
 
-    <!--<string-array name="Ward">-->
-    <!--<item>Ward1</item>-->
-    <!--<item>Ward2</item>-->
-    <!--<item>Ward3</item>-->
-    <!--<item>Ward4</item>-->
-    <!--<item>Ward5</item>-->
-    <!--<item>Ward6</item>-->
-    <!--<item>Ward7</item>-->
-    <!--<item>Ward8</item>-->
-    <!--<item>Ward9</item>-->
-    <!--<item>Ward10</item>-->
-    <!--</string-array>-->
 </resources>

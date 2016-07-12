@@ -7,15 +7,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import org.ksoap2.serialization.SoapObject;
-
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
+import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,10 +33,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initInstance() {
-
-
-
-
+        new getPatientByWard().execute();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
@@ -123,4 +119,50 @@ public class MainActivity extends AppCompatActivity {
     private void disableForegroundDispatchSystem(){
         mNfcAdapter.disableForegroundDispatch(this);
     }
+
+
+
+    public static class getPatientByWard extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+             new SoapManager("Get_version");
+
+            return null;
+        }
+    }
+
+//            SoapObject request = new SoapObject(NAME_SPACE, METHOD_NAME);
+//            request.addProperty("p_Ward","SDIPD83");
+//
+//            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+//            envelope.setOutputSoapObject(request);
+//
+//            HttpTransportSE httpTransportSE = new HttpTransportSE(URL);
+//
+//            try {
+//                StringBuffer result;
+//                httpTransportSE.debug = true;
+//                httpTransportSE.call(SOAP_ACTION, envelope);
+//                SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
+//
+//                result = new StringBuffer(response.toString());
+//                Log.i("check", "result: " + result.toString());
+//                return result.toString();
+//                SoapObject result = (SoapObject) envelope.bodyIn;
+//
+//                if(result != null)
+//                    Log.d("check","Soap Result "+result.getProperty(0).toString());
+//                else
+//                    Log.d("check","Soap Error");
+//
+//            } catch (IOException e) {
+//                Log.d("check","Exeption "+e);
+//                e.printStackTrace();
+//            } catch (XmlPullParserException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//    }
 }

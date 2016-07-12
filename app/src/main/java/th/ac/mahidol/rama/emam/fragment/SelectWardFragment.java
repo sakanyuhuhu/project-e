@@ -31,7 +31,6 @@ import th.ac.mahidol.rama.emam.manager.HttpManager;
 public class SelectWardFragment extends Fragment {
 
     private String[] nameWards;
-    private String[] sdlocID;
     private ListWardCollectionDao dao;
     ListWardDao list;
 
@@ -75,16 +74,10 @@ public class SelectWardFragment extends Fragment {
             public void onResponse(Call<ListWardCollectionDao> call, Response<ListWardCollectionDao> response) {
                 dao = response.body();
 
-
                 final List<String> testDaos = new ArrayList<String>();
                 nameWards = new String[dao.getListwardBean().size()];
                 for(int i=0; i<dao.getListwardBean().size();i++) {
                     testDaos.add(dao.getListwardBean().get(i).getWardName());
-//                    list = dao.getListwardBean().get(i);
-                   // nameWards[i] = dao.getListwardBean().get(i).getWardName();
-//                    sdlocID[i]   = list.getSdlocId(i);
-//                    Log.d("check","WardName "+list.getWardName(i));
-//                    Log.d("check","SdlocId "+ list.getSdlocId(i));
                 }
 
                 ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,testDaos );

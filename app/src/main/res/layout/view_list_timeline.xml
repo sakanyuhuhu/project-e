@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+       <TextView
+           android:layout_weight="1"
+           android:id="@+id/tvTime"
+           android:text="time"
+           android:textSize="30sp"
+           android:gravity="center"
+           android:layout_width="match_parent"
+           android:layout_height="90dp" />
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="count"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="30sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp" />
+                <ImageView
+                    android:src="@android:drawable/ic_menu_myplaces"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp" />
+            </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
