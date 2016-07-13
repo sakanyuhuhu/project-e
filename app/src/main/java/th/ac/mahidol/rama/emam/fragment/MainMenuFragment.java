@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,15 @@ import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 
 public class MainMenuFragment extends Fragment implements View.OnClickListener{
     private ImageButton imgBtnMedicationManage;
-
+    private String sdlocId;
     public MainMenuFragment() {
         super();
     }
 
-    public static MainMenuFragment newInstance() {
+    public static MainMenuFragment newInstance(String sdlocId) {
         MainMenuFragment fragment = new MainMenuFragment();
         Bundle args = new Bundle();
-
+        args.putString("sdlocId",sdlocId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,12 +51,14 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        sdlocId = getArguments().getString("sdlocId");
         imgBtnMedicationManage = (ImageButton) rootView.findViewById(R.id.imgBMedication);
         imgBtnMedicationManage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("check", "onClick to TimelineActivity");
+//                Log.d("check", "onClick to TimelineActivity");
                 Intent intent = new Intent(getContext(), TimelineActivity.class);
+                intent.putExtra("sdlocId", sdlocId);
                 getActivity().startActivity(intent);
             }
         });

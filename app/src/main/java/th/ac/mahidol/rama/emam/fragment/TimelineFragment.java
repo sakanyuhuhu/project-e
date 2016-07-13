@@ -1,28 +1,34 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.TimelineAdapter;
 
 public class TimelineFragment extends Fragment{
 
     protected final String[] listTimeline = new String[] { "01:00", "02:00", "03:00","04:00", "05:00", "06:00", "07:00","08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00" };
-
+    private String sdlocId;
     public TimelineFragment() {
         super();
     }
 
-    public static TimelineFragment newInstance() {
+    public static TimelineFragment newInstance(String sdlocId) {
         TimelineFragment fragment = new TimelineFragment();
         Bundle args = new Bundle();
+        args.putString("sdlocId",sdlocId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,31 +56,30 @@ public class TimelineFragment extends Fragment{
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         Log.d("check", "Welcome to TimelineFragment");
+        sdlocId = getArguments().getString("sdlocId");
         ListView listView = (ListView) rootView.findViewById(R.id.lvTimelineAdapter);
         TimelineAdapter timelineAdapter = new TimelineAdapter(listTimeline);
         listView.setAdapter(timelineAdapter);
-//        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_single_choice, listTimeline);
-//        ListView listView = (ListView) rootView.findViewById(R.id.lvTimelineAdapter);
-//        listView.setAdapter(arrayAdapter);
-//        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                builder.setTitle("Time selected: "+ listTimeline[position]);
-//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int positionBtn) {
-//                        Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
-//                        getActivity().startActivity(intent);
-//                        getActivity().finish();
-//                    }
-//                });
-//                builder.setNegativeButton("Cancel", null);
-//                builder.create();
-//                builder.show();
-//            }
-//        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Time selected: "+ listTimeline[position]);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int positionBtn) {
+                        Intent intent = new Intent(getContext(), PreparationActivity.class);
+                        intent.putExtra("Time", listTimeline[position]);
+                        intent.putExtra("sdlocId", sdlocId);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.create();
+                builder.show();
+            }
+        });
     }
 
     @Override

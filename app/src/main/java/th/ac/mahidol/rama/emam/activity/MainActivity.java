@@ -10,6 +10,7 @@ import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
@@ -20,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initInstance() {
-        new getPatientByWard().execute();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        Log.d("check", "onNewIntent MainActivity");
         boolean checkRegisterNFC;
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
@@ -62,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences prefs = this.getSharedPreferences("SETWARD",Context.MODE_PRIVATE);
                 String sdlocId = prefs.getString("sdloc", null);
                 if(sdlocId != null) {
+//                    new getPatientByWard().execute();//getPatientByWard for call SoapManager before MainSelectMenuActivity
                     intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
+                    intent.putExtra("sdlocId", sdlocId);
                     startActivity(intent);
                 }
                 else {
@@ -120,49 +122,14 @@ public class MainActivity extends AppCompatActivity {
         mNfcAdapter.disableForegroundDispatch(this);
     }
 
-
-
     public static class getPatientByWard extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
-             new SoapManager("Get_version");
+             new SoapManager("Get_Version");
 
             return null;
         }
     }
 
-//            SoapObject request = new SoapObject(NAME_SPACE, METHOD_NAME);
-//            request.addProperty("p_Ward","SDIPD83");
-//
-//            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-//            envelope.setOutputSoapObject(request);
-//
-//            HttpTransportSE httpTransportSE = new HttpTransportSE(URL);
-//
-//            try {
-//                StringBuffer result;
-//                httpTransportSE.debug = true;
-//                httpTransportSE.call(SOAP_ACTION, envelope);
-//                SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
-//
-//                result = new StringBuffer(response.toString());
-//                Log.i("check", "result: " + result.toString());
-//                return result.toString();
-//                SoapObject result = (SoapObject) envelope.bodyIn;
-//
-//                if(result != null)
-//                    Log.d("check","Soap Result "+result.getProperty(0).toString());
-//                else
-//                    Log.d("check","Soap Error");
-//
-//            } catch (IOException e) {
-//                Log.d("check","Exeption "+e);
-//                e.printStackTrace();
-//            } catch (XmlPullParserException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-//    }
 }

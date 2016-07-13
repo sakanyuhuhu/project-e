@@ -10,12 +10,12 @@
             android:orientation="horizontal"
             android:layout_weight="1" >
                 <ImageView
-                    android:src="@android:drawable/ic_lock_idle_alarm"
+                    android:src="@android:drawable/ic_menu_recent_history"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"/>
                 <ImageView
-                    android:src="@android:drawable/ic_menu_myplaces"
+                    android:src="@drawable/user"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="80dp" />

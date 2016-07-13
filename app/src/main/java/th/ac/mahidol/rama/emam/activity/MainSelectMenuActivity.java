@@ -7,7 +7,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import th.ac.mahidol.rama.emam.R;
@@ -17,21 +16,22 @@ public class MainSelectMenuActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
+    private String sdlocId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_select_menu);
-
+        sdlocId = getIntent().getExtras().getString("sdlocId");
         initInstance();
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainMenuFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainMenuFragment.newInstance(sdlocId)).commit();
         }
     }
 
     private void initInstance() {
-        Log.d("check", "Welcome to MainSelectMenuActivity");
+
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);

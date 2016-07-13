@@ -16,15 +16,16 @@ public class TimelineActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
+    private String sdlocId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-
+        sdlocId = getIntent().getExtras().getString("sdlocId");
 //        initInstance();
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, TimelineFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, TimelineFragment.newInstance(sdlocId)).commit();
         }
 
     }

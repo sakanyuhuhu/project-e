@@ -74,13 +74,13 @@ public class SelectWardFragment extends Fragment {
             public void onResponse(Call<ListWardCollectionDao> call, Response<ListWardCollectionDao> response) {
                 dao = response.body();
 
-                final List<String> testDaos = new ArrayList<String>();
+                final List<String> listNameWard = new ArrayList<String>();
                 nameWards = new String[dao.getListwardBean().size()];
                 for(int i=0; i<dao.getListwardBean().size();i++) {
-                    testDaos.add(dao.getListwardBean().get(i).getWardName());
+                    listNameWard.add(dao.getListwardBean().get(i).getWardName());
                 }
 
-                ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice,testDaos );
+                ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice, listNameWard);
                 ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
                 listView.setAdapter(adapter);
                 listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -89,7 +89,7 @@ public class SelectWardFragment extends Fragment {
                     public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Ward selected: "+ testDaos.get(position));
+                        builder.setTitle("Ward selected: "+ listNameWard.get(position));
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int positionBtn) {
@@ -115,7 +115,6 @@ public class SelectWardFragment extends Fragment {
                 Log.d("check","onFailure "+t);
             }
         });
-
 
     }
 

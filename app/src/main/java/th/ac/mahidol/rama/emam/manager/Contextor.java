@@ -2,9 +2,6 @@ package th.ac.mahidol.rama.emam.manager;
 
 import android.content.Context;
 
-/**
- * Created by nuuneoi on 12/6/14 AD.
- */
 public class Contextor {
 
     private static Contextor instance;

@@ -18,16 +18,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.nfc.action.TAG_DISCOVERED" /> -->
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+
+            <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.SelectWardActivity" />
         <activity android:name=".activity.MainSelectMenuActivity" />
-        <activity android:name=".activity.TimelineActivity"></activity>
+        <activity android:name=".activity.TimelineActivity" />
+        <activity android:name=".activity.PreparationActivity"></activity>
+        <activity android:name=".activity.PreparationForPatientActivity"></activity>
     </application>
 
 </manifest>

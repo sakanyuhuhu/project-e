@@ -24,7 +24,7 @@ public class HttpManager {
         mContext = Contextor.getInstance().getContext();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.6.21.178:8080/EMAMService/service/EMAMService/")
+                .baseUrl("http://http://10.6.21.178:8080/EMAMService/service/EMAMService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
