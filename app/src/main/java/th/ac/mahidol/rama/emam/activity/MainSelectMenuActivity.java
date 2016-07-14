@@ -17,16 +17,19 @@ public class MainSelectMenuActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
     private String sdlocId;
+    private String nfcUId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_select_menu);
+        nfcUId = getIntent().getExtras().getString("nfcUId");
         sdlocId = getIntent().getExtras().getString("sdlocId");
+
         initInstance();
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainMenuFragment.newInstance(sdlocId)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainMenuFragment.newInstance(nfcUId,sdlocId)).commit();
         }
     }
 

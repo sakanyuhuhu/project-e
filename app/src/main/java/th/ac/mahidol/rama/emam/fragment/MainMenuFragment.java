@@ -17,13 +17,15 @@ import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 public class MainMenuFragment extends Fragment implements View.OnClickListener{
     private ImageButton imgBtnMedicationManage;
     private String sdlocId;
+    private String nfcUId;
     public MainMenuFragment() {
         super();
     }
 
-    public static MainMenuFragment newInstance(String sdlocId) {
+    public static MainMenuFragment newInstance(String nfcUId, String sdlocId) {
         MainMenuFragment fragment = new MainMenuFragment();
         Bundle args = new Bundle();
+        args.putString("nfcUId", nfcUId);
         args.putString("sdlocId",sdlocId);
         fragment.setArguments(args);
         return fragment;
@@ -51,6 +53,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        nfcUId = getArguments().getString("nfcUId");
         sdlocId = getArguments().getString("sdlocId");
         imgBtnMedicationManage = (ImageButton) rootView.findViewById(R.id.imgBMedication);
         imgBtnMedicationManage.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +61,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener{
             public void onClick(View view) {
 //                Log.d("check", "onClick to TimelineActivity");
                 Intent intent = new Intent(getContext(), TimelineActivity.class);
+                intent.putExtra("nfcUId", nfcUId);
                 intent.putExtra("sdlocId", sdlocId);
                 getActivity().startActivity(intent);
             }

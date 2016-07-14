@@ -8,42 +8,52 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
-import java.util.List;
-
-import th.ac.mahidol.rama.emam.dao.SearchPatientByWardDao;
+/**
+ * Created by 015240 on 7/12/2016.
+ */
 
 public class SoapManager {
     private String NAME_SPACE = "http://tempuri.org/IMP_Web_Services/message/";
-    private String METHOD_NAME;
-    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+    private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+//    private String URL = "http://dev_fox.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
     private String SOAP_ACTION;
-    private List<SearchPatientByWardDao> listSearchPatientByWardDao;
     private SoapPrimitive resultString;
 
-    public SoapManager(String METHOD_NAME) {
-        this.METHOD_NAME = METHOD_NAME;
-        SOAP_ACTION = "http://tempuri.org/IMP_Web_Services/action/IMP_Web_Services."+ METHOD_NAME;
+
+    public SoapManager() {
+
+    }
+
+    public String getPatientByWard(String methodName, String wardId){
+
+        SOAP_ACTION = "http://tempuri.org/IMP_Web_Services/action/IMP_Web_Services."+ methodName;
+
         try {
-            SoapObject Request = new SoapObject(NAME_SPACE, METHOD_NAME);
-//            Request.addProperty("p_Ward", "SDIPD83");
+
+            SoapObject request = new SoapObject(NAME_SPACE, methodName);
+            request.addProperty("p_Ward", wardId);
 
             SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-            soapEnvelope.dotNet = true;
-            soapEnvelope.setOutputSoapObject(Request);
+            soapEnvelope.setOutputSoapObject(request);
 
             HttpTransportSE transport = new HttpTransportSE(URL);
             transport.call(SOAP_ACTION, soapEnvelope);
+
+
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
 
-            Log.d("check", "Result Celsius: " + resultString);
+
+
+
+
         } catch (Exception ex) {
-            Log.e("check", "SoapManager Error: " + ex.getMessage());
+            Log.e("check", "Error: " + ex.getMessage());
         }
+
+        return String.valueOf(resultString);
     }
 
-    public String getVersion(){
-        return resultString+" ";
-    }
+
 
 
 

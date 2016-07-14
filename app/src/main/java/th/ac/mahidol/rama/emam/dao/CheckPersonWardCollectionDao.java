@@ -3,17 +3,16 @@ package th.ac.mahidol.rama.emam.dao;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CheckPersonWardCollectionDao {
-    @SerializedName("listCheckPersonWardBean") private List<CheckPersonWardDao> listCheckPersonWardBean = new ArrayList<CheckPersonWardDao>();
 
-    public List<CheckPersonWardDao> getListCheckPersonWardBean() {
-        return listCheckPersonWardBean;
+
+   @SerializedName("CheckPersonWardBean")     private  CheckPersonWardDao checkPersonWardBean;
+
+    public CheckPersonWardDao getCheckPersonWardBean() {
+        return checkPersonWardBean;
     }
 
-    public void setListCheckPersonWardBean(List<CheckPersonWardDao> listCheckPersonWardBean) {
-        this.listCheckPersonWardBean = listCheckPersonWardBean;
+    public void setCheckPersonWardBean(CheckPersonWardDao checkPersonWardBean) {
+        this.checkPersonWardBean = checkPersonWardBean;
     }
 }

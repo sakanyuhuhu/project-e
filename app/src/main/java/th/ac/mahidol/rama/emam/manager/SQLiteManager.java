@@ -15,9 +15,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
     private SQLiteDatabase db;
     private static final String TABLE_REG = "user";
     private static final String USER_ID = "id";
-    private static final String USER_HN = "hn";
     private static final String USER_NFC = "nfc";
-
     private static final String DB_NAME = "register";
     private static final int DB_VERSION = 1;
 
@@ -27,7 +25,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_REG + "( " + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_HN + " TEXT," + USER_NFC + " TEXT);");
+        sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_REG + "( " + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_NFC + " TEXT);");
 
     }
 
@@ -38,10 +36,9 @@ public class SQLiteManager extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void addNFCRegister(String hn, String nfcTagId){
+    public void addNFCRegister(String nfcTagId){
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(USER_HN, hn);
         values.put(USER_NFC, nfcTagId);
         db.insert(TABLE_REG, null, values);
         db.close();
@@ -55,7 +52,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
         if(cursor != null){
             if(cursor.moveToFirst()){
                 do {
-                    if(cursor.getString(2).equals(nfcTagId)){
+                    if(cursor.getString(1).equals(nfcTagId)){
                         return true;
                     }
                 }while (cursor.moveToNext());
@@ -75,7 +72,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
         if(cursor != null){
             if(cursor.moveToFirst()){
                 do {
-                    if(cursor.getString(2).equals(nfcTagId)){
+                    if(cursor.getString(1).equals(nfcTagId)){
                         HN = cursor.getString(1);
                     }
                 }while (cursor.moveToNext());

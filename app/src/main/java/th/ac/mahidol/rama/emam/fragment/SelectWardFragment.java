@@ -23,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
+import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.ListWardDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
@@ -95,10 +95,10 @@ public class SelectWardFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int positionBtn) {
                                 SharedPreferences prefs = getContext().getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = prefs.edit();
-                                editor.putString("sdloc", dao.getListwardBean().get(position).getSdlocId());
+                                editor.putString("sdlocId", dao.getListwardBean().get(position).getSdlocId());
                                 editor.apply();
 
-                                Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
+                                Intent intent = new Intent(getContext(), MainActivity.class);
                                 getActivity().startActivity(intent);
                                 getActivity().finish();
                             }

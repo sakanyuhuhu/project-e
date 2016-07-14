@@ -16,13 +16,15 @@
             android:layout_weight="1"
             android:id="@+id/imgBMedication"
             android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_agenda" />
 
         <ImageButton
             android:layout_weight="1"
             android:id="@+id/imgBHistory"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_input_get" />
 
     </LinearLayout>
 
@@ -35,12 +37,14 @@
             android:layout_weight="1"
             android:id="@+id/imgBSetting"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_rotate" />
 
         <ImageButton
             android:layout_weight="1"
             android:id="@+id/imgBLogout"
             android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_lock_power_off" />
     </LinearLayout>
 </LinearLayout>
