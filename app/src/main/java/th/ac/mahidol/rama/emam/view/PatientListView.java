@@ -14,6 +14,8 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 public class PatientListView extends BaseCustomViewGroup {
 
     private TextView tvPatient;
+    private TextView tvBedNo;
+    private TextView tvMrn;
 
     public PatientListView(Context context) {
         super(context);
@@ -50,6 +52,8 @@ public class PatientListView extends BaseCustomViewGroup {
     private void initInstances() {
         // findViewById here
         tvPatient = (TextView) findViewById(R.id.tvPatient);
+        tvBedNo = (TextView) findViewById(R.id.tvBedNo);
+        tvMrn = (TextView) findViewById(R.id.tvMrn);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -88,8 +92,10 @@ public class PatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setPatient(String textPatient){
+    public void setPatient(String textPatient, String textBedNo, String textMrn){
         tvPatient.setText(textPatient);
+        tvBedNo.setText("Room/Bed No. " + textBedNo);
+        tvMrn.setText("MRN: " + textMrn);
     }
 
 }

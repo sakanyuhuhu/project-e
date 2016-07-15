@@ -8,9 +8,6 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
-/**
- * Created by 015240 on 7/12/2016.
- */
 
 public class SoapManager {
     private String NAME_SPACE = "http://tempuri.org/IMP_Web_Services/message/";
@@ -43,18 +40,11 @@ public class SoapManager {
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
 
 
-
-
-
         } catch (Exception ex) {
             Log.e("check", "Error: " + ex.getMessage());
         }
 
         return String.valueOf(resultString);
     }
-
-
-
-
 
 }

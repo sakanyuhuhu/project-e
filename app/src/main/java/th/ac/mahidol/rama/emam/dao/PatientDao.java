@@ -2,10 +2,6 @@ package th.ac.mahidol.rama.emam.dao;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by 015240 on 7/13/2016.
- */
-
 public class PatientDao {
     @SerializedName("ward")         private String ward;
     @SerializedName("bedno")        private String bedNo;

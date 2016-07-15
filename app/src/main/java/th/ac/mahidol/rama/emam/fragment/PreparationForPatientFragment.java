@@ -1,43 +1,43 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.MainActivity;
-import th.ac.mahidol.rama.emam.adapter.PreparationAdapter;
-import th.ac.mahidol.rama.emam.dao.CheckPersonWardCollectionDao;
-import th.ac.mahidol.rama.emam.manager.HttpManager;
+import th.ac.mahidol.rama.emam.adapter.PreparationForPatientAdapter;
 
 public class PreparationForPatientFragment extends Fragment {
 
-    private final String[] listPreparePatient = new String[]{ "Atenolol 50 mg", "Metformin 500 mg" };
+    private final String[] listMedicalName = new String[]{ "Atenolol 50 mg", "Metformin 500 mg" };
     private String nfcUId;
     private String sdlocId;
-    private TextView tvMedical;
+    private String patientName;
+    private String bedNo;
+    private String mRN;
+    private TextView tvMedicalName;
+    private TextView tvBedNo;
+    private TextView tvPatientName;
+    private TextView tvHN;
+    private TextView tvBirth;
 
     public PreparationForPatientFragment() {
         super();
     }
 
-    public static PreparationForPatientFragment newInstance(String nfcUId, String sdlocId) {
+    public static PreparationForPatientFragment newInstance(String nfcUId, String sdlocId, String patientName, String bedNo, String mRN) {
         PreparationForPatientFragment fragment = new PreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
         args.putString("sdlocId", sdlocId);
+        args.putString("patientName", patientName);
+        args.putString("bedNo", bedNo);
+        args.putString("mRN", mRN);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,47 +59,46 @@ public class PreparationForPatientFragment extends Fragment {
         return rootView;
     }
 
-    private void initInstances(View rootView, Bundle savedInstanceState) {;
+    private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUId = getArguments().getString("nfcUId");
         sdlocId = getArguments().getString("sdlocId");
-        Log.d("check", "nfcUId : " + nfcUId + " / sdlocId : " + sdlocId);
+        patientName = getArguments().getString("patientName");
+        bedNo = getArguments().getString("bedNo");
+        mRN = getArguments().getString("mRN");
+        Log.d("check", "nfcUId : " + nfcUId + " / sdlocId : " + sdlocId + " / patientName : " + patientName + " / bedNo : " + bedNo + " / mRN : " + mRN);
 
-        tvMedical = (TextView) rootView.findViewById(R.id.tvMedical);
-        ListView listView = (ListView) rootView.findViewById(R.id.lvPreparePatientAdapter);
-        PreparationAdapter preparationAdapter = new PreparationAdapter(listPreparePatient);
-        listView.setAdapter(preparationAdapter);
+        tvMedicalName = (TextView) rootView.findViewById(R.id.tvMedicalName);
+        tvBedNo = (TextView) rootView.findViewById(R.id.tvBedNo);
+        tvPatientName = (TextView) rootView.findViewById(R.id.tvPatientName);
+        tvHN = (TextView) rootView.findViewById(R.id.tvMrn);
+        tvBirth = (TextView) rootView.findViewById(R.id.tvBirth);
 
-        Call<CheckPersonWardCollectionDao> call = HttpManager.getInstance().getService().loadCheckPersonWard(nfcUId, sdlocId);
-        call.enqueue(new Callback<CheckPersonWardCollectionDao>() {
-            @Override
-            public void onResponse(Call<CheckPersonWardCollectionDao> call, Response<CheckPersonWardCollectionDao> response) {
-                tvMedical.setText("Prepare by  "+response.body().getCheckPersonWardBean().getFirstName()+"  "+ response.body().getCheckPersonWardBean().getLastName());
-            }
+        tvBedNo.setText("เลขที่เตียง/ห้อง: " + bedNo);
+        tvPatientName.setText(patientName);
+        tvHN.setText("HN: " + mRN);
 
-            @Override
-            public void onFailure(Call<CheckPersonWardCollectionDao> call, Throwable t) {
-                Log.d("check", "Failure " + t);
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Medical selected : " + listPreparePatient[position]);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int positionBtn) {
-                        Intent intent = new Intent(getContext(), MainActivity.class);
-                        intent.putExtra("nfcUId", nfcUId);
-                        intent.putExtra("sdlocId", sdlocId);
-                        getActivity().startActivity(intent);
-                    }
-                });
-                builder.setNegativeButton("Cancel", null);
-                builder.create();
-                builder.show();
-            }
-        });
+        ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+        PreparationForPatientAdapter preparationForPatientAdapter = new PreparationForPatientAdapter(listMedicalName);
+        listView.setAdapter(preparationForPatientAdapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                builder.setTitle("Medical selected : " + listMedicalName[position]);
+//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int positionBtn) {
+//                        Intent intent = new Intent(getContext(), MainActivity.class);
+//                        intent.putExtra("nfcUId", nfcUId);
+//                        intent.putExtra("sdlocId", sdlocId);
+//                        getActivity().startActivity(intent);
+//                    }
+//                });
+//                builder.setNegativeButton("Cancel", null);
+//                builder.create();
+//                builder.show();
+//            }
+//        });
     }
 
     @Override

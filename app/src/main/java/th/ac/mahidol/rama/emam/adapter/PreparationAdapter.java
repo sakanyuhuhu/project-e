@@ -9,8 +9,12 @@ import th.ac.mahidol.rama.emam.view.PatientListView;
 
 public class PreparationAdapter extends BaseAdapter {
     private String[] strPatient;
-    public PreparationAdapter(String[] listPatient) {
+    private String[] strBedNo;
+    private String[] strMrn;
+    public PreparationAdapter(String[] listPatient, String[] listBedNo, String[] listMrn) {
         this.strPatient = listPatient;
+        this.strBedNo = listBedNo;
+        this.strMrn = listMrn;
     }
 
     @Override
@@ -33,7 +37,7 @@ public class PreparationAdapter extends BaseAdapter {
 
         PatientListView patientListView = new PatientListView(viewGroup.getContext());
 //        Log.d("check", "strTimeline[position] : "+ strPatient[position]);
-        patientListView.setPatient(strPatient[position]);
+        patientListView.setPatient(strPatient[position], strBedNo[position], strMrn[position]);
 
         return patientListView;
     }

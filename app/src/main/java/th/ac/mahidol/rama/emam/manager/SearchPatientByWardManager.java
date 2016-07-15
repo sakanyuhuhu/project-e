@@ -8,10 +8,6 @@ import java.util.ArrayList;
 
 import th.ac.mahidol.rama.emam.dao.PatientDao;
 
-/**
- * Created by 015240 on 7/14/2016.
- */
-
 public class SearchPatientByWardManager extends DefaultHandler {
 
     Boolean currentElement = false;

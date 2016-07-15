@@ -13,7 +13,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class PreparationForPatientListView extends BaseCustomViewGroup {
 
-    private TextView tvMedical;
+    private TextView tvMedicalName;
 
     public PreparationForPatientListView(Context context) {
         super(context);
@@ -49,7 +49,7 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
 
     private void initInstances() {
         // findViewById here
-        tvMedical = (TextView) findViewById(R.id.tvMedical);
+        tvMedicalName = (TextView) findViewById(R.id.tvMedicalName);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -75,8 +75,8 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setPatient(String textMedical){
-        tvMedical.setText(textMedical);
+    public void setMedicalName(String textMedical){
+        tvMedicalName.setText(textMedical);
     }
 
 }

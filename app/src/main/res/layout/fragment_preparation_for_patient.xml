@@ -51,12 +51,14 @@
             android:layout_height="90dp"
             android:layout_weight="10">
             <TextView
+                android:id="@+id/tvBedNo"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="เลขที่เตียง/ห้อง:"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp" />
             <TextView
+                android:id="@+id/tvPatientName"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="Patient Name"
@@ -67,6 +69,7 @@
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="90dp">-->
                 <TextView
+                    android:id="@+id/tvMrn"
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="HN:"
@@ -78,6 +81,7 @@
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="90dp">-->
             <TextView
+                android:id="@+id/tvBirth"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="วันเกิด:"
@@ -88,7 +92,7 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/lvPreparePatientAdapter"
+        android:id="@+id/lvPrepareForPatientAdapter"
         android:layout_weight="100"
         android:textSize="50sp"
         android:layout_width="match_parent"
