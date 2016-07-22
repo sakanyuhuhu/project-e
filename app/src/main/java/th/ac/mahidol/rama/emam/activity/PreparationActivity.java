@@ -4,7 +4,6 @@ package th.ac.mahidol.rama.emam.activity;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.fragment.PreparationFragment;
@@ -26,7 +25,6 @@ public class PreparationActivity extends AppCompatActivity {
         nfcUId = getIntent().getExtras().getString("nfcUId");
         sdlocId = getIntent().getExtras().getString("sdlocId");
         if(savedInstanceState == null){
-            Log.d("check","Prepare"+ getIntent());
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationFragment.newInstance(gettimer, nfcUId, sdlocId)).commit();
         }
 

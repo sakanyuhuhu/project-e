@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class PatientDao {
     @SerializedName("ward")         private String ward;
-    @SerializedName("bedno")        private String bedNo;
+    @SerializedName("bedno")        private String bedno;
     @SerializedName("mrn")          private String mrn;
     @SerializedName("enc_type")     private String encType;
     @SerializedName("enc_id")       private String encId;
@@ -17,12 +17,12 @@ public class PatientDao {
         this.ward = ward;
     }
 
-    public String getBedNo() {
-        return bedNo;
+    public String getBedno() {
+        return bedno;
     }
 
-    public void setBedNo(String bedNo) {
-        this.bedNo = bedNo;
+    public void setBedno(String bedno) {
+        this.bedno = bedno;
     }
 
     public String getMrn() {

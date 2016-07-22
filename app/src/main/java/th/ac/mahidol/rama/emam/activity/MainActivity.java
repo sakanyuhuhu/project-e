@@ -4,11 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.PatientDao;
+import th.ac.mahidol.rama.emam.manager.ListDataCenterManager;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
+import th.ac.mahidol.rama.emam.manager.SearchPatientByWardManager;
+import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
     private String nfcTagId;
     private String sdlocId;
+    private List<String> listBedNo;
+    private List<String> listMrn;
+    private ListDataCenterManager listDataCenterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
         sdlocId = prefs.getString("sdlocId", null);
         if(sdlocId != null) {
-//                    new getPatientByWard().execute();//getPatientByWard for call SoapManager before MainSelectMenuActivity
+            new getPatientByWard().execute();//getPatientByWard for call SoapManager before MainSelectMenuActivity
             Intent intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
             intent.putExtra("nfcUId", "21592265");
             intent.putExtra("sdlocId", sdlocId);
@@ -124,6 +143,56 @@ public class MainActivity extends AppCompatActivity {
         mNfcAdapter.disableForegroundDispatch(this);
     }
 
+    public class getPatientByWard extends AsyncTask<Void, Void, List<PatientDao>> {
 
+        @Override
+        protected void onPostExecute(List<PatientDao> patientDaos) {//การทำงานที่ต้องรอการประมวลผลจาก getPatientByWard ให้ย้ายมาทำในนี้
+            super.onPostExecute(patientDaos);
+            Log.d("check", " patientDaos.size() = " +  patientDaos.size());
+            listBedNo = new ArrayList<String>();
+            listMrn = new ArrayList<String>();
+            for (int i = 0; i < patientDaos.size(); i++) {
+                listBedNo.add(patientDaos.get(i).getBedno());
+                listMrn.add(patientDaos.get(i).getMrn());
+//                Log.d("check", i + " listBedNo    : " + listBedNo.get(i));
+//                Log.d("check", i + " listMRN      : " + listMrn.get(i));
+            }
+            listDataCenterManager = new ListDataCenterManager();
+            listDataCenterManager.getListMedicalCard(listMrn);
+
+        }
+
+        @Override
+        protected List<PatientDao> doInBackground(Void... params) {
+            List<PatientDao> itemsList = new ArrayList<PatientDao>();
+            SoapManager soapManager = new SoapManager();
+            //itemsList = parseXML(soapManager.getPatientByWard("Ws_SearchPatientByWard", sdlocId));
+            itemsList = parseXML(soapManager.getPatientByWard("Ws_SearchPatientByWard", "2TC"));
+            return itemsList;
+        }
+
+        private   ArrayList<PatientDao>  parseXML(String soap) {
+            List<PatientDao> itemsList = new ArrayList<PatientDao>();
+            try {
+
+                SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+                SAXParser saxParser = saxParserFactory.newSAXParser();
+                XMLReader xmlReader = saxParser.getXMLReader();
+
+                SearchPatientByWardManager searchPatientXMLHandler = new SearchPatientByWardManager();
+                xmlReader.setContentHandler(searchPatientXMLHandler);
+                InputSource inStream = new InputSource();
+                inStream.setCharacterStream(new StringReader(soap));
+                xmlReader.parse(inStream);
+                itemsList = searchPatientXMLHandler.getItemsList();
+
+                Log.w("AndroidParseXMLActivity", "Done");
+            } catch (Exception e) {
+                Log.w("AndroidParseXMLActivity", e);
+            }
+
+            return (ArrayList<PatientDao>) itemsList;
+        }
+    }
 
 }

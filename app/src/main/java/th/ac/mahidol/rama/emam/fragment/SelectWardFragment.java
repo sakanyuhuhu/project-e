@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,24 +15,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
-import th.ac.mahidol.rama.emam.dao.ListWardDao;
-import th.ac.mahidol.rama.emam.manager.HttpManager;
+import th.ac.mahidol.rama.emam.manager.ListDataCenterManager;
 
 public class SelectWardFragment extends Fragment {
 
     private String[] nameWards;
-    private ListWardCollectionDao dao;
-    ListWardDao list;
-
+    private ListWardCollectionDao listWardCollectionDao;
+    private ListDataCenterManager listDataCenterManager;
+    private List<String> listNameWard;
+    private List<String> listSdlocId;
 
     public SelectWardFragment() {
         super();
@@ -68,53 +63,57 @@ public class SelectWardFragment extends Fragment {
     }
 
     private void initInstances(final View rootView, Bundle savedInstanceState) {
-        Call<ListWardCollectionDao> call = HttpManager.getInstance().getService().loadListWard();
-        call.enqueue(new Callback<ListWardCollectionDao>() {
-            @Override
-            public void onResponse(Call<ListWardCollectionDao> call, Response<ListWardCollectionDao> response) {
-                dao = response.body();
+//        Call<ListWardCollectionDao> call = HttpManager.getInstance().getService().loadListWard();
+//        call.enqueue(new Callback<ListWardCollectionDao>() {
+//            @Override
+//            public void onResponse(Call<ListWardCollectionDao> call, Response<ListWardCollectionDao> response) {
+//                listWardCollectionDao = response.body();
+//
+//                final List<String> listNameWard = new ArrayList<String>();
+//                nameWards = new String[listWardCollectionDao.getListwardBean().size()];
+//                for(int i=0; i<listWardCollectionDao.getListwardBean().size();i++) {
+//                    listNameWard.add(listWardCollectionDao.getListwardBean().get(i).getWardName());
+//                }
+        listDataCenterManager = new ListDataCenterManager();
+        listNameWard = listDataCenterManager.getListNameWard();
+        listSdlocId = listDataCenterManager.getListSdlocId();
 
-                final List<String> listNameWard = new ArrayList<String>();
-                nameWards = new String[dao.getListwardBean().size()];
-                for(int i=0; i<dao.getListwardBean().size();i++) {
-                    listNameWard.add(dao.getListwardBean().get(i).getWardName());
+            ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice, listNameWard);
+            ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
+            listView.setAdapter(adapter);
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Ward selected: "+ listNameWard.get(position));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int positionBtn) {
+                            SharedPreferences prefs = getContext().getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = prefs.edit();
+//                                editor.putString("sdlocId", listWardCollectionDao.getListwardBean().get(position).getSdlocId());
+                            editor.putString("sdlocId", listSdlocId.get(position));
+                            editor.apply();
+
+                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            getActivity().startActivity(intent);
+                            getActivity().finish();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", null);
+                    builder.create();
+                    builder.show();
                 }
+            });
+//            }
 
-                ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_single_choice, listNameWard);
-                ListView listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
-                listView.setAdapter(adapter);
-                listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Ward selected: "+ listNameWard.get(position));
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int positionBtn) {
-                                SharedPreferences prefs = getContext().getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putString("sdlocId", dao.getListwardBean().get(position).getSdlocId());
-                                editor.apply();
-
-                                Intent intent = new Intent(getContext(), MainActivity.class);
-                                getActivity().startActivity(intent);
-                                getActivity().finish();
-                            }
-                        });
-                        builder.setNegativeButton("Cancel", null);
-                        builder.create();
-                        builder.show();
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call<ListWardCollectionDao> call, Throwable t) {
-                Log.d("check","onFailure "+t);
-            }
-        });
+//            @Override
+//            public void onFailure(Call<ListWardCollectionDao> call, Throwable t) {
+//                Log.d("check","onFailure "+t);
+//            }
+//        });
 
     }
 

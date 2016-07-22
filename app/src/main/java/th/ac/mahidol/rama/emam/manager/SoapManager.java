@@ -11,8 +11,8 @@ import org.ksoap2.transport.HttpTransportSE;
 
 public class SoapManager {
     private String NAME_SPACE = "http://tempuri.org/IMP_Web_Services/message/";
-    private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
-//    private String URL = "http://dev_fox.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+//    private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
     private String SOAP_ACTION;
     private SoapPrimitive resultString;
 
@@ -35,7 +35,6 @@ public class SoapManager {
 
             HttpTransportSE transport = new HttpTransportSE(URL);
             transport.call(SOAP_ACTION, soapEnvelope);
-
 
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
 

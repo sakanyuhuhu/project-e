@@ -28,6 +28,7 @@
         <activity android:name=".activity.TimelineActivity" />
         <activity android:name=".activity.PreparationActivity"></activity>
         <activity android:name=".activity.PreparationForPatientActivity"></activity>
+        <activity android:name=".activity.DoubleCheckActivity"></activity>
     </application>
 
 </manifest>
