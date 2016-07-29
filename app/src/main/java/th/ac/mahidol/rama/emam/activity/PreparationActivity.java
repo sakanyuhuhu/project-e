@@ -17,15 +17,17 @@ public class PreparationActivity extends AppCompatActivity {
     private String sdlocId;
     private String nfcUId;
     private String nfcTagId;
+    private int numPatient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preparation);
         gettimer = getIntent().getExtras().getString("timer");
+        numPatient = getIntent().getExtras().getInt("numPatient");
         nfcUId = getIntent().getExtras().getString("nfcUId");
         sdlocId = getIntent().getExtras().getString("sdlocId");
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationFragment.newInstance(gettimer, nfcUId, sdlocId)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationFragment.newInstance(gettimer, numPatient, nfcUId, sdlocId)).commit();
         }
 
 //        mNfcAdapter = NfcAdapter.getDefaultAdapter(PreparationActivity.this);

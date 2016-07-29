@@ -8,16 +8,21 @@ import android.widget.BaseAdapter;
 import th.ac.mahidol.rama.emam.view.PreparationForPatientListView;
 
 public class PreparationForPatientAdapter extends BaseAdapter {
-    private String[] strMedicalName;
+    private String[] strDrugName, strDosage, unit, type, route, strFrequency;
 
-    public PreparationForPatientAdapter(String[] listPatient) {
-        this.strMedicalName = listPatient;
+    public PreparationForPatientAdapter(String[] listDrugName, String[] listDosage, String[] type, String[] route, String[] listFrequency, String[] unit) {
+        this.strDrugName = listDrugName;
+        this.strDosage = listDosage;
+        this.unit = unit;
+        this.type = type;
+        this.route = route;
+        this.strFrequency = listFrequency;
 
     }
 
     @Override
     public int getCount() {
-        return strMedicalName.length;
+        return strDrugName.length;
     }
 
     @Override
@@ -34,7 +39,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
 
         PreparationForPatientListView preparationForPatientListView = new PreparationForPatientListView(viewGroup.getContext());
-        preparationForPatientListView.setMedicalName(strMedicalName[position]);
+        preparationForPatientListView.setDrugName(strDrugName[position], strDosage[position], type[position], route[position], strFrequency[position], unit[position]);
 
         return preparationForPatientListView;
     }

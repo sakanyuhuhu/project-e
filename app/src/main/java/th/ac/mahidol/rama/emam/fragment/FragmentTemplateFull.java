@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import th.ac.mahidol.rama.emam.R;
 
-/**
- * Created by mi- on 5/7/2559.
- */
 public class FragmentTemplateFull extends Fragment{
 
 

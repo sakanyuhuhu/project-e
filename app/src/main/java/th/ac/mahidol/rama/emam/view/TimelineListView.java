@@ -14,6 +14,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 public class TimelineListView extends BaseCustomViewGroup {
 
     private TextView tvTime;
+    private TextView tvPatienTime;
 
     public TimelineListView(Context context) {
         super(context);
@@ -50,6 +51,7 @@ public class TimelineListView extends BaseCustomViewGroup {
     private void initInstances() {
         // findViewById here
         tvTime = (TextView) findViewById(R.id.tvTime);
+        tvPatienTime = (TextView) findViewById(R.id.tvPatienTime);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -88,8 +90,9 @@ public class TimelineListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setTime(String textTime){
+    public void setTime(String textTime, int patientTime){
         tvTime.setText(textTime);
+        tvPatienTime.setText(String.valueOf(patientTime));
     }
 
 }

@@ -13,7 +13,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class PreparationForPatientListView extends BaseCustomViewGroup {
 
-    private TextView tvDrugName;
+    private TextView tvDrugName, tvDosage, tvUnit, tvType, tvRoute, tvFrequency;
 
     public PreparationForPatientListView(Context context) {
         super(context);
@@ -50,6 +50,11 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
     private void initInstances() {
         // findViewById here
         tvDrugName = (TextView) findViewById(R.id.tvDrugName);
+        tvDosage = (TextView) findViewById(R.id.tvDosage);
+        tvUnit = (TextView) findViewById(R.id.tvUnit);
+        tvType = (TextView) findViewById(R.id.tvType);
+        tvRoute = (TextView) findViewById(R.id.tvRoute);
+        tvFrequency = (TextView) findViewById(R.id.tvFrequency);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -75,8 +80,13 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setMedicalName(String textMedical){
-        tvDrugName.setText(textMedical);
+    public void setDrugName(String textDrugName, String textDosage, String textType, String textRoute, String textFrequency, String textUnit){
+        tvDrugName.setText(textDrugName);
+        tvDosage.setText(" Dosage: " + textDosage);
+        tvUnit.setText(textUnit);
+        tvType.setText(" Type: " + textType);
+        tvRoute.setText(" Route: " + textRoute);
+        tvFrequency.setText(" Frequency: " + textFrequency);
     }
 
 }

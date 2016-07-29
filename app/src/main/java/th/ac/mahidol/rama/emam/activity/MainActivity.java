@@ -21,7 +21,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.PatientDao;
-import th.ac.mahidol.rama.emam.manager.ListDataCenterManager;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 import th.ac.mahidol.rama.emam.manager.SearchPatientByWardManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
@@ -32,9 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
     private String nfcTagId;
     private String sdlocId;
-    private List<String> listBedNo;
-    private List<String> listMrn;
-    private ListDataCenterManager listDataCenterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
         sdlocId = prefs.getString("sdlocId", null);
         if(sdlocId != null) {
-            new getPatientByWard().execute();//getPatientByWard for call SoapManager before MainSelectMenuActivity
+//            new getPatientByWard().execute();//getPatientByWard for call SoapManager before MainSelectMenuActivity
             Intent intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
             intent.putExtra("nfcUId", "21592265");
             intent.putExtra("sdlocId", sdlocId);
@@ -148,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<PatientDao> patientDaos) {//การทำงานที่ต้องรอการประมวลผลจาก getPatientByWard ให้ย้ายมาทำในนี้
             super.onPostExecute(patientDaos);
-            Log.d("check", " patientDaos.size() = " +  patientDaos.size());
+//            Log.d("check", " patientDaos.size() = " +  patientDaos.size());
+/*
             listBedNo = new ArrayList<String>();
             listMrn = new ArrayList<String>();
             for (int i = 0; i < patientDaos.size(); i++) {
@@ -158,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 //                Log.d("check", i + " listMRN      : " + listMrn.get(i));
             }
             listDataCenterManager = new ListDataCenterManager();
-            listDataCenterManager.getListMedicalCard(listMrn);
+            listDataCenterManager.getListMedicalCard(listMrn);*/
 
         }
 

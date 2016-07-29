@@ -39,8 +39,15 @@
                         android:id="@+id/tvDosage"
                         android:gravity="center_vertical"
                         android:layout_weight="1"
-                        android:text=" Dosage : 1.0 TB"
-                        android:layout_width="150dp"
+                        android:text=" Dosage : 1.0"
+                        android:layout_width="90dp"
+                        android:layout_height="30dp" />
+                    <TextView
+                        android:id="@+id/tvUnit"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="TB"
+                        android:layout_width="60dp"
                         android:layout_height="30dp" />
                     <TextView
                         android:id="@+id/tvType"

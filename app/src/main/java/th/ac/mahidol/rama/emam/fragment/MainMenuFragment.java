@@ -16,8 +16,7 @@ import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 
 public class MainMenuFragment extends Fragment implements View.OnClickListener{
     private ImageButton imgBtnMedicationManage;
-    private String sdlocId;
-    private String nfcUId;
+    private String sdlocId, nfcUId;
     public MainMenuFragment() {
         super();
     }
