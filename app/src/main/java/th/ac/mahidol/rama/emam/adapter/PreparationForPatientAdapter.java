@@ -13,24 +13,23 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.view.PreparationForPatientListView;
 
 public class PreparationForPatientAdapter extends BaseAdapter {
-    private List<String> strDrugName, strDosage, unit, type, route, strFrequency, adminTime;
+    private List<String> strDrugName, strDosage, unit, type, route, strFrequency, adminTime, site;
     private List<Boolean> isCheck = new ArrayList<Boolean>();
     private Context context;
-    private CheckBox chkType, chkSize, chkForget;
-    private EditText txtStatusType, txtStatusSize, txtStatusForget, txtStatus;
-    ArrayList<CheckBox> cb = new ArrayList<CheckBox>();
-    Iterator<CheckBox> itr ;
+    private EditText txtStatus, txtStatusHold;
+    private RadioGroup radioGroup;
+    private CheckBox chkHold;
 
-    public PreparationForPatientAdapter(Context context,List<String> listDrugName, List<String> listDosage, List<String> type, List<String> route, List<String> listFrequency, List<String> unit, List<String> adminTime) {
+    public PreparationForPatientAdapter(Context context,List<String> listDrugName, List<String> listDosage, List<String> type, List<String> route, List<String> listFrequency, List<String> unit, List<String> adminTime, List<String> site) {
         this.strDrugName = listDrugName;
         this.strDosage = listDosage;
         this.unit = unit;
@@ -38,6 +37,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
         this.route = route;
         this.strFrequency = listFrequency;
         this.adminTime = adminTime;
+        this.site = site;
         this.context = context;
 
         for (int i=0;i<strDrugName.size();i++){
@@ -66,9 +66,8 @@ public class PreparationForPatientAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, final View convertView, ViewGroup viewGroup) {
-        Log.d("check", "convertView : "+convertView);
         final PreparationForPatientListView preparationForPatientListView = new PreparationForPatientListView(viewGroup.getContext());
-        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), type.get(position), route.get(position), strFrequency.get(position), unit.get(position), adminTime.get(position));
+        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), type.get(position), route.get(position), strFrequency.get(position), unit.get(position), adminTime.get(position), site.get(position));
 //            Log.d("check", position+ " / strDrugName  : " + strDrugName.get(position) + "strDosage    : " + strDosage.get(position) + " type         : " + type.get(position) + " route        : " + route.get(position) + " strFrequency : " + strFrequency.get(position) + " unit         : " + unit.get(position));
         preparationForPatientListView.setCheck(isCheck.get(position));
         final CheckBox checkBox =  preparationForPatientListView.isCheck();
@@ -88,28 +87,32 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                 final View dialogView = inflater.inflate(R.layout.custom_dialog_prepare, null);
                 dialogView.setBackgroundResource(R.color.colorPeachPuff);
 
-                cb.add((CheckBox)dialogView.findViewById(R.id.chkType));
-                cb.add((CheckBox)dialogView.findViewById(R.id.chkSize));
-                cb.add((CheckBox)dialogView.findViewById(R.id.chkForget));
-                itr = cb.iterator();
-
-//                txtStatusType = ((EditText)dialogView.findViewById(R.id.txtStatusType));
-//                txtStatusSize = (EditText)dialogView.findViewById(R.id.txtStatusSize);
-//                txtStatusForget = (EditText)dialogView.findViewById(R.id.txtStatusForget);
+                chkHold = (CheckBox)dialogView.findViewById(R.id.chkHold);
+                txtStatusHold = (EditText)dialogView.findViewById(R.id.txtStatusHold);
+                radioGroup = (RadioGroup)dialogView.findViewById(R.id.radiogroup);
                 txtStatus = (EditText)dialogView.findViewById(R.id.txtStatus);
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId ) {
+                        if(checkedId == R.id.rdb1){
+                            Log.d("check", "rdb1 : "+checkedId);
+                        } else if(checkedId == R.id.rdb2){
+                            Log.d("check", "rdb2 : "+checkedId);
+                        }else if(checkedId == R.id.rdb3){
+                            Log.d("check", "rdb3 : "+checkedId);
+                        }else if(checkedId == R.id.rdb4){
+                            Log.d("check", "rdb4 : "+checkedId);
+                        }else if(checkedId == R.id.rdb5){
+                            Log.d("check", "rdb5 : "+checkedId);
+                        }else{
+                            Log.d("check", "rdb6 : "+checkedId);
+                        }
+                    }
+                });
 
                 builder.setView(dialogView);
-                CheckBox cbaux;
-                while(itr.hasNext()) {
-                    cbaux = (CheckBox) itr.next();
-                    Log.d("soa", "click: "+cbaux);
-                    if (cbaux.equals(convertView))
-                        cbaux.setChecked(true);
-                    else
-                        cbaux.setChecked(false);
-                }
                 builder.setTitle("บันทึกข้อความสำหรับเตรียมยา");
-                builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("บันทึก", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 

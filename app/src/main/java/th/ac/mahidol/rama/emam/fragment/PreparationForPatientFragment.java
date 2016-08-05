@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +29,7 @@ import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 
 public class PreparationForPatientFragment extends Fragment {
     private String nfcUId, sdlocId, gettimer, patientName, bedNo, mRN, strtimer, strdf2, formatedDate;
-    private TextView tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
+    private TextView tvTimer, tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
     private int tricker;
     private TextView tvDrugAllergy, tvDate;
     private ImageView ivNote;
@@ -48,6 +46,7 @@ public class PreparationForPatientFragment extends Fragment {
     List<String> type = new ArrayList<String>();
     List<String> route = new ArrayList<String>();
     List<String> adminTime = new ArrayList<String>();
+    List<String> site = new ArrayList<String>();
     List<String> listDrugName2 = new ArrayList<String>();
     List<String> listDosage2 = new ArrayList<String>();
     List<String> unit2 = new ArrayList<String>();
@@ -55,6 +54,7 @@ public class PreparationForPatientFragment extends Fragment {
     List<String> type2 = new ArrayList<String>();
     List<String> route2 = new ArrayList<String>();
     List<String> adminTime2 = new ArrayList<String>();
+    List<String> site2 = new ArrayList<String>();
 
     public PreparationForPatientFragment() {
         super();
@@ -101,7 +101,7 @@ public class PreparationForPatientFragment extends Fragment {
         mRN = getArguments().getString("mRN");
         strdf2 = getArguments().getString("strdf");
         tricker = getArguments().getInt("tricker");
-        Log.d("check", "nfcUId : " + nfcUId + " / sdlocId : " + sdlocId + " / patientName : " + patientName + " / bedNo : " + bedNo + " / mRN : " + mRN+" / strdf : "+strdf2+" / tricker : "+tricker);
+        Log.d("check", "nfcUId : " + nfcUId + " / sdlocId : " + sdlocId + " / patientName : " + patientName + " / bedNo : " + bedNo + " / mRN : " + mRN+" / strdf2 : "+strdf2+" / tricker : "+tricker);
         if(gettimer.substring(0,1).equals("0")){
             strtimer = gettimer.substring(1,2);
         }
@@ -110,10 +110,11 @@ public class PreparationForPatientFragment extends Fragment {
         }
         Date today = new Date();
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dateToday = sDateFormat.format(today);
+        final String dateToday = sDateFormat.format(today);
         String stryear = dateToday.substring(0,4);
         final int yearstr = Integer.parseInt(stryear);
 
+        tvTimer = (TextView) rootView.findViewById(R.id.tvTimer);
         tvBedNo = (TextView) rootView.findViewById(R.id.tvBedNo);
         tvPatientName = (TextView) rootView.findViewById(R.id.tvPatientName);
         tvPatientID = (TextView) rootView.findViewById(R.id.tvPatientID);
@@ -128,7 +129,6 @@ public class PreparationForPatientFragment extends Fragment {
         ivNote = (ImageView) rootView.findViewById(R.id.ivNote);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
-
 
         Call<PatientInfoForPersonCollectionDao> callInfo = HttpManager.getInstance().getService().loadListPatientInfo(mRN);
         callInfo.enqueue(new Callback<PatientInfoForPersonCollectionDao>() {
@@ -159,9 +159,9 @@ public class PreparationForPatientFragment extends Fragment {
                 if(stryear.equals("")){
                     tvAge.setText("อายุ:"+stryear+"ปี,"+" เดือน,"+" วัน");
                 }else{
+                    Log.d("check", "AGE : "+String.valueOf(age));
                     tvAge.setText("อายุ:"+String.valueOf(age)+"ปี,"+" เดือน,"+" วัน");
                 }
-                tvAge.setText("อายุ:"+strAge+"ปี,"+" เดือน,"+" วัน");
                 tvStatus.setText("สถานะภาพ:"+response.body().getListPatientInfoBean().getMaritalstatus());
             }
 
@@ -170,9 +170,8 @@ public class PreparationForPatientFragment extends Fragment {
                 Log.d("check", "PreparationForPatientFragment callInfo Failure " + t);
             }
         });
-
-        tvDrugAllergy.setText("การแพ้ยา: ");
-        tvDate.setText(dateToday + " (" + gettimer + ")");
+        tvTimer.setText(gettimer);
+        tvDrugAllergy.setText("  การแพ้ยา: ");
 
         Call<ListMedicalCardCollectionDao> callDrug = HttpManager.getInstance().getService().loadListMedicalCard(mRN);
         callDrug.enqueue(new Callback<ListMedicalCardCollectionDao>() {
@@ -180,49 +179,55 @@ public class PreparationForPatientFragment extends Fragment {
             public void onResponse(Call<ListMedicalCardCollectionDao> call, Response<ListMedicalCardCollectionDao> response) {
                 listMedicalCardCollectionDao = response.body();
                 Log.d("check", "SIZE listMedical " + listMedicalCardCollectionDao.getListMedicalCardBean().size());
-                DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+//                DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
                 SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date date;
+
+                Log.d("check", "strdf2: "+strdf2);
                 for (int i = 0; i < listMedicalCardCollectionDao.getListMedicalCardBean().size(); i++) {
-                    String dateStr = listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate().toString();
-                    try {
-                        date = (Date)formatter.parse(dateStr);
-                        formatedDate = sDateFormat.format(date);
-                        if(strtimer.equals(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTimeHour())&& formatedDate.equals(strdf2)) {
-//                            Log.d("check","1/formatedDate : " + formatedDate);
-                            listDrugName.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getTradeName());
-                            listDosage.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDose());
-                            unit.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getUnit());
-                            listFrequency.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getFrequency());
-                            type.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminType());
-                            route.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getRoute());
-                            adminTime.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTime());
-                        }
-                        else if(strtimer.equals(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTimeHour()) && (!(formatedDate.equals(strdf2)))){
-//                            Log.d("check","2/formatedDate : " + formatedDate +" strdf2: "+strdf2);
-                            listDrugName2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getTradeName());
-                            listDosage2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDose());
-                            unit2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getUnit());
-                            listFrequency2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getFrequency());
-                            type2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminType());
-                            route2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getRoute());
-                            adminTime2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTime());
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+//                    Log.d("check", i+" DATE:  " +listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate());
+//                    String dateStr = listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate().toString();
+//                    Log.d("check", i+" dateStr " +dateStr);
+//                    date = (Date)formatter.parse(dateStr);
+                    formatedDate = sDateFormat.format(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate());
+//                    Log.d("check", i+" formatedDate " +formatedDate);
+
+                    if(strtimer.equals(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTimeHour())&& formatedDate.equals(strdf2)) {
+                        Log.d("check","1/formatedDate : " + formatedDate);
+                        listDrugName.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getTradeName());
+                        listDosage.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDose());
+                        unit.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getUnit());
+                        listFrequency.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getFrequency());
+                        type.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminType());
+                        route.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getRoute());
+                        adminTime.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTime());
+                        site.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getSite());
+                    }
+                    else if(strtimer.equals(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTimeHour()) && (!(formatedDate.equals(strdf2)))){
+                        Log.d("check","2/formatedDate : " + formatedDate +" strdf2: "+strdf2);
+                        listDrugName2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getTradeName());
+                        listDosage2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDose());
+                        unit2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getUnit());
+                        listFrequency2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getFrequency());
+                        type2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminType());
+                        route2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getRoute());
+                        adminTime2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTime());
+                        site2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getSite());
                     }
                 }
 
                 if(tricker == 1) {
                     Log.d("check","listDrugName : " + listDrugName.size());
+                    tvDate.setText(dateToday + " (จำนวนยา " + listDrugName.size() + ")");
                     ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
-                    preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName, listDosage, type, route, listFrequency, unit, adminTime);
+                    preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName, listDosage, type, route, listFrequency, unit, adminTime, site);
                     listView.setAdapter(preparationForPatientAdapter);
                 }
                 else {
                     Log.d("check","listDrugName2 : " + listDrugName2.size());
+                    tvDate.setText(dateToday + " (จำนวนยา " + listDrugName2.size() + ")");
                     ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
-                    preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2, listDosage2, type2, route2, listFrequency2, unit2, adminTime2);
+                    preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2, listDosage2, type2, route2, listFrequency2, unit2, adminTime2, site2);
                     listView.setAdapter(preparationForPatientAdapter);
                 }
             }

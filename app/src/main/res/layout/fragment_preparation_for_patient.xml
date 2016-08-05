@@ -12,7 +12,8 @@
         android:background="@color/colorPrimary">
         <TextView
             android:layout_weight="1"
-            android:text="Medication"
+            android:id="@+id/tvTimer"
+            android:text="Time"
             android:textSize="18sp"
             android:gravity="center"
             android:layout_width="match_parent"
@@ -143,15 +144,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp" />
             </LinearLayout>
-            <TextView
-                android:id="@+id/tvDrugAllergy"
-                android:gravity="center_vertical"
-                android:layout_weight="1"
-                android:text=" การแพ้ยา: "
-                android:textSize="16sp"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp" />
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+        <TextView
+            android:id="@+id/tvDrugAllergy"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:text=" การแพ้ยา: "
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -181,14 +187,14 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/btnCancel"
-            android:text="Cancel"
+            android:text="ยกเลิก"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="#f46e6e" />
         <Button
             android:id="@+id/btnSave"
-            android:text="Save"
+            android:text="บันทึก"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="35dp"

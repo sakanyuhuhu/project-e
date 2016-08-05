@@ -15,7 +15,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class PreparationForPatientListView extends BaseCustomViewGroup {
 
-    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency;
+    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
     private CheckBox chkCheckMed;
     private ImageView ivNote;
 
@@ -58,6 +58,7 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         tvType = (TextView) findViewById(R.id.tvType);
         tvRoute = (TextView) findViewById(R.id.tvRoute);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
+        tvSite = (TextView) findViewById(R.id.tvSite);
         chkCheckMed = (CheckBox) findViewById(R.id.chkCheckMed);
         ivNote = (ImageView) findViewById(R.id.ivNote);
     }
@@ -85,16 +86,17 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setDrugName(String textDrugName, String textDosage, String textType, String textRoute, String textFrequency, String textUnit, String textadminTime){
+    public void setDrugName(String textDrugName, String textDosage, String textType, String textRoute, String textFrequency, String textUnit, String textadminTime, String textSite){
         tvDrugName.setText(String.valueOf(textDrugName));
         tvDosage.setText(" Dosage: " + textDosage+" "+ String.valueOf(textUnit));
         if(textType.equals("C")) {
             tvType.setText(" Type: Continue");
         }else{
-            tvType.setText(" Type: " + textType);
+            tvType.setText(" Type: One day dose");
         }
         tvRoute.setText(" Route: " + textRoute);
         tvFrequency.setText(" Frequency: " + textFrequency+" ("+textadminTime+")");
+        tvSite.setText(" Site: " + textSite);
     }
 
     public void setCheck(Boolean check){
