@@ -8,9 +8,6 @@ import android.view.Window;
 
 import th.ac.mahidol.rama.emam.R;
 
-/**
- * Created by mi- on 5/7/2559.
- */
 public class SplashScreen extends AppCompatActivity {
     Handler handler;
     Runnable runnable;

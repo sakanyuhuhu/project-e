@@ -8,12 +8,8 @@ import th.ac.mahidol.rama.emam.fragment.PreparationForPatientFragment;
 
 public class PreparationForPatientActivity extends AppCompatActivity {
 
-    private String nfcUId;
-    private String sdlocId;
-    private String gettimer;
-    private String patientName;
-    private String bedNo;
-    private String mRN;
+    private String nfcUId, sdlocId, gettimer, patientName, bedNo, mRN, strdf2;
+    private int tricker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,12 +17,14 @@ public class PreparationForPatientActivity extends AppCompatActivity {
         gettimer = getIntent().getExtras().getString("timer");
         nfcUId = getIntent().getExtras().getString("nfcUId");
         sdlocId = getIntent().getExtras().getString("sdlocId");
+        strdf2 = getIntent().getExtras().getString("strdf");
         patientName = getIntent().getExtras().getString("patientName");
         bedNo = getIntent().getExtras().getString("bedNo");
         mRN = getIntent().getExtras().getString("mRN");
+        tricker = getIntent().getExtras().getInt("tricker");
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationForPatientFragment.newInstance(gettimer, nfcUId, sdlocId, patientName, bedNo, mRN)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationForPatientFragment.newInstance(gettimer, nfcUId, sdlocId, patientName, bedNo, mRN, strdf2, tricker)).commit();
         }
     }
 }

@@ -11,9 +11,6 @@ import android.widget.FrameLayout;
 
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
-/**
- * Created by nuuneoi on 1/9/2016.
- */
 public class BaseCustomViewGroup extends FrameLayout {
 
     public BaseCustomViewGroup(Context context) {

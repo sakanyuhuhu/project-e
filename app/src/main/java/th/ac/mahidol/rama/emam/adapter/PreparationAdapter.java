@@ -8,9 +8,7 @@ import android.widget.BaseAdapter;
 import th.ac.mahidol.rama.emam.view.PatientListView;
 
 public class PreparationAdapter extends BaseAdapter {
-    private String[] strPatient;
-    private String[] strBedNo;
-    private String[] strMrn;
+    private String[] strPatient, strBedNo, strMrn;
     public PreparationAdapter(String[] listPatient, String[] listBedNo, String[] listMrn) {
         this.strPatient = listPatient;
         this.strBedNo = listBedNo;
@@ -36,7 +34,6 @@ public class PreparationAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
 
         PatientListView patientListView = new PatientListView(viewGroup.getContext());
-//        Log.d("check", "strTimeline[position] : "+ strPatient[position]);
         patientListView.setPatient(strPatient[position], strBedNo[position], strMrn[position]);
 
         return patientListView;

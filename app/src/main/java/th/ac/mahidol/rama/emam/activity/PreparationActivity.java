@@ -13,11 +13,8 @@ public class PreparationActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String gettimer;
-    private String sdlocId;
-    private String nfcUId;
-    private String nfcTagId;
-    private int numPatient;
+    private String gettimer, sdlocId, nfcUId, nfcTagId;
+    private int numPatient, position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +23,9 @@ public class PreparationActivity extends AppCompatActivity {
         numPatient = getIntent().getExtras().getInt("numPatient");
         nfcUId = getIntent().getExtras().getString("nfcUId");
         sdlocId = getIntent().getExtras().getString("sdlocId");
+        position = getIntent().getExtras().getInt("position");
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationFragment.newInstance(gettimer, numPatient, nfcUId, sdlocId)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationFragment.newInstance(gettimer, numPatient, nfcUId, sdlocId, position)).commit();
         }
 
 //        mNfcAdapter = NfcAdapter.getDefaultAdapter(PreparationActivity.this);

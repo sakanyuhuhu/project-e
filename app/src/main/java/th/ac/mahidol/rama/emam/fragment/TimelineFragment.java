@@ -29,14 +29,14 @@ import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.TimelineAdapter;
-import th.ac.mahidol.rama.emam.dao.ListPatientTimeCollectionDao;
+import th.ac.mahidol.rama.emam.dao.listpatienttime.ListPatientTimeCollectionDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class TimelineFragment extends Fragment {
 
     protected final String[] listTimeline = new String[]{"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00"};
     private int[] patientTime = new int[listTimeline.length];
-    private int j = 0, k = 0, l = 0;
+    private int l = 0;
     private String strdf, nfcUId;
     private static String sdlocId;
     private ListPatientTimeCollectionDao listPatientTimeCollectionDao;
@@ -76,7 +76,6 @@ public class TimelineFragment extends Fragment {
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-//        new getPatientByWard().execute();
         nfcUId = getArguments().getString("nfcUId");
         sdlocId = getArguments().getString("sdlocId");
         Date today = new Date();
@@ -98,10 +97,8 @@ public class TimelineFragment extends Fragment {
                 for (int i = 0; i < listPatientTimeCollectionDao.getListPatientTimeBean().size(); i++) {
                     if (response.body().getListPatientTimeBean().get(i).getDrugUseDate().trim().equals(strdf)) {
                         listTimeToday.add(listPatientTimeCollectionDao.getListPatientTimeBean().get(i).getAdminTimeHour());
-                        k++;
-                    } else {
+                    } else  {
                         listTimeNext.add(listPatientTimeCollectionDao.getListPatientTimeBean().get(i).getAdminTimeHour());
-                        j++;
                     }
                 }
                 for (int i=0; i<patientTime.length; i++) {
@@ -127,6 +124,7 @@ public class TimelineFragment extends Fragment {
                                 Intent intent = new Intent(getContext(), PreparationActivity.class);
                                 intent.putExtra("timer", listTimeline[position]);
                                 intent.putExtra("numPatient", patientTime[position]);
+                                intent.putExtra("position", position);
                                 intent.putExtra("nfcUId", nfcUId);
                                 intent.putExtra("sdlocId", sdlocId);
                                 getActivity().startActivity(intent);
@@ -162,48 +160,4 @@ public class TimelineFragment extends Fragment {
         editor.putString("patienttime",json);
         editor.apply();
     }
-
-//    public static class getPatientByWard extends AsyncTask<Void, Void, List<PatientDao>> {
-//
-//        @Override
-//        protected void onPostExecute(List<PatientDao> patientDaos) {//การทำงานที่ต้องรอการประมวลผลจาก getPatientByWard ให้ย้ายมาทำในนี้
-//            super.onPostExecute(patientDaos);
-//            Log.d("check","Size "+patientDaos.size());
-//            for (int i = 0; i < patientDaos.size(); i++) {
-//                Log.d("check", "Patien Mrn" + patientDaos.get(i).getMrn());
-//            }
-//        }
-//
-//        @Override
-//        protected List<PatientDao> doInBackground(Void... params) {
-//            List<PatientDao> itemsList = new ArrayList<PatientDao>();
-//            SoapManager soapManager = new SoapManager();
-//            itemsList = parseXML(soapManager.getPatientByWard("Ws_SearchPatientByWard", sdlocId));
-//            return itemsList;
-//        }
-//
-//        private   ArrayList<PatientDao>  parseXML(String soap) {
-//            List<PatientDao> itemsList = new ArrayList<PatientDao>();
-//            try {
-//
-//                SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-//                SAXParser saxParser = saxParserFactory.newSAXParser();
-//                XMLReader xmlReader = saxParser.getXMLReader();
-//
-//                SearchPatientByWardManager searchPatientXMLHandler = new SearchPatientByWardManager();
-//                xmlReader.setContentHandler(searchPatientXMLHandler);
-//                InputSource inStream = new InputSource();
-//                inStream.setCharacterStream(new StringReader(soap));
-//                xmlReader.parse(inStream);
-//                itemsList = searchPatientXMLHandler.getItemsList();
-//
-//                Log.w("AndroidParseXMLActivity", "Done");
-//            } catch (Exception e) {
-//                Log.w("AndroidParseXMLActivity", e);
-//            }
-//
-//            return (ArrayList<PatientDao>) itemsList;
-//        }
-//    }
-
 }

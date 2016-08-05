@@ -13,9 +13,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class PatientListView extends BaseCustomViewGroup {
 
-    private TextView tvPatient;
-    private TextView tvBedNo;
-    private TextView tvMrn;
+    private TextView tvPatient, tvBedNo, tvMrn;
 
     public PatientListView(Context context) {
         super(context);
@@ -94,8 +92,8 @@ public class PatientListView extends BaseCustomViewGroup {
 
     public void setPatient(String textPatient, String textBedNo, String textMrn){
         tvPatient.setText(textPatient);
-        tvBedNo.setText("Room/Bed No. " + textBedNo);
-        tvMrn.setText("MRN: " + textMrn);
+        tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
+        tvMrn.setText("HN: " + textMrn);
     }
 
 }

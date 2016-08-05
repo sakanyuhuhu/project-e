@@ -29,14 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String nfcTagId;
-    private String sdlocId;
+    private String nfcTagId, sdlocId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         initInstance();
 

@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#009688</color>
     <color name="colorWhite">#ffffffff</color>
+    <color name="colorRed">#cc0000</color>
+    <color name="colorNavajoWhite">#FFDEAD</color>
+    <color name="colorPeachPuff">#FFDAB9</color>
+    <color name="colorLemonChiffon">#FFFACD</color>
 </resources>

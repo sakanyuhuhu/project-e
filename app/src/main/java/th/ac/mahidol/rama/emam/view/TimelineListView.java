@@ -13,8 +13,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class TimelineListView extends BaseCustomViewGroup {
 
-    private TextView tvTime;
-    private TextView tvPatienTime;
+    private TextView tvTime, tvPatienTime;
 
     public TimelineListView(Context context) {
         super(context);
@@ -94,5 +93,6 @@ public class TimelineListView extends BaseCustomViewGroup {
         tvTime.setText(textTime);
         tvPatienTime.setText(String.valueOf(patientTime));
     }
+
 
 }

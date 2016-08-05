@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
@@ -13,7 +15,9 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class PreparationForPatientListView extends BaseCustomViewGroup {
 
-    private TextView tvDrugName, tvDosage, tvUnit, tvType, tvRoute, tvFrequency;
+    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency;
+    private CheckBox chkCheckMed;
+    private ImageView ivNote;
 
     public PreparationForPatientListView(Context context) {
         super(context);
@@ -51,10 +55,11 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         // findViewById here
         tvDrugName = (TextView) findViewById(R.id.tvDrugName);
         tvDosage = (TextView) findViewById(R.id.tvDosage);
-        tvUnit = (TextView) findViewById(R.id.tvUnit);
         tvType = (TextView) findViewById(R.id.tvType);
         tvRoute = (TextView) findViewById(R.id.tvRoute);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
+        chkCheckMed = (CheckBox) findViewById(R.id.chkCheckMed);
+        ivNote = (ImageView) findViewById(R.id.ivNote);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -80,13 +85,30 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setDrugName(String textDrugName, String textDosage, String textType, String textRoute, String textFrequency, String textUnit){
-        tvDrugName.setText(textDrugName);
-        tvDosage.setText(" Dosage: " + textDosage);
-        tvUnit.setText(textUnit);
-        tvType.setText(" Type: " + textType);
+    public void setDrugName(String textDrugName, String textDosage, String textType, String textRoute, String textFrequency, String textUnit, String textadminTime){
+        tvDrugName.setText(String.valueOf(textDrugName));
+        tvDosage.setText(" Dosage: " + textDosage+" "+ String.valueOf(textUnit));
+        if(textType.equals("C")) {
+            tvType.setText(" Type: Continue");
+        }else{
+            tvType.setText(" Type: " + textType);
+        }
         tvRoute.setText(" Route: " + textRoute);
-        tvFrequency.setText(" Frequency: " + textFrequency);
+        tvFrequency.setText(" Frequency: " + textFrequency+" ("+textadminTime+")");
+    }
+
+    public void setCheck(Boolean check){
+        chkCheckMed.setChecked(check);
+    }
+
+    public CheckBox isCheck(){
+
+        return (CheckBox)findViewById(R.id.chkCheckMed);
+    }
+
+
+    public ImageView imageViewNote(){
+        return (ImageView) findViewById(R.id.ivNote);
     }
 
 }

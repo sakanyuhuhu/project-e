@@ -24,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainActivity;
-import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
+import th.ac.mahidol.rama.emam.dao.listward.ListWardCollectionDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class SelectWardFragment extends Fragment {

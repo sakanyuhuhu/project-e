@@ -9,9 +9,6 @@ import android.util.AttributeSet;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
-/**
- * Created by nuuneoi on 11/16/2014.
- */
 public class CustomViewGroupTemplate extends BaseCustomViewGroup {
 
     public CustomViewGroupTemplate(Context context) {

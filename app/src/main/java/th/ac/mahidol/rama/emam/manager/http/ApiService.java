@@ -5,13 +5,14 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import th.ac.mahidol.rama.emam.dao.CheckPersonWardCollectionDao;
-import th.ac.mahidol.rama.emam.dao.ListMedicalCardCollectionDao;
-import th.ac.mahidol.rama.emam.dao.ListPatientInfoCollectionDao;
-import th.ac.mahidol.rama.emam.dao.ListPatientTimeCollectionDao;
-import th.ac.mahidol.rama.emam.dao.ListWardCollectionDao;
-import th.ac.mahidol.rama.emam.dao.MRNListBean;
-import th.ac.mahidol.rama.emam.dao.PatientInfoForPersonCollectionDao;
+import th.ac.mahidol.rama.emam.dao.checkpersonward.CheckPersonWardCollectionDao;
+import th.ac.mahidol.rama.emam.dao.listmedicalcard.ListMedicalCardCollectionDao;
+import th.ac.mahidol.rama.emam.dao.listpatientinfo.ListPatientInfoCollectionDao;
+import th.ac.mahidol.rama.emam.dao.listpatienttime.ListPatientTimeCollectionDao;
+import th.ac.mahidol.rama.emam.dao.listward.ListWardCollectionDao;
+import th.ac.mahidol.rama.emam.dao.mrnforprepare.MRNListBean;
+import th.ac.mahidol.rama.emam.dao.mrnforprepare.MRNListBean2;
+import th.ac.mahidol.rama.emam.dao.patientinfoforperson.PatientInfoForPersonCollectionDao;
 
 
 public interface ApiService {
@@ -33,4 +34,8 @@ public interface ApiService {
 
     @POST("list_patient_info_post")
     Call<ListPatientInfoCollectionDao> loadListPatientInfoPost(@Body MRNListBean mrn);
+
+    @POST("list_patient_info_post")
+    Call<ListPatientInfoCollectionDao> loadListPatientInfoPost2(@Body MRNListBean2 mrn);
+
 }

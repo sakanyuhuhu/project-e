@@ -24,8 +24,8 @@ public class HttpManager {
         mContext = Contextor.getInstance().getContext();
 
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://webdemo.rama.mahidol.ac.th:8080/EMAMService/service/EMAMService/")
-                .baseUrl("http://10.0.2.2:8080/EMAMService/service/EMAMService/")
+                .baseUrl("http://webdemo.rama.mahidol.ac.th:8080/EMAMService/service/EMAMService/")
+//                .baseUrl("http://10.0.2.2:8080/EMAMService/service/EMAMService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

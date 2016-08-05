@@ -16,8 +16,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
-    private String sdlocId;
-    private String nfcUId;
+    private String sdlocId, nfcUId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

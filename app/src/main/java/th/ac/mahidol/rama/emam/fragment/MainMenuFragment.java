@@ -58,7 +58,6 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener{
         imgBtnMedicationManage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Log.d("check", "onClick to TimelineActivity");
                 Intent intent = new Intent(getContext(), TimelineActivity.class);
                 intent.putExtra("nfcUId", nfcUId);
                 intent.putExtra("sdlocId", sdlocId);
