@@ -6,10 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -28,33 +28,24 @@ import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 
 public class PreparationForPatientFragment extends Fragment {
-    private String nfcUId, sdlocId, gettimer, patientName, bedNo, mRN, strtimer, strdf2, formatedDate;
+    private String nfcUId, sdlocId, gettimer, patientName, bedNo, mRN, strtimer, strdf2, dateToday, formatedDate, stryear;
     private TextView tvTimer, tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
-    private int tricker;
+    private int tricker, yearstr;
     private TextView tvDrugAllergy, tvDate;
-    private ImageView ivNote;
-    private CheckBox chkCheckMed;
     private Button btnCancel, btnSave;
+    private Spinner spinner1;
     private ListMedicalCardCollectionDao listMedicalCardCollectionDao;
     private SQLiteManager dbHelper;
     private  PreparationForPatientAdapter preparationForPatientAdapter;
-
-    List<String> listDrugName = new ArrayList<String>();
-    List<String> listDosage = new ArrayList<String>();
-    List<String> unit = new ArrayList<String>();
-    List<String> listFrequency = new ArrayList<String>();
-    List<String> type = new ArrayList<String>();
-    List<String> route = new ArrayList<String>();
-    List<String> adminTime = new ArrayList<String>();
-    List<String> site = new ArrayList<String>();
-    List<String> listDrugName2 = new ArrayList<String>();
-    List<String> listDosage2 = new ArrayList<String>();
-    List<String> unit2 = new ArrayList<String>();
-    List<String> listFrequency2 = new ArrayList<String>();
-    List<String> type2 = new ArrayList<String>();
-    List<String> route2 = new ArrayList<String>();
-    List<String> adminTime2 = new ArrayList<String>();
-    List<String> site2 = new ArrayList<String>();
+    private List<String> booleanListcheck;
+    private List<String> listDrugName, listDosage, unit, listFrequency, type, route, adminTime, site;
+    private List<String> listDrugName2, listDosage2, unit2, listFrequency2, type2, route2, adminTime2, site2;
+    private List<String> listDrugNamePO, listDosagePO, unitPO, listFrequencyPO, typePO, routePO, adminTimePO, sitePO;
+    private List<String> listDrugNameIV, listDosageIV, unitIV, listFrequencyIV, typeIV, routeIV, adminTimeIV, siteIV;
+    private List<String> listDrugNameOther, listDosageOther, unitOther, listFrequencyOther, typeOther, routeOther, adminTimeOther, siteOther;
+    private List<String> listDrugName2PO, listDosage2PO, unit2PO, listFrequency2PO, type2PO, route2PO, adminTime2PO, site2PO;
+    private List<String> listDrugName2IV, listDosage2IV, unit2IV, listFrequency2IV, type2IV, route2IV, adminTime2IV, site2IV;
+    private List<String> listDrugName2Other, listDosage2Other, unit2Other, listFrequency2Other, type2Other, route2Other, adminTime2Other, site2Other;
 
     public PreparationForPatientFragment() {
         super();
@@ -78,11 +69,15 @@ public class PreparationForPatientFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        init(savedInstanceState);
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
 
+    }
+
+    private void init(Bundle savedInstanceState) {
+        booleanListcheck = new ArrayList<String>();
     }
 
     @Override
@@ -110,9 +105,9 @@ public class PreparationForPatientFragment extends Fragment {
         }
         Date today = new Date();
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        final String dateToday = sDateFormat.format(today);
-        String stryear = dateToday.substring(0,4);
-        final int yearstr = Integer.parseInt(stryear);
+        dateToday = sDateFormat.format(today);
+        stryear = dateToday.substring(0,4);
+        yearstr = Integer.parseInt(stryear);
 
         tvTimer = (TextView) rootView.findViewById(R.id.tvTimer);
         tvBedNo = (TextView) rootView.findViewById(R.id.tvBedNo);
@@ -125,10 +120,9 @@ public class PreparationForPatientFragment extends Fragment {
         tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
         tvDrugAllergy = (TextView) rootView.findViewById(R.id.tvDrugAllergy);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
-        chkCheckMed = (CheckBox) rootView.findViewById(R.id.chkCheckMed);
-        ivNote = (ImageView) rootView.findViewById(R.id.ivNote);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
+        spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
 
         Call<PatientInfoForPersonCollectionDao> callInfo = HttpManager.getInstance().getService().loadListPatientInfo(mRN);
         callInfo.enqueue(new Callback<PatientInfoForPersonCollectionDao>() {
@@ -179,21 +173,27 @@ public class PreparationForPatientFragment extends Fragment {
             public void onResponse(Call<ListMedicalCardCollectionDao> call, Response<ListMedicalCardCollectionDao> response) {
                 listMedicalCardCollectionDao = response.body();
                 Log.d("check", "SIZE listMedical " + listMedicalCardCollectionDao.getListMedicalCardBean().size());
-//                DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
                 SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date;
-
-                Log.d("check", "strdf2: "+strdf2);
+                listDrugName = new ArrayList<String>();
+                listDosage = new ArrayList<String>();
+                unit = new ArrayList<String>();
+                listFrequency = new ArrayList<String>();
+                type = new ArrayList<String>();
+                route = new ArrayList<String>();
+                adminTime = new ArrayList<String>();
+                site = new ArrayList<String>();
+                listDrugName2 = new ArrayList<String>();
+                listDosage2 = new ArrayList<String>();
+                unit2 = new ArrayList<String>();
+                listFrequency2 = new ArrayList<String>();
+                type2 = new ArrayList<String>();
+                route2 = new ArrayList<String>();
+                adminTime2 = new ArrayList<String>();
+                site2 = new ArrayList<String>();
                 for (int i = 0; i < listMedicalCardCollectionDao.getListMedicalCardBean().size(); i++) {
-//                    Log.d("check", i+" DATE:  " +listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate());
-//                    String dateStr = listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate().toString();
-//                    Log.d("check", i+" dateStr " +dateStr);
-//                    date = (Date)formatter.parse(dateStr);
                     formatedDate = sDateFormat.format(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDrugUseDate());
-//                    Log.d("check", i+" formatedDate " +formatedDate);
-
                     if(strtimer.equals(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTimeHour())&& formatedDate.equals(strdf2)) {
-                        Log.d("check","1/formatedDate : " + formatedDate);
+//                        Log.d("check","1/formatedDate : " + formatedDate);
                         listDrugName.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getTradeName());
                         listDosage.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDose());
                         unit.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getUnit());
@@ -204,7 +204,7 @@ public class PreparationForPatientFragment extends Fragment {
                         site.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getSite());
                     }
                     else if(strtimer.equals(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getAdminTimeHour()) && (!(formatedDate.equals(strdf2)))){
-                        Log.d("check","2/formatedDate : " + formatedDate +" strdf2: "+strdf2);
+//                        Log.d("check","2/formatedDate : " + formatedDate +" strdf2: "+strdf2);
                         listDrugName2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getTradeName());
                         listDosage2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getDose());
                         unit2.add(listMedicalCardCollectionDao.getListMedicalCardBean().get(i).getUnit());
@@ -218,17 +218,212 @@ public class PreparationForPatientFragment extends Fragment {
 
                 if(tricker == 1) {
                     Log.d("check","listDrugName : " + listDrugName.size());
+//  edit below 11/08/2559 date today ยากิน
+                    listDrugNamePO = new ArrayList<String>();
+                    listDosagePO = new ArrayList<String>();
+                    unitPO = new ArrayList<String>();
+                    listFrequencyPO = new ArrayList<String>();
+                    typePO = new ArrayList<String>();
+                    routePO = new ArrayList<String>();
+                    adminTimePO = new ArrayList<String>();
+                    sitePO = new ArrayList<String>();
+//  ยาฉีด
+                    listDrugNameIV = new ArrayList<String>();
+                    listDosageIV = new ArrayList<String>();
+                    unitIV = new ArrayList<String>();
+                    listFrequencyIV = new ArrayList<String>();
+                    typeIV = new ArrayList<String>();
+                    routeIV = new ArrayList<String>();
+                    adminTimeIV = new ArrayList<String>();
+                    siteIV = new ArrayList<String>();
+//  ยาอื่นๆ
+                    listDrugNameOther = new ArrayList<String>();
+                    listDosageOther = new ArrayList<String>();
+                    unitOther = new ArrayList<String>();
+                    listFrequencyOther = new ArrayList<String>();
+                    typeOther = new ArrayList<String>();
+                    routeOther = new ArrayList<String>();
+                    adminTimeOther = new ArrayList<String>();
+                    siteOther = new ArrayList<String>();
+                    for(int i=0; i<route.size();i++) {
+                        if (route.get(i).equals("PO")) {
+                            listDrugNamePO.add(listDrugName.get(i));
+                            listDosagePO.add(listDosage.get(i));
+                            unitPO.add(unit.get(i));
+                            listFrequencyPO.add(listFrequency.get(i));
+                            typePO.add(type.get(i));
+                            routePO.add(route.get(i));
+                            adminTimePO.add(adminTime.get(i));
+                            sitePO.add(site.get(i));
+                        }
+                        else if (route.get(i).equals("IV")) {
+                            listDrugNameIV.add(listDrugName.get(i));
+                            listDosageIV.add(listDosage.get(i));
+                            unitIV.add(unit.get(i));
+                            listFrequencyIV.add(listFrequency.get(i));
+                            typeIV.add(type.get(i));
+                            routeIV.add(route.get(i));
+                            adminTimeIV.add(adminTime.get(i));
+                            siteIV.add(site.get(i));
+
+                        }
+                        else {
+                            listDrugNameOther.add(listDrugName.get(i));
+                            listDosageOther.add(listDosage.get(i));
+                            unitOther.add(unit.get(i));
+                            listFrequencyOther.add(listFrequency.get(i));
+                            typeOther.add(type.get(i));
+                            routeOther.add(route.get(i));
+                            adminTimeOther.add(adminTime.get(i));
+                            siteOther.add(site.get(i));
+                        }
+                    }
                     tvDate.setText(dateToday + " (จำนวนยา " + listDrugName.size() + ")");
                     ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                     preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName, listDosage, type, route, listFrequency, unit, adminTime, site);
                     listView.setAdapter(preparationForPatientAdapter);
+
+                    spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+                            String selectedItem = parent.getItemAtPosition(position).toString();
+                            if(selectedItem.equals("ทั้งหมด")) {
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugName.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName, listDosage, type, route, listFrequency, unit, adminTime, site);
+                                listView.setAdapter(preparationForPatientAdapter);
+                            }
+                            else if(selectedItem.equals("กิน")) {
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugNamePO.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugNamePO, listDosagePO, typePO, routePO, listFrequencyPO, unitPO, adminTimePO, sitePO);
+                                listView.setAdapter(preparationForPatientAdapter);
+                            }
+                            else if(selectedItem.equals("ฉีด")) {
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugNameIV.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugNameIV, listDosageIV, typeIV, routeIV, listFrequencyIV, unitIV, adminTimeIV, siteIV);
+                                listView.setAdapter(preparationForPatientAdapter);
+                            }
+                            else{
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugNameOther.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugNameOther, listDosageOther, typeOther, routeOther, listFrequencyOther, unitOther, adminTimeOther, siteOther);
+                                listView.setAdapter(preparationForPatientAdapter);
+
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            Log.d("check", "onNothingSelectedToday : "+adapterView);
+                        }
+                    });
+
                 }
                 else {
                     Log.d("check","listDrugName2 : " + listDrugName2.size());
+//  date not today ยากิน
+                    listDrugName2PO = new ArrayList<String>();
+                    listDosage2PO = new ArrayList<String>();
+                    unit2PO = new ArrayList<String>();
+                    listFrequency2PO = new ArrayList<String>();
+                    type2PO = new ArrayList<String>();
+                    route2PO = new ArrayList<String>();
+                    adminTime2PO = new ArrayList<String>();
+                    site2PO = new ArrayList<String>();
+//  ยาฉีด
+                    listDrugName2IV = new ArrayList<String>();
+                    listDosage2IV = new ArrayList<String>();
+                    unit2IV = new ArrayList<String>();
+                    listFrequency2IV = new ArrayList<String>();
+                    type2IV = new ArrayList<String>();
+                    route2IV = new ArrayList<String>();
+                    adminTime2IV = new ArrayList<String>();
+                    site2IV = new ArrayList<String>();
+//  ยาอื่นๆ
+                    listDrugName2Other = new ArrayList<String>();
+                    listDosage2Other = new ArrayList<String>();
+                    unit2Other = new ArrayList<String>();
+                    listFrequency2Other = new ArrayList<String>();
+                    type2Other = new ArrayList<String>();
+                    route2Other = new ArrayList<String>();
+                    adminTime2Other = new ArrayList<String>();
+                    site2Other = new ArrayList<String>();
+                    for(int i=0; i<route.size();i++) {
+                        if (route.get(i).equals("PO")) {
+                            listDrugName2PO.add(listDrugName.get(i));
+                            listDosage2PO.add(listDosage.get(i));
+                            unit2PO.add(unit.get(i));
+                            listFrequency2PO.add(listFrequency.get(i));
+                            type2PO.add(type.get(i));
+                            route2PO.add(route.get(i));
+                            adminTime2PO.add(adminTime.get(i));
+                            site2PO.add(site.get(i));
+                        }
+                        else if (route.get(i).equals("IV")) {
+                            listDrugName2IV.add(listDrugName.get(i));
+                            listDosage2IV.add(listDosage.get(i));
+                            unit2IV.add(unit.get(i));
+                            listFrequency2IV.add(listFrequency.get(i));
+                            type2IV.add(type.get(i));
+                            route2IV.add(route.get(i));
+                            adminTime2IV.add(adminTime.get(i));
+                            site2IV.add(site.get(i));
+
+                        }
+                        else {
+                            listDrugName2Other.add(listDrugName.get(i));
+                            listDosage2Other.add(listDosage.get(i));
+                            unit2Other.add(unit.get(i));
+                            listFrequency2Other.add(listFrequency.get(i));
+                            type2Other.add(type.get(i));
+                            route2Other.add(route.get(i));
+                            adminTime2Other.add(adminTime.get(i));
+                            site2Other.add(site.get(i));
+                        }
+                    }
                     tvDate.setText(dateToday + " (จำนวนยา " + listDrugName2.size() + ")");
                     ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                     preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2, listDosage2, type2, route2, listFrequency2, unit2, adminTime2, site2);
                     listView.setAdapter(preparationForPatientAdapter);
+
+                    spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+                            String selectedItem = parent.getItemAtPosition(position).toString();
+                            if(selectedItem.equals("ทั้งหมด")) {
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugName2.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2, listDosage2, type2, route2, listFrequency2, unit2, adminTime2, site2);
+                                listView.setAdapter(preparationForPatientAdapter);
+                            }
+                            else if(selectedItem.equals("กิน")) {
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugName2PO.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2PO, listDosage2PO, type2PO, route2PO, listFrequency2PO, unit2PO, adminTime2PO, site2PO);
+                                listView.setAdapter(preparationForPatientAdapter);
+                            }
+                            else if(selectedItem.equals("ฉีด")) {
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugName2IV.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2IV, listDosage2IV, type2IV, route2IV, listFrequency2IV, unit2IV, adminTime2IV, site2IV);
+                                listView.setAdapter(preparationForPatientAdapter);
+                            }
+                            else{
+                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugName2Other.size() + ")");
+                                ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+                                preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2Other, listDosage2Other, type2Other, route2Other, listFrequency2Other, unit2Other, adminTime2Other, site2Other);
+                                listView.setAdapter(preparationForPatientAdapter);
+
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            Log.d("check", "onNothingSelectedNext : "+adapterView);
+                        }
+                    });
                 }
             }
 
@@ -248,10 +443,22 @@ public class PreparationForPatientFragment extends Fragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<String> booleanListcheck = new ArrayList<String>();
-                for(int i=0; i<preparationForPatientAdapter.getCheckStatus().size();i++){
-                    booleanListcheck.add(preparationForPatientAdapter.getCheckStatus().get(i).toString());
-                    Log.d("check","booleanListcheck : "+booleanListcheck.get(i));
+                List<String> booleanListCheckHold = new ArrayList<String>();
+                List<String> booleanListcheck = new ArrayList<String>();//ย้ายไป new ใน init แล้ว ได้ค่ากลับมาเป็น false ทั้งหมดเลย
+                List<String> listvalueCheckNoteRadio = new ArrayList<String>();
+                List<String> listStatusHold = new ArrayList<String>();
+                List<String> listStatus = new ArrayList<String>();
+                for(int i=0; i<preparationForPatientAdapter.getIsCheckStatus().size();i++){
+                    booleanListCheckHold.add(preparationForPatientAdapter.getIsCheckHold().get(i).toString());
+                    listStatusHold.add(preparationForPatientAdapter.getStrStatusHold().get(i).toString());
+                    booleanListcheck.add(preparationForPatientAdapter.getIsCheckStatus().get(i).toString());
+                    listvalueCheckNoteRadio.add(preparationForPatientAdapter.getValueCheckNoteRadio().get(i).toString());
+                    listStatus.add(preparationForPatientAdapter.getStrStatus().get(i).toString());
+                    Log.d("check","booleanListcheck        : "+booleanListcheck.get(i));
+                    Log.d("check","booleanListCheckHold    : "+booleanListCheckHold.get(i));
+                    Log.d("check","listStatusHold          : "+listStatusHold.get(i));
+                    Log.d("check","listvalueCheckNoteRadio : "+ listvalueCheckNoteRadio.get(i));
+                    Log.d("check","listStatus              : "+ listStatus.get(i));
                 }
 
                 dbHelper = new SQLiteManager(getContext());

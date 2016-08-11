@@ -26,9 +26,10 @@
         <activity android:name=".activity.SelectWardActivity" />
         <activity android:name=".activity.MainSelectMenuActivity" />
         <activity android:name=".activity.TimelineActivity" />
-        <activity android:name=".activity.PreparationActivity"></activity>
-        <activity android:name=".activity.PreparationForPatientActivity"></activity>
-        <activity android:name=".activity.DoubleCheckActivity"></activity>
+        <activity android:name=".activity.PreparationActivity" />
+        <activity android:name=".activity.PreparationForPatientActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.DoubleCheckActivity" />
     </application>
 
 </manifest>

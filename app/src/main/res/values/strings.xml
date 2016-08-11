@@ -4,4 +4,10 @@
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
 
+    <string-array name="select_arrays">
+        <item>ทั้งหมด</item>
+        <item>กิน</item>
+        <item>ฉีด</item>
+        <item>อื่นๆ</item>
+    </string-array>
 </resources>

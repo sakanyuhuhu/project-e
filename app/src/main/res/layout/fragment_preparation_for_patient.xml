@@ -35,6 +35,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_weight="1"
+                android:text="เพิ่มความช่วยเหลือ"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"/>
+            <TextView
+                android:layout_weight="1"
+                android:text=" | "
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"/>
+            <ImageView
+                android:layout_weight="1"
+                android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"/>
+            </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,7 +78,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="160dp"
+            android:layout_height="150dp"
             android:layout_weight="10">
             <TextView
                 android:id="@+id/tvBedNo"
@@ -134,7 +163,7 @@
                     android:layout_weight="1"
                     android:text=""
                     android:layout_width="200dp"
-                    android:layout_height="20dp" />
+                    android:layout_height="22dp" />
                 <TextView
                     android:id="@+id/tvStatus"
                     android:gravity="center_vertical"
@@ -142,7 +171,7 @@
                     android:text="สถานะภาพ:โสด"
                     android:textSize="16sp"
                     android:layout_width="wrap_content"
-                    android:layout_height="20dp" />
+                    android:layout_height="22dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -161,15 +190,22 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:background="@color/colorPrimary">
         <TextView
             android:layout_weight="1"
             android:id="@+id/tvDate"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:gravity="center_vertical"
             android:text="Date time"
+            android:textColor="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_weight="2"
+            android:entries="@array/select_arrays"
             android:textColor="#ffffff"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -179,26 +215,26 @@
         android:layout_weight="100"
         android:textSize="50sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
         <Button
             android:id="@+id/btnCancel"
             android:text="ยกเลิก"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:background="#f46e6e" />
+            android:layout_height="50dp"
+            android:background="@color/background_floating_material_dark" />
         <Button
             android:id="@+id/btnSave"
             android:text="บันทึก"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:background="#4cbf6d" />
+            android:layout_height="50dp"
+            android:background="@color/accent_material_light" />
     </LinearLayout>
 
 </LinearLayout>

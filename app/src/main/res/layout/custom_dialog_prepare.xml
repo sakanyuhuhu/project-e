@@ -9,8 +9,8 @@
         android:orientation="vertical">
         <TextView
             android:id="@+id/tvDrugName"
-            android:text="Drug Name"
-            android:gravity="center"
+            android:text=" Drug Name"
+            android:gravity="center_vertical"
             android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
@@ -25,10 +25,12 @@
                 android:layout_height="match_parent" />
             <EditText
                 android:id="@+id/txtStatusHold"
+                android:clickable="true"
                 android:gravity="center_vertical"
                 android:textSize="20sp"
                 android:layout_width="200dp"
                 android:layout_height="match_parent" />
+            <!--android:focusableInTouchMode="true"-->
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,6 +42,7 @@
                 android:layout_height="wrap_content">
                 <RadioButton
                     android:id="@+id/rdb1"
+                    android:checked="true"
                     android:text="ไม่ระบุสาเหตุตามหัวข้อข้างล่าง"
                     android:layout_width="220dp"
                     android:layout_height="match_parent" />

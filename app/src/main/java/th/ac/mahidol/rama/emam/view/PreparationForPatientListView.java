@@ -17,7 +17,7 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
 
     private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
     private CheckBox chkCheckMed;
-    private ImageView ivNote;
+    private ImageView imgvNote;
 
     public PreparationForPatientListView(Context context) {
         super(context);
@@ -60,7 +60,7 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         tvSite = (TextView) findViewById(R.id.tvSite);
         chkCheckMed = (CheckBox) findViewById(R.id.chkCheckMed);
-        ivNote = (ImageView) findViewById(R.id.ivNote);
+        imgvNote = (ImageView) findViewById(R.id.imgvNote);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -108,9 +108,8 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         return (CheckBox)findViewById(R.id.chkCheckMed);
     }
 
-
     public ImageView imageViewNote(){
-        return (ImageView) findViewById(R.id.ivNote);
+        return (ImageView) findViewById(R.id.imgvNote);
     }
 
 }
