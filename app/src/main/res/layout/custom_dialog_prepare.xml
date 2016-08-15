@@ -78,29 +78,13 @@
             android:layout_height="20dp">
         </LinearLayout>
         <LinearLayout
-            android:layout_width="500dp"
+            android:layout_width="400dp"
             android:layout_height="300dp">
-            <!--<EditText-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="200dp"-->
-                <!--android:inputType="textMultiLine"-->
-                <!--android:ems="10"-->
-                <!--android:id="@+id/txtStatus"-->
-                <!--android:enabled="true"-->
-                <!--android:minLines="6"-->
-                <!--android:maxLines="6"-->
-                <!--android:isScrollContainer="true"-->
-                <!--android:background="@color/colorWhite"-->
-                <!--android:textIsSelectable="true"-->
-                <!--android:focusable="true"-->
-                <!--android:gravity="top"-->
-                <!--android:padding="24dp"-->
-                <!--style="@style/Base.TextAppearance.AppCompat.Large" />-->
                 <EditText
                     android:background="@color/colorWhite"
                     android:id="@+id/txtStatus"
                     android:inputType="textMultiLine"
-                    android:lines="3"
+                    android:lines="5"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:scrollbars="vertical"/>

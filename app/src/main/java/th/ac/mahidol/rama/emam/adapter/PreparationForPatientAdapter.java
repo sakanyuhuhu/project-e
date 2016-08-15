@@ -4,7 +4,6 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,8 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.view.PreparationForPatientListView;
 
 public class PreparationForPatientAdapter extends BaseAdapter {
-    private List<String> strDrugName, strDosage, unit, type, route, strFrequency, adminTime, site, strNoteRadio, strStatusHold, strStatus;
+    private List<String> strDrugName, strDosage, strUnit, strType, strRoute, strFrequency, strAdminTime, strSite, strNoteRadio, strStatusHold, strStatus;
+    private List<String> drugName, dosage, unit, route;
     private List<Boolean> isCheck, isCheckHold;
     private List<Integer> isCheckNoteRadio;
     private Context context;
@@ -34,15 +34,15 @@ public class PreparationForPatientAdapter extends BaseAdapter {
     private CheckBox chkHold;
     private TextView tvDrugName;
 
-    public PreparationForPatientAdapter(Context context,List<String> listDrugName, List<String> listDosage, List<String> type, List<String> route, List<String> listFrequency, List<String> unit, List<String> adminTime, List<String> site) {
+    public PreparationForPatientAdapter(Context context,List<String> listDrugName, List<String> listDosage, List<String> listType, List<String> listRoute, List<String> listFrequency, List<String> listUnit, List<String> listAdminTime, List<String> listSite) {
         this.strDrugName = listDrugName;
         this.strDosage = listDosage;
-        this.unit = unit;
-        this.type = type;
-        this.route = route;
+        this.strUnit = listUnit;
+        this.strType = listType;
+        this.strRoute = listRoute;
         this.strFrequency = listFrequency;
-        this.adminTime = adminTime;
-        this.site = site;
+        this.strAdminTime = listAdminTime;
+        this.strSite = listSite;
         this.context = context;
 
         isCheck = new ArrayList<Boolean>();
@@ -51,14 +51,25 @@ public class PreparationForPatientAdapter extends BaseAdapter {
         strStatus = new ArrayList<String>();
         strNoteRadio = new ArrayList<String>();
         isCheckNoteRadio = new ArrayList<Integer>();
+//15-08-16
+        drugName = new ArrayList<String>();
+        dosage = new ArrayList<String>();
+        unit = new ArrayList<String>();
+        route = new ArrayList<String>();
+
 
         for (int i=0;i<strDrugName.size();i++){
             isCheckHold.add(i, false);
             isCheck.add(i, false);
-            isCheckNoteRadio.add(i, 0);//2131492952 เป็น id แรกของ RadioButton 2131558488
+            isCheckNoteRadio.add(i, 0);
             strNoteRadio.add(i, "ไม่ระบุสาเหตุตามหัวข้อข้างล่าง");
             strStatusHold.add(i, "");
             strStatus.add(i, "");
+//15-08-16
+            drugName.add(i, "");
+            dosage.add(i, "");
+            unit.add(i, "");
+            route.add(i, "");
         }
     }
 
@@ -97,11 +108,30 @@ public class PreparationForPatientAdapter extends BaseAdapter {
         return isCheckHold;
     }
 
+    public List getDrugName(){
+        return drugName;
+    }
+    public List getDosage(){
+        return dosage;
+    }
+    public List getUnit(){
+        return unit;
+    }
+    public List getRoute(){
+        return route;
+    }
+
     @Override
     public View getView(final int position, final View convertView, ViewGroup viewGroup) {
         final PreparationForPatientListView preparationForPatientListView = new PreparationForPatientListView(viewGroup.getContext());
-        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), type.get(position), route.get(position),
-                strFrequency.get(position), unit.get(position), adminTime.get(position), site.get(position));
+        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), strType.get(position), strRoute.get(position),
+                strFrequency.get(position), strUnit.get(position), strAdminTime.get(position), strSite.get(position));
+//15-08-16
+        drugName.add(position, strDrugName.get(position));
+        dosage.add(position, strDosage.get(position));
+        unit.add(position, strUnit.get(position));
+        route.add(position, strRoute.get(position));
+
         preparationForPatientListView.setCheck(isCheck.get(position));
         final CheckBox checkBox =  preparationForPatientListView.isCheck();
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -121,7 +151,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                 dialogView.setBackgroundResource(R.color.colorPeachPuff);
 
                 tvDrugName = (TextView)dialogView.findViewById(R.id.tvDrugName);
-                tvDrugName.setText(" "+strDrugName.get(position)+" "+strDosage.get(position)+" "+unit.get(position));
+                tvDrugName.setText(" "+strDrugName.get(position)+" "+strDosage.get(position)+" "+strUnit.get(position));
                 chkHold = (CheckBox)dialogView.findViewById(R.id.chkHold);
                 txtStatusHold = (EditText)dialogView.findViewById(R.id.txtStatusHold);
                 radioGroup = (RadioGroup)dialogView.findViewById(R.id.radiogroup);
@@ -131,8 +161,11 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                     isCheckNoteRadio.set(position, R.id.rdb1);
                     chkHold.setChecked(false);
                     isCheckHold.set(position, false);
-                    strStatus.add(position, "");
+                    txtStatus.setText("");
+                    strStatus.add(position, String.valueOf(txtStatus.getText()));
+//                    Log.d("check", "str = "+strStatus.get(position));
                 }
+
                 if(isCheckNoteRadio.get(position) == 0)
                     isCheckNoteRadio.add(position, radioGroup.getId()+1);
 
@@ -143,22 +176,26 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                     isCheck.set(position, false);
                     chkHold.setChecked(true);
                     txtStatusHold.setText(strStatusHold.get(position));
+                    txtStatus.setText(strStatus.get(position));
+//                    Log.d("check", "CheckHold txtStatus = "+txtStatus.getText());
                 }
-//ส่วนของ status ซึ่งยัง handle ไม่ได้
+
                 if(!(strStatus.get(position).equals(""))){
                     txtStatus.setText(strStatus.get(position));
                     isCheck.set(position, false);
+//                    Log.d("check", "txt = "+txtStatus.getText());
                 }
 
                 builder.setView(dialogView);
                 builder.setTitle("บันทึกข้อความสำหรับเตรียมยา");
                 builder.setPositiveButton("บันทึก", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int iBuilder) {
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         notifyDataSetChanged();
                         int selectedId = radioGroup.getCheckedRadioButtonId();
                         radioButton = (RadioButton)dialogView.findViewById(selectedId);
                         strStatus.add(position, String.valueOf(txtStatus.getText()));
+//                        Log.d("check", "strStatus = "+strStatus.get(position));
                         if(radioButton.isChecked()){
                             if(radioButton.getId() == R.id.rdb1 && strStatus.get(position).equals("")){
                                 isCheckNoteRadio.set(position, radioButton.getId());
@@ -206,19 +243,6 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                                 }
                             }
                         }
-
-//                        AlertDialog.Builder builderSave = new AlertDialog.Builder(context);
-//                        builderSave.setTitle("คุณตองการจะบันทึกใช่หรือไม่?");
-//                        builderSave.setPositiveButton("ใช่",new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int iBuilderSave) {
-//
-//                            }
-//                        });
-//                        builderSave.setNegativeButton("ไม่ใช่", null);
-//                        builderSave.create();
-//                        builderSave.show();
-
                     }
                 });
                 builder.setNegativeButton("ยกเลิก",null);

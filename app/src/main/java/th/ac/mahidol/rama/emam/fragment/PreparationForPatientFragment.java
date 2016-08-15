@@ -73,11 +73,10 @@ public class PreparationForPatientFragment extends Fragment {
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
-
     }
 
     private void init(Bundle savedInstanceState) {
-        booleanListcheck = new ArrayList<String>();
+//        booleanListcheck = new ArrayList<String>();
     }
 
     @Override
@@ -165,7 +164,7 @@ public class PreparationForPatientFragment extends Fragment {
             }
         });
         tvTimer.setText(gettimer);
-        tvDrugAllergy.setText("  การแพ้ยา: ");
+        tvDrugAllergy.setText("   การแพ้ยา: ");
 
         Call<ListMedicalCardCollectionDao> callDrug = HttpManager.getInstance().getService().loadListMedicalCard(mRN);
         callDrug.enqueue(new Callback<ListMedicalCardCollectionDao>() {
@@ -278,7 +277,7 @@ public class PreparationForPatientFragment extends Fragment {
                             siteOther.add(site.get(i));
                         }
                     }
-                    tvDate.setText(dateToday + " (จำนวนยา " + listDrugName.size() + ")");
+                    tvDate.setText("  " + dateToday + " (จำนวนยา " + listDrugName.size() + ")");
                     ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                     preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName, listDosage, type, route, listFrequency, unit, adminTime, site);
                     listView.setAdapter(preparationForPatientAdapter);
@@ -288,29 +287,28 @@ public class PreparationForPatientFragment extends Fragment {
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                             String selectedItem = parent.getItemAtPosition(position).toString();
                             if(selectedItem.equals("ทั้งหมด")) {
-                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugName.size() + ")");
+                                tvDate.setText("  " + dateToday + " (จำนวนยา " + listDrugName.size() + ")");
                                 ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                                 preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName, listDosage, type, route, listFrequency, unit, adminTime, site);
                                 listView.setAdapter(preparationForPatientAdapter);
                             }
                             else if(selectedItem.equals("กิน")) {
-                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugNamePO.size() + ")");
+                                tvDate.setText("  " + dateToday + " (จำนวนยา " + listDrugNamePO.size() + ")");
                                 ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                                 preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugNamePO, listDosagePO, typePO, routePO, listFrequencyPO, unitPO, adminTimePO, sitePO);
                                 listView.setAdapter(preparationForPatientAdapter);
                             }
                             else if(selectedItem.equals("ฉีด")) {
-                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugNameIV.size() + ")");
+                                tvDate.setText("  " + dateToday + " (จำนวนยา " + listDrugNameIV.size() + ")");
                                 ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                                 preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugNameIV, listDosageIV, typeIV, routeIV, listFrequencyIV, unitIV, adminTimeIV, siteIV);
                                 listView.setAdapter(preparationForPatientAdapter);
                             }
                             else{
-                                tvDate.setText(dateToday + " (จำนวนยา " + listDrugNameOther.size() + ")");
+                                tvDate.setText("  " + dateToday + " (จำนวนยา " + listDrugNameOther.size() + ")");
                                 ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                                 preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugNameOther, listDosageOther, typeOther, routeOther, listFrequencyOther, unitOther, adminTimeOther, siteOther);
                                 listView.setAdapter(preparationForPatientAdapter);
-
                             }
                         }
 
@@ -370,7 +368,6 @@ public class PreparationForPatientFragment extends Fragment {
                             route2IV.add(route.get(i));
                             adminTime2IV.add(adminTime.get(i));
                             site2IV.add(site.get(i));
-
                         }
                         else {
                             listDrugName2Other.add(listDrugName.get(i));
@@ -415,7 +412,6 @@ public class PreparationForPatientFragment extends Fragment {
                                 ListView listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
                                 preparationForPatientAdapter = new PreparationForPatientAdapter(getContext(),listDrugName2Other, listDosage2Other, type2Other, route2Other, listFrequency2Other, unit2Other, adminTime2Other, site2Other);
                                 listView.setAdapter(preparationForPatientAdapter);
-
                             }
                         }
 
@@ -444,10 +440,16 @@ public class PreparationForPatientFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 List<String> booleanListCheckHold = new ArrayList<String>();
-                List<String> booleanListcheck = new ArrayList<String>();//ย้ายไป new ใน init แล้ว ได้ค่ากลับมาเป็น false ทั้งหมดเลย
+                List<String> booleanListcheck = new ArrayList<String>();//ถ้าย้ายไป new ใน init แล้ว ได้ค่ากลับมาเป็น false ทั้งหมดเลย
                 List<String> listvalueCheckNoteRadio = new ArrayList<String>();
                 List<String> listStatusHold = new ArrayList<String>();
                 List<String> listStatus = new ArrayList<String>();
+//15-08-16
+                List<String> listdrugName = new ArrayList<String>();
+                List<String> listdosage = new ArrayList<String>();
+                List<String> listunit = new ArrayList<String>();
+                List<String> listroute = new ArrayList<String>();
+
                 for(int i=0; i<preparationForPatientAdapter.getIsCheckStatus().size();i++){
                     booleanListCheckHold.add(preparationForPatientAdapter.getIsCheckHold().get(i).toString());
                     listStatusHold.add(preparationForPatientAdapter.getStrStatusHold().get(i).toString());
@@ -459,6 +461,16 @@ public class PreparationForPatientFragment extends Fragment {
                     Log.d("check","listStatusHold          : "+listStatusHold.get(i));
                     Log.d("check","listvalueCheckNoteRadio : "+ listvalueCheckNoteRadio.get(i));
                     Log.d("check","listStatus              : "+ listStatus.get(i));
+//15-08-16
+                    listdrugName.add(preparationForPatientAdapter.getDrugName().get(i).toString());
+                    listdosage.add(preparationForPatientAdapter.getDosage().get(i).toString());
+                    listunit.add(preparationForPatientAdapter.getUnit().get(i).toString());
+                    listroute.add(preparationForPatientAdapter.getRoute().get(i).toString());
+                    Log.d("check","listdrugName : "+listdrugName.get(i));
+                    Log.d("check","listdosage   : "+listdosage.get(i));
+                    Log.d("check","listunit     : "+listunit.get(i));
+                    Log.d("check","listroute    : "+ listroute.get(i));
+                    Log.d("check","gettimer     : "+gettimer);
                 }
 
                 dbHelper = new SQLiteManager(getContext());
