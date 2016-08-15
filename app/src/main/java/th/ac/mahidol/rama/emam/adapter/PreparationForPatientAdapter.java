@@ -100,8 +100,8 @@ public class PreparationForPatientAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, final View convertView, ViewGroup viewGroup) {
         final PreparationForPatientListView preparationForPatientListView = new PreparationForPatientListView(viewGroup.getContext());
-        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), type.get(position), route.get(position), strFrequency.get(position), unit.get(position), adminTime.get(position), site.get(position));
-//            Log.d("check", position+ " / strDrugName  : " + strDrugName.get(position) + "strDosage    : " + strDosage.get(position) + " type         : " + type.get(position) + " route        : " + route.get(position) + " strFrequency : " + strFrequency.get(position) + " unit         : " + unit.get(position));
+        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), type.get(position), route.get(position),
+                strFrequency.get(position), unit.get(position), adminTime.get(position), site.get(position));
         preparationForPatientListView.setCheck(isCheck.get(position));
         final CheckBox checkBox =  preparationForPatientListView.isCheck();
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -129,9 +129,9 @@ public class PreparationForPatientAdapter extends BaseAdapter {
 
                 if(isCheck.get(position) == true ){
                     isCheckNoteRadio.set(position, R.id.rdb1);
-                    Log.d("check", "isCheckNoteRadio = "+R.id.rdb1);
                     chkHold.setChecked(false);
                     isCheckHold.set(position, false);
+                    strStatus.add(position, "");
                 }
                 if(isCheckNoteRadio.get(position) == 0)
                     isCheckNoteRadio.add(position, radioGroup.getId()+1);
@@ -143,17 +143,11 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                     isCheck.set(position, false);
                     chkHold.setChecked(true);
                     txtStatusHold.setText(strStatusHold.get(position));
-                    Log.d("check", "txtStatusHold = "+txtStatusHold.getText());
                 }
 //ส่วนของ status ซึ่งยัง handle ไม่ได้
-                if(!(txtStatus.getText().equals(""))){
-                    Log.d("check", "txtStatus = "+txtStatus.getText());
-                    strStatus.set(position, String.valueOf(txtStatus.getText()));
+                if(!(strStatus.get(position).equals(""))){
                     txtStatus.setText(strStatus.get(position));
-                    Log.d("check", "if strStatus = "+strStatus.get(position));
-                }
-                else {
-                    Log.d("check", "else txtStatus = "+txtStatus.getText());
+                    isCheck.set(position, false);
                 }
 
                 builder.setView(dialogView);
@@ -164,8 +158,9 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                         notifyDataSetChanged();
                         int selectedId = radioGroup.getCheckedRadioButtonId();
                         radioButton = (RadioButton)dialogView.findViewById(selectedId);
+                        strStatus.add(position, String.valueOf(txtStatus.getText()));
                         if(radioButton.isChecked()){
-                            if(radioButton.getId() == R.id.rdb1){
+                            if(radioButton.getId() == R.id.rdb1 && strStatus.get(position).equals("")){
                                 isCheckNoteRadio.set(position, radioButton.getId());
                                 isCheck.set(position, true);
                                 preparationForPatientListView.setCheck(true);
@@ -175,50 +170,40 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                                     isCheck.set(position, false);
                                     isCheckHold.set(position, true);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
-                                }
-                                else{
+                                } else {
                                     isCheckHold.set(position, false);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
                                 }
-//
-//                                if(strStatus.get(position).equals("")) {
-//                                    isCheck.set(position, false);
-//                                    preparationForPatientListView.setCheck(false);
-//                                    strStatus.set(position, String.valueOf(txtStatus.getText()));
-//                                }
-//                                else{
-//                                    isCheck.set(position, true);
-//                                    preparationForPatientListView.setCheck(true);
-//                                    strStatus.set(position, String.valueOf(txtStatus.getText()));
-//                                }
                             }
-                            else{
+                            else if(radioButton.getId() == R.id.rdb1 && !(strStatus.get(position).equals(""))){
+                                isCheckNoteRadio.set(position, radioButton.getId());
+                                isCheck.set(position, false);
+                                preparationForPatientListView.setCheck(false);
+                                strNoteRadio.set(position, String.valueOf(radioButton.getText()));
+
+                                if(chkHold.isChecked() == true){
+                                    isCheck.set(position, false);
+                                    isCheckHold.set(position, true);
+                                    strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
+                                } else {
+                                    isCheckHold.set(position, false);
+                                    strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
+                                }
+                            }
+                            else {
                                 isCheckNoteRadio.set(position, radioButton.getId());
                                 isCheck.set(position, false);
                                 preparationForPatientListView.setCheck(false);
                                 strNoteRadio.set(position, String.valueOf(radioButton.getText()));
                                 strStatus.set(position, String.valueOf(txtStatus.getText()));
-//                                Log.d("check", "2 strStatus = "+strStatus.get(position));
 
                                 if(chkHold.isChecked() == true){
                                     isCheckHold.set(position, true);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
-                                }
-                                else{
+                                } else {
                                     isCheckHold.set(position, false);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
                                 }
-//
-//                                if(strStatus.get(position).equals("")) {
-//                                    isCheck.set(position, false);
-//                                    preparationForPatientListView.setCheck(false);
-//                                    strStatus.set(position, String.valueOf(txtStatus.getText()));
-//                                }
-//                                else{
-//                                    isCheck.set(position, true);
-//                                    preparationForPatientListView.setCheck(true);
-//                                    strStatus.set(position, String.valueOf(txtStatus.getText()));
-//                                }
                             }
                         }
 
