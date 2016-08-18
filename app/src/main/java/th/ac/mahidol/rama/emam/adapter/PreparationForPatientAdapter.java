@@ -4,6 +4,7 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
     private List<String> strDrugName, strDosage, strUnit, strType, strRoute, strFrequency, strAdminTime, strSite, strNoteRadio, strStatusHold, strStatus;
     private List<String> drugName, dosage, unit, route;
     private List<Boolean> isCheck, isCheckHold;
-    private List<Integer> isCheckNoteRadio;
+    private List<Integer> isCheckNoteRadio, noteTricker;
     private Context context;
     private EditText txtStatus, txtStatusHold;
     private RadioGroup radioGroup;
@@ -51,6 +52,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
         strStatus = new ArrayList<String>();
         strNoteRadio = new ArrayList<String>();
         isCheckNoteRadio = new ArrayList<Integer>();
+        noteTricker = new ArrayList<Integer>();
 //15-08-16
         drugName = new ArrayList<String>();
         dosage = new ArrayList<String>();
@@ -65,6 +67,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
             strNoteRadio.add(i, "ไม่ระบุสาเหตุตามหัวข้อข้างล่าง");
             strStatusHold.add(i, "");
             strStatus.add(i, "");
+            noteTricker.add(i, 0);
 //15-08-16
             drugName.add(i, "");
             dosage.add(i, "");
@@ -111,14 +114,21 @@ public class PreparationForPatientAdapter extends BaseAdapter {
     public List getDrugName(){
         return drugName;
     }
+
     public List getDosage(){
         return dosage;
     }
+
     public List getUnit(){
         return unit;
     }
+
     public List getRoute(){
         return route;
+    }
+
+    public List getNoteTricker(){
+        return noteTricker;
     }
 
     @Override
@@ -138,6 +148,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isCheck.set(position,checkBox.isChecked());
+                noteTricker.set(position, 0);
             }
         });
 
@@ -161,9 +172,10 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                     isCheckNoteRadio.set(position, R.id.rdb1);
                     chkHold.setChecked(false);
                     isCheckHold.set(position, false);
+                    noteTricker.set(position, 0);
                     txtStatus.setText("");
                     strStatus.add(position, String.valueOf(txtStatus.getText()));
-//                    Log.d("check", "str = "+strStatus.get(position));
+                    Log.d("check", "str = "+txtStatus.getText());
                 }
 
                 if(isCheckNoteRadio.get(position) == 0)
@@ -177,13 +189,13 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                     chkHold.setChecked(true);
                     txtStatusHold.setText(strStatusHold.get(position));
                     txtStatus.setText(strStatus.get(position));
-//                    Log.d("check", "CheckHold txtStatus = "+txtStatus.getText());
+                    Log.d("check", "CheckHold txtStatus = "+txtStatus.getText());
                 }
 
                 if(!(strStatus.get(position).equals(""))){
                     txtStatus.setText(strStatus.get(position));
                     isCheck.set(position, false);
-//                    Log.d("check", "txt = "+txtStatus.getText());
+                    Log.d("check", "txt = "+txtStatus.getText());
                 }
 
                 builder.setView(dialogView);
@@ -195,21 +207,24 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                         int selectedId = radioGroup.getCheckedRadioButtonId();
                         radioButton = (RadioButton)dialogView.findViewById(selectedId);
                         strStatus.add(position, String.valueOf(txtStatus.getText()));
-//                        Log.d("check", "strStatus = "+strStatus.get(position));
+                        Log.d("check", "strStatus = "+strStatus.get(position));
                         if(radioButton.isChecked()){
                             if(radioButton.getId() == R.id.rdb1 && strStatus.get(position).equals("")){
                                 isCheckNoteRadio.set(position, radioButton.getId());
                                 isCheck.set(position, true);
                                 preparationForPatientListView.setCheck(true);
                                 strNoteRadio.set(position, String.valueOf(radioButton.getText()));
+                                noteTricker.set(position, 0);
 
                                 if(chkHold.isChecked() == true){
                                     isCheck.set(position, false);
                                     isCheckHold.set(position, true);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
+                                    noteTricker.set(position, 1);
                                 } else {
                                     isCheckHold.set(position, false);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
+                                    noteTricker.set(position, 0);
                                 }
                             }
                             else if(radioButton.getId() == R.id.rdb1 && !(strStatus.get(position).equals(""))){
@@ -217,6 +232,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                                 isCheck.set(position, false);
                                 preparationForPatientListView.setCheck(false);
                                 strNoteRadio.set(position, String.valueOf(radioButton.getText()));
+                                noteTricker.set(position, 1);
 
                                 if(chkHold.isChecked() == true){
                                     isCheck.set(position, false);
@@ -233,8 +249,10 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                                 preparationForPatientListView.setCheck(false);
                                 strNoteRadio.set(position, String.valueOf(radioButton.getText()));
                                 strStatus.set(position, String.valueOf(txtStatus.getText()));
+                                noteTricker.set(position, 1);
 
                                 if(chkHold.isChecked() == true){
+                                    isCheck.set(position, false);
                                     isCheckHold.set(position, true);
                                     strStatusHold.set(position, String.valueOf(txtStatusHold.getText()));
                                 } else {

@@ -2,9 +2,16 @@ package th.ac.mahidol.rama.emam.manager.http;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.dao.checkpersonward.CheckPersonWardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.listmedicalcard.ListMedicalCardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.listpatientinfo.ListPatientInfoCollectionDao;
@@ -37,5 +44,15 @@ public interface ApiService {
 
     @POST("list_patient_info_post")
     Call<ListPatientInfoCollectionDao> loadListPatientInfoPost2(@Body MRNListBean2 mrn);
+
+    @FormUrlEncoded
+    @POST("EmamTimelineService")
+    Call<TimelineDao> getTimeline(@Field("sdlocId") String sdlocId);
+
+    @POST("EmamPatientData")
+    Call<ListPatientDataDao> getPatientData(@Body MrnTimelineDao mrn);
+
+    @POST("EmamPatientDrugService")
+    Call<ListDrugCardDao> getDrugData(@Body DrugCardDao drugCardDao);
 
 }

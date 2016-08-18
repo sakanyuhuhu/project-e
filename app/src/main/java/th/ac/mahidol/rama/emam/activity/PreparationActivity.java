@@ -4,28 +4,29 @@ package th.ac.mahidol.rama.emam.activity;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.fragment.PreparationFragment;
+import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 
 public class PreparationActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String gettimer, sdlocId, nfcUId, nfcTagId;
-    private int numPatient, position;
+    private String sdlocID, nfcUID, nfcTagId, time;
+    private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preparation);
-        gettimer = getIntent().getExtras().getString("timer");
-        numPatient = getIntent().getExtras().getInt("numPatient");
-        nfcUId = getIntent().getExtras().getString("nfcUId");
-        sdlocId = getIntent().getExtras().getString("sdlocId");
+        nfcUID = getIntent().getExtras().getString("nfcUId");
+        sdlocID = getIntent().getExtras().getString("sdlocId");
         position = getIntent().getExtras().getInt("position");
+        time = getIntent().getExtras().getString("time");
+        Log.d("check", "nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /position = "+position+" /time = "+time);
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, PreparationFragment.newInstance(gettimer, numPatient, nfcUId, sdlocId, position)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, position, time)).commit();
         }
 
 //        mNfcAdapter = NfcAdapter.getDefaultAdapter(PreparationActivity.this);

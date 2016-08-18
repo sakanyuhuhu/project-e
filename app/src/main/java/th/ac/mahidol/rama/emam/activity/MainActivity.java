@@ -132,10 +132,10 @@ public class MainActivity extends AppCompatActivity {
 //        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
 //
 //    }
-
-    private void disableForegroundDispatchSystem(){
-        mNfcAdapter.disableForegroundDispatch(this);
-    }
+//
+//    private void disableForegroundDispatchSystem(){
+//        mNfcAdapter.disableForegroundDispatch(this);
+//    }
 
     public class getPatientByWard extends AsyncTask<Void, Void, List<PatientDao>> {
 

@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.fragment.TimelineFragment;
+import th.ac.mahidol.rama.emam.fragment.BuildTimelineFragment;
 
 public class TimelineActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -27,7 +27,7 @@ public class TimelineActivity extends AppCompatActivity {
 //        initInstance();
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, TimelineFragment.newInstance(nfcUId,sdlocId)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildTimelineFragment.newInstance(nfcUId,sdlocId)).commit();
         }
 
     }

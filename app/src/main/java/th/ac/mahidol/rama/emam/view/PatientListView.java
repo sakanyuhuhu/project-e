@@ -90,7 +90,7 @@ public class PatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setPatient(String textPatient, String textBedNo, String textMrn){
+    public void setPatient(String textBedNo, String textPatient, String textMrn){
         tvPatient.setText(textPatient);
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
         tvMrn.setText("HN: " + textMrn);

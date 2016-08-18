@@ -159,7 +159,7 @@ public class PreparationFragment extends Fragment {
                             listMrn[i] = listPatientInfoCollectionDao.getListPatientInfoBean().get(i).getMRN();
                             list.add(listBedNo[i] + "," + listPatient[i] + "," + listMrn[i]);
                         }
-
+//  sort ตามเลขที่เตียงเรียงจากน้อยไปมาก
                         Collections.sort(list);
                         for (int i = 0; i < list.size(); i++) {
                             String sum = list.get(i);
@@ -371,7 +371,7 @@ public class PreparationFragment extends Fragment {
         }
 
 
-        tvTimer = (TextView) rootView.findViewById(R.id.tvTimer);
+        tvTimer = (TextView) rootView.findViewById(R.id.tvTime);
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
