@@ -24,7 +24,7 @@ public class PreparationActivity extends AppCompatActivity {
         sdlocID = getIntent().getExtras().getString("sdlocId");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /position = "+position+" /time = "+time);
+        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /position = "+position+" /time = "+time);
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, position, time)).commit();
         }

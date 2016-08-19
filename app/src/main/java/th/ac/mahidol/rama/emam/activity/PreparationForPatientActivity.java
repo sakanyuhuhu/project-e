@@ -9,7 +9,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 
 public class PreparationForPatientActivity extends AppCompatActivity {
 
-    private String nfcUID, sdlocID;
+    private String nfcUID, sdlocID, time;
     private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +18,10 @@ public class PreparationForPatientActivity extends AppCompatActivity {
         nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         position = getIntent().getExtras().getInt("position");
-        Log.d("check", "nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /position = " + position);
+        time = getIntent().getExtras().getString("time");
+        Log.d("check", "PreparationForPatientActivity nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /position = " + position+" /time = "+time);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationForPatientFragment.newInstance(nfcUID, sdlocID, position)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationForPatientFragment.newInstance(nfcUID, sdlocID, position, time)).commit();
         }
     }
 

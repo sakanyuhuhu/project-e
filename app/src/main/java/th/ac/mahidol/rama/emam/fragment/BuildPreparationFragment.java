@@ -68,6 +68,7 @@ public class BuildPreparationFragment extends Fragment {
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         position = getArguments().getInt("position");
+        time = getArguments().getString("time");
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvTime.setText(getArguments().getString("time"));
@@ -124,6 +125,7 @@ public class BuildPreparationFragment extends Fragment {
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("position", position);
+                    intent.putExtra("time", time);
                     getActivity().startActivity(intent);
                 }
             });
