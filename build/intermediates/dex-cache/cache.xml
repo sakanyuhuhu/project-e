@@ -1,3 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="C:\Users\mi-\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\converter-gson\2.1.0\aa557d71ead91cbf26e0c316a0f593d168303309\converter-gson-2.1.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="aa557d71ead91cbf26e0c316a0f593d168303309">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\converter-gson-2.1.0_a80066b2e67b6381e554bf1db08dea59d47050c5.jar" />
+    </item>
+    <item
+        jar="C:\Users\mi-\AppData\Local\Android\Sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\support-annotations-23.4.0_f4cbc444a49ecab5b97e4592f227a5f6d1c5397f.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.4.0_b722b7cee9228aeca3dbb322701f7de2e54a3353.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.4.0_8d50201e924dd446ce2da594271c47a320b15db0.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\libs\ksoap2-android-assembly-2.4-jar-with-dependencies.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e8796346a9191a019e936210a2dc50662c57594b">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\ksoap2-android-assembly-2.4-jar-with-dependencies_50bf0cae9dd855d9baebfb0e8bb2af03c7862ea8.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.4.0_c1a92c3c8e2a92cf24f209406bd31fa3214426fb.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\com.android.support-support-vector-drawable-23.4.0_64eb55bca1aca8e27ae07cd7f6dd01dd6a99fdf0.jar" />
+    </item>
+    <item
+        jar="C:\Users\mi-\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp\3.3.0\2b802460eea20f8f2ad9c08c74e0f14718e88aa9\okhttp-3.3.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="2b802460eea20f8f2ad9c08c74e0f14718e88aa9">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\okhttp-3.3.0_b14346ff62a6baa9f9b518dcad3634476b5a1714.jar" />
+    </item>
+    <item
+        jar="C:\Users\mi-\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\retrofit\2.1.0\2de7cd8b95b7021b1d597f049bcb422055119f2c\retrofit-2.1.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\retrofit-2.1.0_51e7ec0bd068e611429f81cdc69f314d0622a727.jar" />
+    </item>
+    <item
+        jar="C:\Users\mi-\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.7\751f548c85fa49f330cecbb1875893f971b33c4e\gson-2.7.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="751f548c85fa49f330cecbb1875893f971b33c4e">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\gson-2.7_baf1ec2dcab990fad479e441464edb310465db07.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\com.android.support-animated-vector-drawable-23.4.0_f50cf27b82a18122ab50b10bf51125f1d3398b2d.jar" />
+    </item>
+    <item
+        jar="D:\AndroidProject\project-e\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\internal_impl-23.4.0_5ab40b715e181c6bcae33b5a947ad66eea7f0e1e.jar" />
+    </item>
+    <item
+        jar="C:\Users\mi-\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.8.0\5ea7af56cc7c567ed9856d99efb30740e9b17ff\okio-1.8.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
+        <dex dex="D:\AndroidProject\project-e\app\build\intermediates\pre-dexed\debug\okio-1.8.0_5fae7d8d597240025b6bf3a6457e1ad4f5ba78fc.jar" />
+    </item>
+
+</items>

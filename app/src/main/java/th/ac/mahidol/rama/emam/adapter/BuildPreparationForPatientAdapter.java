@@ -40,8 +40,9 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, final View convertView, ViewGroup viewGroup) {
         PreparationForPatientListView preparationForPatientListView = new PreparationForPatientListView(viewGroup.getContext());
-//        preparationForPatientListView.setDrugName(strDrugName.get(position), strDosage.get(position), strType.get(position), strRoute.get(position),
-//                strFrequency.get(position), strUnit.get(position), strAdminTime.get(position), strSite.get(position));
+        preparationForPatientListView.setDrugName(dao.getListDrugCardDao().get(position).getTradeName(), dao.getListDrugCardDao().get(position).getDose(), dao.getListDrugCardDao().get(position).getAdminType(),
+                dao.getListDrugCardDao().get(position).getRoute(),dao.getListDrugCardDao().get(position).getFrequency(), dao.getListDrugCardDao().get(position).getUnit(),
+                dao.getListDrugCardDao().get(position).getAdminTime(), dao.getListDrugCardDao().get(position).getSite());
 
         return preparationForPatientListView;
     }

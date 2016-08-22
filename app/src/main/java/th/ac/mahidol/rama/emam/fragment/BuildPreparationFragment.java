@@ -117,6 +117,7 @@ public class BuildPreparationFragment extends Fragment {
             ListPatientDataDao dao = response.body();
             saveCache(dao);
             buildPreparationAdapter.setDao(dao);
+
             listView.setAdapter(buildPreparationAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

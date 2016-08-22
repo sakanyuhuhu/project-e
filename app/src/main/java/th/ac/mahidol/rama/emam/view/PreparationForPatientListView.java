@@ -92,7 +92,7 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         if(textType.equals("C")) {
             tvType.setText(" Type: Continue");
         }else{
-            tvType.setText(" Type: One day dose");
+            tvType.setText(" Type: One day");
         }
         tvRoute.setText(" Route: " + textRoute);
         tvFrequency.setText(" Frequency: " + textFrequency+" ("+textadminTime+")");

@@ -17,8 +17,8 @@ public class DrugCardDao {
     private String adminType;
     private String method;
     private String adminTime;
-    private String status;
     private String pm;
+    private String status;
     private String drugID;
     private String registerDate;
     private String lastVisited;
@@ -59,14 +59,6 @@ public class DrugCardDao {
 
     public void setTradeName(String tradeName) {
         this.tradeName = tradeName;
-    }
-
-    public String getDrugImageUH() {
-        return drugImageUH;
-    }
-
-    public void setDrugImageUH(String drugImageUH) {
-        this.drugImageUH = drugImageUH;
     }
 
     public String getMRN() {
@@ -141,14 +133,6 @@ public class DrugCardDao {
         this.status = status;
     }
 
-    public String getPm() {
-        return pm;
-    }
-
-    public void setPm(String pm) {
-        this.pm = pm;
-    }
-
     public String getDrugID() {
         return drugID;
     }
@@ -219,5 +203,21 @@ public class DrugCardDao {
 
     public void setRegisterDateOnly(String registerDateOnly) {
         this.registerDateOnly = registerDateOnly;
+    }
+
+    public String getDrugImageUH() {
+        return drugImageUH;
+    }
+
+    public void setDrugImageUH(String drugImageUH) {
+        this.drugImageUH = drugImageUH;
+    }
+
+    public String getPm() {
+        return pm;
+    }
+
+    public void setPm(String pm) {
+        this.pm = pm;
     }
 }

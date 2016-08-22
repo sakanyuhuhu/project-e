@@ -8,12 +8,11 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
     private TextView tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
-    private String gender, strAge, stryear;
-    private int yearBirth, age = 0;
 
     public BuildHeaderPatientDataView(Context context) {
         super(context);
@@ -78,15 +77,14 @@ public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
 
     }
 
-    public void setData(String bedID, String patirntName, String idCardNo, String hn,String gender, String dob, String maritalstatus){
-
-        tvBedNo.setText("เลขที่เตียง/ห้อง: " + bedID);
-        tvPatientName.setText(patirntName);
-        tvPatientID.setText(idCardNo);
-        tvHN.setText("HN:" + hn);
-        tvSex.setText("เพศ:"+ gender);
-        tvBirth.setText("วันเกิด:"+ dob);
-//      tvAge.setText("อายุ:"+stryear+"ปี,"+" เดือน,"+" วัน");
-        tvStatus.setText("สถานะภาพ:"+ maritalstatus);
+    public void setData(ListPatientDataDao listPatientDataDao, int position){
+        tvBedNo.setText("เลขที่เตียง/ห้อง: " + listPatientDataDao.getPatientDao().get(position).getBedID());
+        tvPatientName.setText(listPatientDataDao.getPatientDao().get(position).getInitialName()+ listPatientDataDao.getPatientDao().get(position).getFirstName()+" "+listPatientDataDao.getPatientDao().get(position).getLastName());
+        tvPatientID.setText(listPatientDataDao.getPatientDao().get(position).getIdCardNo());
+        tvHN.setText("HN:" + listPatientDataDao.getPatientDao().get(position).getMRN());
+        tvSex.setText("เพศ:"+ listPatientDataDao.getPatientDao().get(position).getGender());
+        tvBirth.setText("วันเกิด:"+ listPatientDataDao.getPatientDao().get(position).getDob());
+        tvAge.setText("อายุ:"+ listPatientDataDao.getPatientDao().get(position).getAge());
+        tvStatus.setText("สถานะภาพ:"+ listPatientDataDao.getPatientDao().get(position).getMaritalstatus());
     }
 }

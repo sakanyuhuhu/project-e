@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListDrugCardDao {
-    @SerializedName("listMedicalCardBean") private List<DrugCardDao> listDrugCardDao = new ArrayList<DrugCardDao>();
+    @SerializedName("drugCard") private List<DrugCardDao> listDrugCardDao = new ArrayList<DrugCardDao>();
 
     public List<DrugCardDao> getListDrugCardDao() {
         return listDrugCardDao;
