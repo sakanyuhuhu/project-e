@@ -28,6 +28,24 @@ public class DrugCardDao {
     @SerializedName("prop_help") private String propHelp;
     private String site;
     private String registerDateOnly;
+    private Boolean isCheckDrug;
+    private Boolean isCheckDrugNote;
+
+    public Boolean getCheckDrug() {
+        return isCheckDrug;
+    }
+
+    public void setCheckDrug(Boolean checkDrug) {
+        isCheckDrug = checkDrug;
+    }
+
+    public Boolean getCheckDrugNote() {
+        return isCheckDrugNote;
+    }
+
+    public void setCheckDrugNote(Boolean checkDrugNote) {
+        isCheckDrugNote = checkDrugNote;
+    }
 
     public int getId() {
         return id;

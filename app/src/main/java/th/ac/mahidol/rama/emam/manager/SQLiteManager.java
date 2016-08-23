@@ -45,6 +45,13 @@ public class SQLiteManager extends SQLiteOpenHelper {
     private static final String HN_ID = "hnid";
     private static final String HN_CARD = "hncard";
 
+//    Drug status check
+    private static final String TABLE_DRUGSTATUS = "drugstatus";
+    private static final String DRUGSTATUS_ID = "drugstatusid";
+    private static final String DRUG_ID = "drugid";
+    private static final String CHECK_DRUG = "checkDrug";
+    private static final String CHECK_DRUG_NOTE = "checkDrugNote";
+
     public SQLiteManager(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -55,6 +62,8 @@ public class SQLiteManager extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PREPAREFORPATIENT + "( " + PREPAREFORPATIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 HN + " TEXT," + ADMINTIMEHOUR + " TEXT," + DRUGNAME + " TEXT," + DOSAGE + " TEXT," + UNIT + " TEXT," +
                 ROUTE + " TEXT);");
+        sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_DRUGSTATUS + "( " + DRUGSTATUS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + DRUG_ID + " INTEGER," +
+                CHECK_DRUG + "boolean," + CHECK_DRUG_NOTE + "boolean);");
 
     }
 
@@ -124,6 +133,37 @@ public class SQLiteManager extends SQLiteOpenHelper {
         values.put(ROUTE, String.valueOf(route));
         db.insert(TABLE_PREPAREFORPATIENT, null, values);
         db.close();
+    }
+
+    public void addStatusCheck(int drugID, boolean checkDrug, boolean checkDrugNote){
+        db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DRUG_ID, drugID);
+        values.put(CHECK_DRUG, checkDrug);
+        values.put(CHECK_DRUG_NOTE, checkDrugNote);
+        db.insert(TABLE_DRUGSTATUS, null, values);
+        db.close();
+    }
+
+    public boolean getStatusCheck(int drugID){
+        boolean checkdrug = false;
+        db = this.getWritableDatabase();
+        String strSQL = "SELECT * FROM " + TABLE_DRUGSTATUS;
+        Cursor cursor = db.rawQuery(strSQL, null);
+
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                do {
+                    if(cursor.getColumnName(1).equals(drugID)){
+                        checkdrug = true;
+                    }
+                }while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return checkdrug;
     }
 
     public String getPrepareForPatient(String mRN){

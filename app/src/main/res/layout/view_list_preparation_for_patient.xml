@@ -78,7 +78,7 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
                 <CheckBox
-                    android:id="@+id/chkCheckMed"
+                    android:id="@+id/chkCheckDrug"
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     android:layout_width="30dp"

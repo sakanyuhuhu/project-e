@@ -10,13 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
 public class PreparationForPatientListView extends BaseCustomViewGroup {
 
     private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
-    private CheckBox chkCheckMed;
+    private CheckBox chkCheckDrug;
     private ImageView imgvNote;
 
     public PreparationForPatientListView(Context context) {
@@ -59,7 +60,7 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         tvRoute = (TextView) findViewById(R.id.tvRoute);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         tvSite = (TextView) findViewById(R.id.tvSite);
-        chkCheckMed = (CheckBox) findViewById(R.id.chkCheckMed);
+        chkCheckDrug = (CheckBox) findViewById(R.id.chkCheckDrug);
         imgvNote = (ImageView) findViewById(R.id.imgvNote);
     }
 
@@ -99,13 +100,26 @@ public class PreparationForPatientListView extends BaseCustomViewGroup {
         tvSite.setText(" Site: " + textSite);
     }
 
+    public void setDrugNameBuild(DrugCardDao dao){
+        tvDrugName.setText(String.valueOf(dao.getTradeName()));
+        tvDosage.setText(" Dosage: " + dao.getDose()+" "+ String.valueOf(dao.getUnit()));
+        if(dao.getAdminType().equals("C")) {
+            tvType.setText(" Type: Continue");
+        }else{
+            tvType.setText(" Type: One day");
+        }
+        tvRoute.setText(" Route: " + dao.getRoute());
+        tvFrequency.setText(" Frequency: " + dao.getFrequency()+" ("+dao.getAdminTime()+")");
+        tvSite.setText(" Site: " + dao.getSite());
+    }
+
     public void setCheck(Boolean check){
-        chkCheckMed.setChecked(check);
+        chkCheckDrug.setChecked(check);
     }
 
     public CheckBox isCheck(){
 
-        return (CheckBox)findViewById(R.id.chkCheckMed);
+        return (CheckBox)findViewById(R.id.chkCheckDrug);
     }
 
     public ImageView imageViewNote(){
