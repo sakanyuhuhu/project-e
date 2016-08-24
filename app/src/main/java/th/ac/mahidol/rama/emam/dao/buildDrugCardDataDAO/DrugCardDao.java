@@ -4,11 +4,11 @@ package th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO;
 import com.google.gson.annotations.SerializedName;
 
 public class DrugCardDao {
-    private int id;
+    private String id;
     private String adminTimeHour;
     private String drugUseDate;
     private String tradeName;
-    private String drugImageUH;
+    private String drugImageUul;
     private String MRN;
     private String dose;
     private String unit;
@@ -17,7 +17,7 @@ public class DrugCardDao {
     private String adminType;
     private String method;
     private String adminTime;
-    private String pm;
+    private String prn;
     private String status;
     private String drugID;
     private String registerDate;
@@ -30,6 +30,16 @@ public class DrugCardDao {
     private String registerDateOnly;
     private Boolean isCheckDrug;
     private Boolean isCheckDrugNote;
+    private String checkType;
+    private String Expr1;
+    private String complete;
+    private String description;
+    private String descriptionTemplate;
+    private String RFID;
+    private String firstName;
+    private String lastName;
+    private String studentName;
+    private String actualAdmin;
 
     public Boolean getCheckDrug() {
         return isCheckDrug;
@@ -47,11 +57,11 @@ public class DrugCardDao {
         isCheckDrugNote = checkDrugNote;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -223,19 +233,99 @@ public class DrugCardDao {
         this.registerDateOnly = registerDateOnly;
     }
 
-    public String getDrugImageUH() {
-        return drugImageUH;
+    public String getDrugImageUul() {
+        return drugImageUul;
     }
 
-    public void setDrugImageUH(String drugImageUH) {
-        this.drugImageUH = drugImageUH;
+    public void setDrugImageUul(String drugImageUul) {
+        this.drugImageUul = drugImageUul;
     }
 
-    public String getPm() {
-        return pm;
+    public String getPrn() {
+        return prn;
     }
 
-    public void setPm(String pm) {
-        this.pm = pm;
+    public void setPrn(String prn) {
+        this.prn = prn;
+    }
+
+    public String getCheckType() {
+        return checkType;
+    }
+
+    public void setCheckType(String checkType) {
+        this.checkType = checkType;
+    }
+
+    public String getExpr1() {
+        return Expr1;
+    }
+
+    public void setExpr1(String expr1) {
+        Expr1 = expr1;
+    }
+
+    public String getComplete() {
+        return complete;
+    }
+
+    public void setComplete(String complete) {
+        this.complete = complete;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescriptionTemplate() {
+        return descriptionTemplate;
+    }
+
+    public void setDescriptionTemplate(String descriptionTemplate) {
+        this.descriptionTemplate = descriptionTemplate;
+    }
+
+    public String getRFID() {
+        return RFID;
+    }
+
+    public void setRFID(String RFID) {
+        this.RFID = RFID;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getActualAdmin() {
+        return actualAdmin;
+    }
+
+    public void setActualAdmin(String actualAdmin) {
+        this.actualAdmin = actualAdmin;
     }
 }

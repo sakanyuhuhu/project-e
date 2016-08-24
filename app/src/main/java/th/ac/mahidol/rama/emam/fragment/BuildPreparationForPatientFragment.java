@@ -31,15 +31,14 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildstatusCheckDAO.ListStatusCheckDao;
-import th.ac.mahidol.rama.emam.dao.buildstatusCheckDAO.StatusCheckDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
-public class BuildPreparationForPatientFragment extends Fragment {
+public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
     private String nfcUID, sdlocID, toDayDate, time;
-    private int position;
+    private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAllergy;
     private Button btnCancel, btnSave;
@@ -59,11 +58,12 @@ public class BuildPreparationForPatientFragment extends Fragment {
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUId, String sdlocId, int position, String time) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUId, String sdlocId, int timeposition, int position, String time) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
         args.putString("sdlocId", sdlocId);
+        args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
         fragment.setArguments(args);
@@ -93,6 +93,7 @@ public class BuildPreparationForPatientFragment extends Fragment {
     private void initInstances(final View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
+        timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
 
@@ -120,17 +121,40 @@ public class BuildPreparationForPatientFragment extends Fragment {
             Log.d("check", "dao size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
 
-            DrugCardDao drugCardDao = new DrugCardDao();
-            drugCardDao.setAdminTimeHour(time);
-            drugCardDao.setDrugUseDate(toDayDate);
-            drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-            Log.d("check", "AdminTimeHour = "+drugCardDao.getAdminTimeHour()+" DrugUseDate = "+drugCardDao.getDrugUseDate()+" MRN = "+drugCardDao.getMRN());
+            if(timeposition <= 23) {
+                DrugCardDao drugCardDao = new DrugCardDao();
+                drugCardDao.setAdminTimeHour(time);
+                drugCardDao.setDrugUseDate(toDayDate);
+                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                drugCardDao.setCheckType("firstcheck");
 
-            loadMedicalData(drugCardDao);
+                String json = new Gson().toJson(drugCardDao);
+                Log.d("check", "loadMedicalData = "+json);
+
+                Log.d("check", "AdminTimeHour = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
+                loadMedicalData(drugCardDao);
+            }
+            else{
+                DrugCardDao drugCardDao = new DrugCardDao();
+                drugCardDao.setAdminTimeHour(time);
+                drugCardDao.setDrugUseDate(toDayDate+1);
+                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                drugCardDao.setCheckType("firstcheck");
+
+                String json = new Gson().toJson(drugCardDao);
+                Log.d("check", "loadMedicalData = "+json);
+                
+                Log.d("check", "AdminTimeHour = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
+                loadMedicalData(drugCardDao);
+            }
         }
 
         getOnClick();
+
+        btnSave.setOnClickListener(this);
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -175,28 +199,28 @@ public class BuildPreparationForPatientFragment extends Fragment {
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                buildDrugCardListManager.updateCache();
-                saveStatusCheckDrug();
-            }
-        });
+
     }
 
     private void saveStatusCheckDrug(){
-        dbHelper = new SQLiteManager(getContext());
-        for(StatusCheckDao d : daoCheck.getStatusCheckDaoList()){
-            dbHelper.addStatusCheck(d.getDrugID(), d.isCheckDrug(), d.isCheckDrugNote());
-        }
+//        dbHelper = new SQLiteManager(getContext());
+//        for(StatusCheckDao d : daoCheck.getStatusCheckDaoList()){
+//            dbHelper.addStatusCheck(d.getDrugID(), d.isCheckDrug(), d.isCheckDrugNote());
+//        }
     }
 
     private void loadMedicalData(DrugCardDao drugCardDao){
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
+
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData2(drugCardDao);
         call.enqueue(new DrugLoadCallback());
     }
 
-
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.btnSave){
+//            buildDrugCardListManager.updateCache();
+        }
+    }
 
 
     class DrugLoadCallback implements Callback<ListDrugCardDao>{

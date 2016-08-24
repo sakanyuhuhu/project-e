@@ -28,7 +28,7 @@ import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment {
     private String sdlocID, nfcUID, time;
-    private int position;
+    private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvPreparation, tvDoublecheck, tvAdministration;
     private BuildPreparationAdapter buildPreparationAdapter;
@@ -67,7 +67,7 @@ public class BuildPreparationFragment extends Fragment {
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
-        position = getArguments().getInt("position");
+        timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
@@ -81,7 +81,7 @@ public class BuildPreparationFragment extends Fragment {
         if(data != null){
             TimelineDao timelineDao = new Gson().fromJson(data,TimelineDao.class);
             MrnTimelineDao mrnTimelineDao = new MrnTimelineDao();
-            mrnTimelineDao.setMrn(timelineDao.getTimelineDao().get(position).getMrn());
+            mrnTimelineDao.setMrn(timelineDao.getTimelineDao().get(timeposition).getMrn());
 
             loadPatientData(mrnTimelineDao);
         }
@@ -125,6 +125,7 @@ public class BuildPreparationFragment extends Fragment {
                     Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("timeposition", timeposition);
                     intent.putExtra("position", position);
                     intent.putExtra("time", time);
                     getActivity().startActivity(intent);

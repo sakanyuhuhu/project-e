@@ -55,4 +55,7 @@ public interface ApiService {
     @POST("EmamPatientDrugService")
     Call<ListDrugCardDao> getDrugData(@Body DrugCardDao drugCardDao);
 
+    @POST("PatientDrugService")
+    Call<ListDrugCardDao> getDrugData2(@Body DrugCardDao drugCardDao);
+
 }

@@ -12,7 +12,8 @@
             android:id="@+id/tvDrugName"
             android:text="Drug Name"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="25sp"
+            android:textColor="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
         <LinearLayout
@@ -40,6 +41,7 @@
                         android:gravity="center_vertical"
                         android:layout_weight="1"
                         android:text=" Dosage : 1.0"
+                        android:textSize="20sp"
                         android:layout_width="150dp"
                         android:layout_height="30dp" />
                     <TextView
@@ -47,6 +49,7 @@
                         android:gravity="center_vertical"
                         android:layout_weight="1"
                         android:text="Type : Continue"
+                        android:textSize="20sp"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp" />
                 </LinearLayout>
@@ -55,6 +58,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text=" Route : PO"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp" />
                 <TextView
@@ -62,6 +66,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text=" Frequency:OD"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp" />
                 <TextView
@@ -69,6 +74,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text=" Site : "
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp" />
             </LinearLayout>
