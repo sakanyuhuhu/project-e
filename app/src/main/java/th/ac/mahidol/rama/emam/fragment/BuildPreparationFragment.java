@@ -37,6 +37,8 @@ public class BuildPreparationFragment extends Fragment {
         super();
     }
 
+
+
     public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time) {
         BuildPreparationFragment fragment = new BuildPreparationFragment();
         Bundle args = new Bundle();
@@ -78,15 +80,11 @@ public class BuildPreparationFragment extends Fragment {
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPreparationAdapter = new BuildPreparationAdapter();
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintime", Context.MODE_PRIVATE);
-        String data = prefs.getString("patienttime",null);
-        if(data != null){
-            TimelineDao timelineDao = new Gson().fromJson(data,TimelineDao.class);
-            MrnTimelineDao mrnTimelineDao = new MrnTimelineDao();
-            mrnTimelineDao.setMrn(timelineDao.getTimelineDao().get(timeposition).getMrn());
+        if(nfcUID != null)
+            loadCacheDao();
+        else
+            loadPatientData();
 
-            loadPatientData(mrnTimelineDao);
-        }
     }
 
     @Override
@@ -99,9 +97,48 @@ public class BuildPreparationFragment extends Fragment {
 
     }
 
-    private void loadPatientData(MrnTimelineDao mrnListBean){
-        Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientData(mrnListBean);
-        call.enqueue(new PatientLoadCallback());
+    private void loadCacheDao(){
+        Log.d("check", "loadCacheDao = "+ nfcUID);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+        String data = prefs.getString("patientintdata",null);
+
+        if(data != null){
+            ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
+            buildPreparationAdapter.setDao(dao);
+            listView.setAdapter(buildPreparationAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                    Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("timeposition", timeposition);
+                    intent.putExtra("position", position);
+                    intent.putExtra("time", time);
+                    getActivity().startActivity(intent);
+                }
+            });
+        }
+    }
+
+
+
+    private void loadPatientData(){
+
+        SharedPreferences prefs = getContext().getSharedPreferences("patientintime", Context.MODE_PRIVATE);
+        String data = prefs.getString("patienttime",null);
+
+        if(data != null){
+            TimelineDao timelineDao = new Gson().fromJson(data,TimelineDao.class);
+            MrnTimelineDao mrnListBean = new MrnTimelineDao();
+            mrnListBean.setMrn(timelineDao.getTimelineDao().get(timeposition).getMrn());
+
+            Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientData(mrnListBean);
+            call.enqueue(new PatientLoadCallback());
+        }
+
     }
 
     private void saveCache(ListPatientDataDao patientDataDao){
@@ -118,22 +155,25 @@ public class BuildPreparationFragment extends Fragment {
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCache(dao);
-            buildPreparationAdapter.setDao(dao);
 
+            buildPreparationAdapter.setDao(dao);
             listView.setAdapter(buildPreparationAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("timeposition", timeposition);
-                    intent.putExtra("position", position);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
-                }
-            });
+            if(nfcUID != null) {
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                    }
+                });
+            }
         }
 
         @Override

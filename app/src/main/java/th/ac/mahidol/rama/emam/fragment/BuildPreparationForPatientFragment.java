@@ -173,22 +173,22 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String selectedItem = adapterView.getItemAtPosition(position).toString();
-                if(selectedItem.equals("ทั้งหมด")) {
-                    tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+                if(selectedItem.equals("ทั้งหมด") && dao!=null) {
+                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), dao);
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("กิน")) {
+                else if(selectedItem.equals("กิน") && dao!=null) {
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoPO().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("ฉีด")) {
+                else if(selectedItem.equals("ฉีด") && dao!=null) {
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoIV().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else{
+                else if(selectedItem.equals("อื่นๆ") && dao!=null){
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoOTHER().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoOTHER());
                     listView.setAdapter(buildPreparationForPatientAdapter);

@@ -111,7 +111,7 @@ public class BuildTimelineFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     Intent intent = new Intent(getContext(), PreparationActivity.class);
-                    intent.putExtra("nfcUId", nfcUserID);
+//                    intent.putExtra("nfcUId", nfcUserID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     intent.putExtra("position", position);
