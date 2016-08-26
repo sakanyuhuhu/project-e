@@ -16,18 +16,18 @@ public class TimelineActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
-    private String sdlocId;
-    private String nfcUId;
+    private String sdlocID, nfcUID, wardName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        nfcUId = getIntent().getExtras().getString("nfcUId");
-        sdlocId = getIntent().getExtras().getString("sdlocId");
+        nfcUID = getIntent().getExtras().getString("nfcUId");
+        sdlocID = getIntent().getExtras().getString("sdlocId");
+        wardName = getIntent().getExtras().getString("wardname");
 //        initInstance();
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildTimelineFragment.newInstance(nfcUId,sdlocId)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildTimelineFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
         }
 
     }

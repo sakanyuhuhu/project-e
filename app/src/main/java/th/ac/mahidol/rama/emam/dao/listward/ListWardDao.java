@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 public class ListWardDao {
-    private int id;
+    private String id;
     private String wardName;
     @SerializedName("sdloc_id") private String sdlocId;
     private Date registerDate;
@@ -15,11 +15,12 @@ public class ListWardDao {
     private boolean trolley;
     private boolean active;
 
-    public int getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

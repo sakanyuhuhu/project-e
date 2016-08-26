@@ -16,16 +16,17 @@ import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 
 public class MainMenuFragment extends Fragment implements View.OnClickListener{
     private ImageButton imgBtnMedicationManage;
-    private String sdlocId, nfcUId;
+    private String sdlocID, nfcUID, wardName;
     public MainMenuFragment() {
         super();
     }
 
-    public static MainMenuFragment newInstance(String nfcUId, String sdlocId) {
+    public static MainMenuFragment newInstance(String nfcUID, String sdlocID, String wardname) {
         MainMenuFragment fragment = new MainMenuFragment();
         Bundle args = new Bundle();
-        args.putString("nfcUId", nfcUId);
-        args.putString("sdlocId",sdlocId);
+        args.putString("nfcUId", nfcUID);
+        args.putString("sdlocId",sdlocID);
+        args.putString("wardname", wardname);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,15 +53,17 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-        nfcUId = getArguments().getString("nfcUId");
-        sdlocId = getArguments().getString("sdlocId");
+        nfcUID = getArguments().getString("nfcUId");
+        sdlocID = getArguments().getString("sdlocId");
+        wardName = getArguments().getString("wardname");
         imgBtnMedicationManage = (ImageButton) rootView.findViewById(R.id.imgBMedication);
         imgBtnMedicationManage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), TimelineActivity.class);
-                intent.putExtra("nfcUId", nfcUId);
-                intent.putExtra("sdlocId", sdlocId);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
                 getActivity().startActivity(intent);
             }
         });

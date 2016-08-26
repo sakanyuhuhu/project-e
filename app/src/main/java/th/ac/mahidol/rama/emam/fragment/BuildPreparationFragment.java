@@ -27,7 +27,7 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment {
-    private String sdlocID, nfcUID, time;
+    private String sdlocID, nfcUID, wardName, time;
     private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvPreparation, tvDoublecheck, tvAdministration;
@@ -37,12 +37,13 @@ public class BuildPreparationFragment extends Fragment {
         super();
     }
 
-    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, int position, String time) {
+    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time) {
         BuildPreparationFragment fragment = new BuildPreparationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
         args.putString("sdlocId", sdlocId);
-        args.putInt("position", position);
+        args.putString("wardname", wardName);
+        args.putInt("position", timeposition);
         args.putString("time", time);
         fragment.setArguments(args);
         return fragment;
@@ -67,6 +68,7 @@ public class BuildPreparationFragment extends Fragment {
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
+        wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
 
@@ -125,6 +127,7 @@ public class BuildPreparationFragment extends Fragment {
                     Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
                     intent.putExtra("timeposition", timeposition);
                     intent.putExtra("position", position);
                     intent.putExtra("time", time);

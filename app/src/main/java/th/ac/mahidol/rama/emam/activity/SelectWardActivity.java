@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.fragment.SelectWardFragment;
+import th.ac.mahidol.rama.emam.fragment.BuildSelectWardFragment;
 
 public class SelectWardActivity extends AppCompatActivity {
 
@@ -13,7 +13,7 @@ public class SelectWardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_ward);
         if(savedInstanceState == null)
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, SelectWardFragment.newInstance()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildSelectWardFragment.newInstance()).commit();
 
     }
 

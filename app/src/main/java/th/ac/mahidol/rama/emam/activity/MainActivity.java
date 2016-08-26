@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String nfcTagId, sdlocId;
+    private String nfcTagId, sdlocID, wardName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initInstance() {
         SharedPreferences prefs = this.getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
-        sdlocId = prefs.getString("sdlocId", null);
-        if(sdlocId != null) {
+        sdlocID = prefs.getString("sdlocId", null);
+        wardName = prefs.getString("wardname", null);
+        if(sdlocID != null & wardName != null) {
 //            new getPatientByWard().execute();//getPatientByWard for call SoapManager before MainSelectMenuActivity
             Intent intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
             intent.putExtra("nfcUId", "21592265");
-            intent.putExtra("sdlocId", sdlocId);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
             startActivity(intent);
         }
         else {

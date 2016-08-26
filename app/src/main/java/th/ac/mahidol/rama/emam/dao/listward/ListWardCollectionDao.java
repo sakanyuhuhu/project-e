@@ -2,11 +2,10 @@ package th.ac.mahidol.rama.emam.dao.listward;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListWardCollectionDao {
-    @SerializedName("listwardBean") private List<ListWardDao> listwardBean = new ArrayList<ListWardDao>();
+    @SerializedName("listwardBean") private List<ListWardDao> listwardBean;
 
     public List<ListWardDao> getListwardBean() {
         return listwardBean;

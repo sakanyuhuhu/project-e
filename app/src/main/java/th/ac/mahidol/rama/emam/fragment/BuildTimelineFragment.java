@@ -25,7 +25,7 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildTimelineFragment extends Fragment {
-    private String  nfcUserID,sdlocID;
+    private String  nfcUserID,sdlocID, wardName;
     private String[] listTimeline = {"0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "0:00", "1:00", "2:00"};
     private ListView listView;
     private BuildTimelineAdapter buildTimelineAdapter;
@@ -34,11 +34,12 @@ public class BuildTimelineFragment extends Fragment {
         super();
     }
 
-    public static BuildTimelineFragment newInstance(String nfcUId, String sdlocId) {
+    public static BuildTimelineFragment newInstance(String nfcUID, String sdlocID, String wardName) {
         BuildTimelineFragment fragment = new BuildTimelineFragment();
         Bundle args = new Bundle();
-        args.putString("nfcUId", nfcUId);
-        args.putString("sdlocId", sdlocId);
+        args.putString("nfcUId", nfcUID);
+        args.putString("sdlocId", sdlocID);
+        args.putString("wardname", wardName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,6 +103,8 @@ public class BuildTimelineFragment extends Fragment {
         public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
             TimelineDao dao = response.body();
             saveCache(dao);
+            nfcUserID = getArguments().getString("nfcUId");
+            wardName = getArguments().getString("wardname");
             buildTimelineAdapter.setDao(listTimeline, dao);
             listView.setAdapter(buildTimelineAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -110,6 +113,7 @@ public class BuildTimelineFragment extends Fragment {
                     Intent intent = new Intent(getContext(), PreparationActivity.class);
                     intent.putExtra("nfcUId", nfcUserID);
                     intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
                     intent.putExtra("position", position);
                     intent.putExtra("time", listTimeline[position]);
                     getActivity().startActivity(intent);

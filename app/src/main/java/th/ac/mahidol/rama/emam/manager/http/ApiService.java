@@ -7,12 +7,13 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildListWard.WardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
-import th.ac.mahidol.rama.emam.dao.checkpersonward.CheckPersonWardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.listmedicalcard.ListMedicalCardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.listpatientinfo.ListPatientInfoCollectionDao;
 import th.ac.mahidol.rama.emam.dao.listpatienttime.ListPatientTimeCollectionDao;
@@ -20,6 +21,7 @@ import th.ac.mahidol.rama.emam.dao.listward.ListWardCollectionDao;
 import th.ac.mahidol.rama.emam.dao.mrnforprepare.MRNListBean;
 import th.ac.mahidol.rama.emam.dao.mrnforprepare.MRNListBean2;
 import th.ac.mahidol.rama.emam.dao.patientinfoforperson.PatientInfoForPersonCollectionDao;
+
 
 
 public interface ApiService {
@@ -57,5 +59,8 @@ public interface ApiService {
 
     @POST("PatientDrugService")
     Call<ListDrugCardDao> getDrugData2(@Body DrugCardDao drugCardDao);
+
+    @GET("GetWardService")
+    Call<WardCollectionDao> getListWard();
 
 }

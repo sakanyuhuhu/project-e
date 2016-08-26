@@ -37,7 +37,7 @@ import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String nfcUID, sdlocID, toDayDate, time;
+    private String nfcUID, sdlocID, wardName, toDayDate, time;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAllergy;
@@ -58,11 +58,12 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUId, String sdlocId, int timeposition, int position, String time) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, int position, String time) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
-        args.putString("nfcUId", nfcUId);
-        args.putString("sdlocId", sdlocId);
+        args.putString("nfcUId", nfcUID);
+        args.putString("sdlocId", sdlocID);
+        args.putString("wardname", wardName);
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
@@ -93,6 +94,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private void initInstances(final View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
+        wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
@@ -126,7 +128,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setAdminTimeHour(time);
                 drugCardDao.setDrugUseDate(toDayDate);
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-                drugCardDao.setCheckType("firstcheck");
+                drugCardDao.setCheckType("Firstcheck");
 
                 String json = new Gson().toJson(drugCardDao);
                 Log.d("check", "loadMedicalData = "+json);
@@ -139,7 +141,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setAdminTimeHour(time);
                 drugCardDao.setDrugUseDate(toDayDate+1);
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-                drugCardDao.setCheckType("firstcheck");
+                drugCardDao.setCheckType("Firstcheck");
 
                 String json = new Gson().toJson(drugCardDao);
                 Log.d("check", "loadMedicalData = "+json);
