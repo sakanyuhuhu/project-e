@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ListDrugCardDao {
+public class ListDrugCardDao{
     @SerializedName("drugCard") private List<DrugCardDao> listDrugCardDao;
 
     public List<DrugCardDao> getListDrugCardDao() {

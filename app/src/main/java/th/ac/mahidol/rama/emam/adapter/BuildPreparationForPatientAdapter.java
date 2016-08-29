@@ -4,6 +4,7 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,18 +31,11 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
     private TextView tvDrugName;
 
 
-    public BuildPreparationForPatientAdapter() {
-//        SharedPreferences prefs = context.getSharedPreferences("DrugStatus", Context.MODE_PRIVATE);
-//        String data = prefs.getString("DrugStatus",null);
-//        if(data == null)
-//            return;
-//        daoCheck = new Gson().fromJson(data,ListStatusCheckDao.class);
-    }
-
     public void setDao(Context context, ListDrugCardDao dao){
+        Log.d("check", "setDao "+dao);
+
         this.dao = dao;
         this.context = context;
-
 
 
     }
@@ -68,23 +62,17 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         final BuildPreparationForPatientListView buildPreparationForPatientListView = new BuildPreparationForPatientListView(viewGroup.getContext());
-        buildPreparationForPatientListView.setDrugNameBuild(dao.getListDrugCardDao().get(position));
+        buildPreparationForPatientListView.setDrugName(dao.getListDrugCardDao().get(position));
+        buildPreparationForPatientListView.setCheck(dao.getListDrugCardDao().get(position).getCheckDrug() != null ? dao.getListDrugCardDao().get(position).getCheckDrug() : false);
+        final CheckBox checkBox = buildPreparationForPatientListView.isCheck();
 
-//        for(StatusCheckDao d : daoCheck.getStatusCheckDaoList()){
-//            if(dao.getListDrugCardDao().get(position).getDrugID().equals(d.getDrugID())){
-//                preparationForPatientListView.setCheck(d.isCheckDrug());
-//            }
-//        }
-
-        buildPreparationForPatientListView.setCheck(dao.getListDrugCardDao().get(position).getCheckDrug() !=null ? dao.getListDrugCardDao().get(position).getCheckDrug() : false);
-
-//        buildPreparationForPatientListView.setCheck(isCheck.get(position));
-        final CheckBox checkBox =  buildPreparationForPatientListView.isCheck();
+        checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete()!= null ? dao.getListDrugCardDao().get(position).getComplete().equals("0")?true : false : false);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                dao.getListDrugCardDao().get(position).setCheckDrug(b);
-//                isCheck.set(position,checkBox.isChecked());
+
+
+                dao.getListDrugCardDao().get(position).setComplete( b ? "0":"-1");
 
             }
         });
@@ -93,9 +81,8 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         imageViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.d("check", "drugNoteDialog = "+ position);
                 drugNoteDialog(position);
-
             }
         });
 
@@ -116,10 +103,13 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         txtStatus = (EditText)dialogView.findViewById(R.id.txtStatus);
         radioGroup = (RadioGroup)dialogView.findViewById(R.id.radiogroup);
 
-
         tvDrugName.setText(" "+dao.getListDrugCardDao().get(position).getTradeName()
                 + " " + dao.getListDrugCardDao().get(position).getDose()
                 + " "+dao.getListDrugCardDao().get(position).getUnit());
+
+
+        chkHold.setChecked( dao.getListDrugCardDao().get(position).getComplete()!=null ? dao.getListDrugCardDao().get(position).getComplete().equals("1")? true : false : true );
+        
 
 //        if(dao.getListDrugCardDao().get(position).getCheckDrug() == true)
 //            isCheckNoteRadio.set(position, R.id.rdb1);
@@ -135,18 +125,18 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         builder.setPositiveButton("บันทึก", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 radioButton = (RadioButton)dialogView.findViewById(selectedId);
                 if(radioButton.isChecked()) {
                     if (radioButton.getId() == R.id.rdb1 ) {
 //                        isCheckNoteRadio.set(position, radioButton.getId());
-                        dao.getListDrugCardDao().get(position).setCheckDrug(true);
+                        Log.d("check", "radioButton1 = "+radioButton.getId());
+
 
                     }else{
 //                        isCheckNoteRadio.set(position, radioButton.getId());
-                        dao.getListDrugCardDao().get(position).setCheckDrug(false);
+                        Log.d("check", "radioButton = "+radioButton.getId());
+
                         notifyDataSetChanged();
                     }
                 }

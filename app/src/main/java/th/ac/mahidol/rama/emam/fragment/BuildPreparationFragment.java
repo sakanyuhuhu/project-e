@@ -21,13 +21,14 @@ import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment {
-    private String sdlocID, nfcUID, wardName, time;
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName;
     private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvPreparation, tvDoublecheck, tvAdministration;
@@ -75,15 +76,31 @@ public class BuildPreparationFragment extends Fragment {
         time = getArguments().getString("time");
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
+        tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
+
         tvTime.setText(getArguments().getString("time"));
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPreparationAdapter = new BuildPreparationAdapter();
 
-        if(nfcUID != null)
-            loadCacheDao();
-        else
+        Log.d("check", "BuildPreparationFragment initInstances = "+ nfcUID + " / " + sdlocID);
+
+        if(nfcUID != null) {
+            loadPersonWard(nfcUID, sdlocID);
+
+            SharedPreferences prefs = getContext().getSharedPreferences("PersonWard", Context.MODE_PRIVATE);
+            String data = prefs.getString("PersonWard",null);
+
+            if(data != null){
+                CheckPersonWardDao dao = new Gson().fromJson(data, CheckPersonWardDao.class);
+                firstName = dao.getFirstName();
+                lastName = dao.getLastName();
+                tvUserName.setText("เตรียมยาโดย  " + firstName + " " + lastName);
+                loadCacheDao();
+            }
+        }else {
             loadPatientData();
+        }
 
     }
 
@@ -98,7 +115,7 @@ public class BuildPreparationFragment extends Fragment {
     }
 
     private void loadCacheDao(){
-        Log.d("check", "loadCacheDao = "+ nfcUID);
+        Log.d("check", "loadCacheDao = "+firstName+" "+lastName);
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
 
@@ -114,6 +131,8 @@ public class BuildPreparationFragment extends Fragment {
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
+                    intent.putExtra("firstname", firstName);
+                    intent.putExtra("lastname", lastName);
                     intent.putExtra("timeposition", timeposition);
                     intent.putExtra("position", position);
                     intent.putExtra("time", time);
@@ -122,8 +141,6 @@ public class BuildPreparationFragment extends Fragment {
             });
         }
     }
-
-
 
     private void loadPatientData(){
 
@@ -141,7 +158,13 @@ public class BuildPreparationFragment extends Fragment {
 
     }
 
-    private void saveCache(ListPatientDataDao patientDataDao){
+    private void loadPersonWard(String nfcUID, String sdlocID){
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
+
+    private void saveCachePatientData(ListPatientDataDao patientDataDao){
         String json = new Gson().toJson(patientDataDao);
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -149,12 +172,23 @@ public class BuildPreparationFragment extends Fragment {
         editor.apply();
     }
 
+    private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
+        String json = new Gson().toJson(checkPersonWardDao);
+        SharedPreferences prefs = getContext().getSharedPreferences("PersonWard", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("PersonWard",json);
+        editor.apply();
+    }
+
+
+
+
     class PatientLoadCallback implements Callback<ListPatientDataDao>{
 
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
-            saveCache(dao);
+            saveCachePatientData(dao);
 
             buildPreparationAdapter.setDao(dao);
             listView.setAdapter(buildPreparationAdapter);
@@ -178,7 +212,25 @@ public class BuildPreparationFragment extends Fragment {
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "BuildPreparationFragment Failure " + t);
+            Log.d("check", "PatientLoadCallback Failure " + t);
+        }
+    }
+
+
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao>{
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            String json = new Gson().toJson(dao);
+            Log.d("check", "PersonWardLoadCallback = "+json);
+            saveCachePersonWard(dao);
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+            Log.d("check", "PersonWardLoadCallback Failure " + t);
         }
     }
 

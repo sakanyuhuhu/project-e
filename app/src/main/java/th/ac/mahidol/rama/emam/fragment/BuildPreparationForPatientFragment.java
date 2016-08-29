@@ -37,7 +37,7 @@ import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String nfcUID, sdlocID, wardName, toDayDate, time;
+    private String nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAllergy;
@@ -58,12 +58,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, int position, String time) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String firstName, String lastName, int timeposition, int position, String time) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
+        args.putString("firstname", firstName);
+        args.putString("lastname", lastName);
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
@@ -95,9 +97,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
+        firstName = getArguments().getString("firstname");
+        lastName = getArguments().getString("lastname");
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
+
+        Log.d("check", "BuildPreparationForPatientFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /firstName = " + firstName + " /lastName = " + lastName +
+                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -173,28 +180,31 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String selectedItem = adapterView.getItemAtPosition(position).toString();
-                if(selectedItem.equals("ทั้งหมด") && dao!=null) {
+                Log.d("check", "dao = "+dao);
+
+                if(selectedItem.equals("ทั้งหมด") & dao!=null) {
                      tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-                    buildPreparationForPatientAdapter.setDao(getContext(), dao);
+//                    Log.d("check","a122"+buildDrugCardListManager.getDao());
+                    buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("กิน") && dao!=null) {
+                else if(selectedItem.equals("กิน") & dao!=null) {
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoPO().getListDrugCardDao().size()+")");
+//                    Log.d("check","adddddd"+buildDrugCardListManager.getDaoPO());
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("ฉีด") && dao!=null) {
+                else if(selectedItem.equals("ฉีด") & dao!=null) {
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoIV().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("อื่นๆ") && dao!=null){
+                else if(selectedItem.equals("อื่นๆ") & dao!=null){
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoOTHER().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoOTHER());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -213,7 +223,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
     private void loadMedicalData(DrugCardDao drugCardDao){
 
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData2(drugCardDao);
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
         call.enqueue(new DrugLoadCallback());
     }
 
@@ -234,8 +244,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             buildDrugCardListManager.setDao(dao);
 
             tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-            buildPreparationForPatientAdapter.setDao(getContext(), dao);
-            listView.setAdapter(buildPreparationForPatientAdapter);
+//            buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
+//            listView.setAdapter(buildPreparationForPatientAdapter);
 
         }
 

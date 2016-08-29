@@ -87,20 +87,7 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setDrugName(String textDrugName, String textDosage, String textType, String textRoute, String textFrequency, String textUnit, String textadminTime, String textSite){
-        tvDrugName.setText(String.valueOf(textDrugName));
-        tvDosage.setText(" Dosage: " + textDosage+" "+ String.valueOf(textUnit));
-        if(textType.equals("C")) {
-            tvType.setText(" Type: Continue");
-        }else{
-            tvType.setText(" Type: One day");
-        }
-        tvRoute.setText(" Route: " + textRoute);
-        tvFrequency.setText(" Frequency: " + textFrequency+" ("+textadminTime+")");
-        tvSite.setText(" Site: " + textSite);
-    }
-
-    public void setDrugNameBuild(DrugCardDao dao){
+    public void setDrugName(DrugCardDao dao){
         tvDrugName.setText(String.valueOf(dao.getTradeName()));
         tvDosage.setText(" Dosage: " + dao.getDose()+" "+ String.valueOf(dao.getUnit()));
         if(dao.getAdminType().equals("C")) {

@@ -3,8 +3,6 @@ package th.ac.mahidol.rama.emam.dao.buildCheckPersonWard;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
 public class CheckPersonWardDao {
 
     private int id;
@@ -14,9 +12,9 @@ public class CheckPersonWardDao {
     private String password;
     private String NFCNumber;
     private String role;
-    private Date registerDate;
-    private Date lastVisited;
-    private Date lastUpdated;
+    private String registerDate;
+    private String lastVisited;
+    private String lastUpdated;
     @SerializedName("first_name") private String firstName;
     @SerializedName("last_name") private String lastName;
     @SerializedName("nfc_uid") private String nfcUId;
@@ -78,27 +76,27 @@ public class CheckPersonWardDao {
         this.role = role;
     }
 
-    public Date getRegisterDate() {
+    public String getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
+    public void setRegisterDate(String registerDate) {
         this.registerDate = registerDate;
     }
 
-    public Date getLastVisited() {
+    public String getLastVisited() {
         return lastVisited;
     }
 
-    public void setLastVisited(Date lastVisited) {
+    public void setLastVisited(String lastVisited) {
         this.lastVisited = lastVisited;
     }
 
-    public Date getLastUpdated() {
+    public String getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

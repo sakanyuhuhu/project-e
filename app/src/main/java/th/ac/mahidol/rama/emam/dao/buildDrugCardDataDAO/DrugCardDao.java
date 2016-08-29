@@ -3,7 +3,7 @@ package th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DrugCardDao {
+public class DrugCardDao{
     private String id;
     private String adminTimeHour;
     private String drugUseDate;

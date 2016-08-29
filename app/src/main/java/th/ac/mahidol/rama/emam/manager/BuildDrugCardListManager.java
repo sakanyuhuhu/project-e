@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -13,14 +14,15 @@ import java.util.List;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 
-/**
- * Created by mi- on 22/8/2559.
- */
+
 public class BuildDrugCardListManager {
 
     private Context mContext;
-    private ListDrugCardDao dao, daoPO, daoIV, daoOTHER;
-
+    private ListDrugCardDao dao;
+    private ListDrugCardDao daoAll;
+    private ListDrugCardDao daoPO;
+    private ListDrugCardDao daoIV;
+    private ListDrugCardDao daoOTHER;
 
     public BuildDrugCardListManager( ){
         mContext = Contextor.getInstance().getContext();
@@ -28,21 +30,22 @@ public class BuildDrugCardListManager {
         loadCache();
     }
 
-    public ListDrugCardDao getDao(){
-        return dao;
-    }
+
 
     public void setDao(ListDrugCardDao dao){
         this.dao = dao;
         saveCache();
         if(dao != null & dao.getListDrugCardDao() != null){
+            daoAll = new ListDrugCardDao();
             daoPO = new ListDrugCardDao();
             daoIV = new ListDrugCardDao();
             daoOTHER = new ListDrugCardDao();
+            List<DrugCardDao> drugCardDaoAll = new ArrayList<DrugCardDao>();
             List<DrugCardDao> drugCardDaoPO = new ArrayList<DrugCardDao>();
             List<DrugCardDao> drugCardDaoIV = new ArrayList<DrugCardDao>();
             List<DrugCardDao> drugCardDaoOTHER = new ArrayList<DrugCardDao>();
             for(DrugCardDao d : dao.getListDrugCardDao()){
+                drugCardDaoAll.add(d);
                 if(d.getRoute().equals("PO")){
                     drugCardDaoPO.add(d);
                 }
@@ -56,7 +59,12 @@ public class BuildDrugCardListManager {
             daoPO.setListDrugCardDao(drugCardDaoPO);
             daoIV.setListDrugCardDao(drugCardDaoIV);
             daoOTHER.setListDrugCardDao(drugCardDaoOTHER);
+            daoAll.setListDrugCardDao(drugCardDaoAll);
         }
+    }
+
+    public ListDrugCardDao getDaoAll(){
+        return daoAll;
     }
 
     public ListDrugCardDao getDaoPO(){
@@ -83,10 +91,9 @@ public class BuildDrugCardListManager {
 
     private void saveCache( ){
         ListDrugCardDao cacheDao = new ListDrugCardDao();
-        if(dao != null & dao.getListDrugCardDao() !=null)
+        if(dao != null & dao.getListDrugCardDao() != null)
             cacheDao.setListDrugCardDao(dao.getListDrugCardDao());
         String json = new Gson().toJson(cacheDao);
-//        Log.d("check", "saveCache json = "+json);
         SharedPreferences prefs = mContext.getSharedPreferences("drugdataperson", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("drugdataperson",json);
@@ -95,8 +102,9 @@ public class BuildDrugCardListManager {
     }
 
     private void loadCache(){
+        Log.d("check", "1234");
         SharedPreferences prefs = mContext.getSharedPreferences("drugdataperson", Context.MODE_PRIVATE);
-        String data = prefs.getString("drugdataperson",null);
+        String data = prefs.getString("drugdataperson", null);
         if(data == null)
             return;
         dao = new Gson().fromJson(data,ListDrugCardDao.class);
@@ -109,8 +117,7 @@ public class BuildDrugCardListManager {
             cacheDao.getListDrugCardDao().addAll(daoIV.getListDrugCardDao());
             cacheDao.getListDrugCardDao().addAll(daoOTHER.getListDrugCardDao());
         }
-//        String json = new Gson().toJson(cacheDao);
-//        Log.d("check", "updateCache json = "+json);
+
         setDao(cacheDao);
     }
 }

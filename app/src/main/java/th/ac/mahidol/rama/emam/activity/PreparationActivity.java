@@ -75,7 +75,7 @@ public class PreparationActivity extends AppCompatActivity {
 
             if(checkRegisterNFC == true){
                 nfcUID = nfcTagID;
-                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
             }
             else{
