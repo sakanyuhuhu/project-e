@@ -137,8 +137,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
                 drugCardDao.setCheckType("Firstcheck");
 
-                String json = new Gson().toJson(drugCardDao);
-                Log.d("check", "loadMedicalData = "+json);
+//                String json = new Gson().toJson(drugCardDao);
+//                Log.d("check", "loadMedicalData = "+json);
 
                 Log.d("check", "AdminTimeHour = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
                 loadMedicalData(drugCardDao);
@@ -150,15 +150,15 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
                 drugCardDao.setCheckType("Firstcheck");
 
-                String json = new Gson().toJson(drugCardDao);
-                Log.d("check", "loadMedicalData = "+json);
+//                String json = new Gson().toJson(drugCardDao);
+//                Log.d("check", "loadMedicalData = "+json);
                 
-                Log.d("check", "AdminTimeHour = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
+                Log.d("check", "AdminTimeHour>23 = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
                 loadMedicalData(drugCardDao);
             }
         }
 
-        getOnClick();
+        getOnClickSpinner();
 
         btnSave.setOnClickListener(this);
     }
@@ -175,22 +175,19 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
     }
 
-    private void getOnClick(){
+    private void getOnClickSpinner(){
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 String selectedItem = adapterView.getItemAtPosition(position).toString();
-                Log.d("check", "dao = "+dao);
 
                 if(selectedItem.equals("ทั้งหมด") & dao!=null) {
-                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-//                    Log.d("check","a122"+buildDrugCardListManager.getDao());
+                    tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
                 else if(selectedItem.equals("กิน") & dao!=null) {
                     tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoPO().getListDrugCardDao().size()+")");
-//                    Log.d("check","adddddd"+buildDrugCardListManager.getDaoPO());
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
@@ -241,12 +238,10 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             Log.d("check", "DrugCardDao.size = " + dao.getListDrugCardDao().size());
+            String json = new Gson().toJson(dao);
+            Log.d("check", "DrugLoadCallback = "+json);
             buildDrugCardListManager.setDao(dao);
-
             tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-//            buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
-//            listView.setAdapter(buildPreparationForPatientAdapter);
-
         }
 
         @Override

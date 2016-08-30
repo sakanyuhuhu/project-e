@@ -34,8 +34,6 @@ public class PreparationActivity extends AppCompatActivity {
     }
 
     private void  initInstance(Bundle savedInstanceState){
-
-//        nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
@@ -69,18 +67,18 @@ public class PreparationActivity extends AppCompatActivity {
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
 
-            dbHelper = new SQLiteManager(this);
+//            dbHelper = new SQLiteManager(this);
 //            dbHelper.addNFCRegister(nfcTagID);
-            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
+//            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
 
-            if(checkRegisterNFC == true){
+//            if(checkRegisterNFC == true){
                 nfcUID = nfcTagID;
 //                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
                 getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
-            }
-            else{
-                Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
-            }
+//            }
+//            else{
+//                Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
+//            }
         }
         super.onNewIntent(intent);
     }

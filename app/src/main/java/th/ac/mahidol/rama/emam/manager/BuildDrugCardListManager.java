@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -102,7 +101,6 @@ public class BuildDrugCardListManager {
     }
 
     private void loadCache(){
-        Log.d("check", "1234");
         SharedPreferences prefs = mContext.getSharedPreferences("drugdataperson", Context.MODE_PRIVATE);
         String data = prefs.getString("drugdataperson", null);
         if(data == null)
@@ -117,7 +115,6 @@ public class BuildDrugCardListManager {
             cacheDao.getListDrugCardDao().addAll(daoIV.getListDrugCardDao());
             cacheDao.getListDrugCardDao().addAll(daoOTHER.getListDrugCardDao());
         }
-
         setDao(cacheDao);
     }
 }

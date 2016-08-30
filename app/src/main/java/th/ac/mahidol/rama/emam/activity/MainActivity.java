@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String nfcTagID, sdlocID, wardName;
+    private String nfcTagID, sdlocID, wardName, nfcUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,14 +82,15 @@ public class MainActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
+            nfcUID = nfcTagID;
+//            dbHelper = new SQLiteManager(this);
+//            dbHelper.addNFCRegister(nfcTagID);
+//            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
 
-            dbHelper = new SQLiteManager(this);
-            dbHelper.addNFCRegister(nfcTagID);
-            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
-
-            if(checkRegisterNFC == true & sdlocID != null & wardName != null){
+//            if(checkRegisterNFC == true & sdlocID != null & wardName != null){
+            if(sdlocID != null & wardName != null){
                 intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
-                intent.putExtra("nfcUId", "21592265");
+                intent.putExtra("nfcUId", nfcUID);
                 intent.putExtra("nfcUId", nfcTagID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);

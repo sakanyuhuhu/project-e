@@ -84,21 +84,11 @@ public class BuildPreparationFragment extends Fragment {
         buildPreparationAdapter = new BuildPreparationAdapter();
 
         Log.d("check", "BuildPreparationFragment initInstances = "+ nfcUID + " / " + sdlocID);
-
         if(nfcUID != null) {
             loadPersonWard(nfcUID, sdlocID);
-
-            SharedPreferences prefs = getContext().getSharedPreferences("PersonWard", Context.MODE_PRIVATE);
-            String data = prefs.getString("PersonWard",null);
-
-            if(data != null){
-                CheckPersonWardDao dao = new Gson().fromJson(data, CheckPersonWardDao.class);
-                firstName = dao.getFirstName();
-                lastName = dao.getLastName();
-                tvUserName.setText("เตรียมยาโดย  " + firstName + " " + lastName);
-                loadCacheDao();
-            }
-        }else {
+            loadCacheDao();
+        }
+        else {
             loadPatientData();
         }
 
@@ -115,7 +105,6 @@ public class BuildPreparationFragment extends Fragment {
     }
 
     private void loadCacheDao(){
-        Log.d("check", "loadCacheDao = "+firstName+" "+lastName);
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
 
@@ -126,7 +115,6 @@ public class BuildPreparationFragment extends Fragment {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
                     Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
@@ -143,7 +131,6 @@ public class BuildPreparationFragment extends Fragment {
     }
 
     private void loadPatientData(){
-
         SharedPreferences prefs = getContext().getSharedPreferences("patientintime", Context.MODE_PRIVATE);
         String data = prefs.getString("patienttime",null);
 
@@ -159,6 +146,7 @@ public class BuildPreparationFragment extends Fragment {
     }
 
     private void loadPersonWard(String nfcUID, String sdlocID){
+        Log.d("check", "loadPersonWard = "+ nfcUID + " / " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
@@ -172,42 +160,15 @@ public class BuildPreparationFragment extends Fragment {
         editor.apply();
     }
 
-    private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
-        String json = new Gson().toJson(checkPersonWardDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("PersonWard", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("PersonWard",json);
-        editor.apply();
-    }
-
-
 
 
     class PatientLoadCallback implements Callback<ListPatientDataDao>{
-
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCachePatientData(dao);
-
             buildPreparationAdapter.setDao(dao);
             listView.setAdapter(buildPreparationAdapter);
-            if(nfcUID != null) {
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("timeposition", timeposition);
-                        intent.putExtra("position", position);
-                        intent.putExtra("time", time);
-                        getActivity().startActivity(intent);
-                    }
-                });
-            }
         }
 
         @Override
@@ -223,9 +184,9 @@ public class BuildPreparationFragment extends Fragment {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            String json = new Gson().toJson(dao);
-            Log.d("check", "PersonWardLoadCallback = "+json);
-            saveCachePersonWard(dao);
+            firstName = dao.getFirstName();
+            lastName = dao.getLastName();
+            tvUserName.setText("เตรียมยาโดย  " + firstName + " " + lastName);
         }
 
         @Override
