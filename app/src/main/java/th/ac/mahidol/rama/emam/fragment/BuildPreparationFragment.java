@@ -186,7 +186,7 @@ public class BuildPreparationFragment extends Fragment {
             CheckPersonWardDao dao = response.body();
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
-            tvUserName.setText("เตรียมยาโดย  " + firstName + " " + lastName);
+            tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
         }
 
         @Override

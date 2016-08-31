@@ -100,10 +100,6 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
         tvSite.setText(" Site: " + dao.getSite());
     }
 
-    public void setCheck(Boolean check){
-        chkCheckDrug.setChecked(check);
-    }
-
     public CheckBox isCheck(){
 
         return (CheckBox)findViewById(R.id.chkCheckDrug);

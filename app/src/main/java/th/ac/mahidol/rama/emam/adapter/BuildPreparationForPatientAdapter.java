@@ -4,7 +4,6 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,18 +59,17 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         final BuildPreparationForPatientListView buildPreparationForPatientListView = new BuildPreparationForPatientListView(viewGroup.getContext());
         buildPreparationForPatientListView.setDrugName(dao.getListDrugCardDao().get(position));
 
-
-
-        buildPreparationForPatientListView.setCheck(dao.getListDrugCardDao().get(position).getCheckDrug() != null ? dao.getListDrugCardDao().get(position).getCheckDrug() : false);
         CheckBox checkBox = buildPreparationForPatientListView.isCheck();
         checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete()!= null ? dao.getListDrugCardDao().get(position).getComplete().equals("1")?true : false : false);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 dao.getListDrugCardDao().get(position).setComplete( b ? "1":"0");
+                dao.getListDrugCardDao().get(position).setCheckNote("0");
                 dao.getListDrugCardDao().get(position).setStatus(null);
                 dao.getListDrugCardDao().get(position).setDescriptionTemplate("");
                 dao.getListDrugCardDao().get(position).setDescription("");
+                dao.getListDrugCardDao().get(position).setIdRadio(R.id.rdb1);
             }
         });
 
@@ -120,34 +118,16 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                 chkHold.setChecked(true);
                 txtStatusHold.setEnabled(true);
                 txtStatusHold.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-                Log.d("check", "chkHold = " + chkHold.isChecked() + " /txtStatusHold = " + txtStatusHold.getText());
-            }
-            else{
-//             เป็นของ dao.getListDrugCardDao().get(position).getStatus().equals("normal")   radio button
             }
         }
 
-//        chkHold.setChecked(dao.getListDrugCardDao().get(position).getStatus()!=null ? dao.getListDrugCardDao().get(position).getComplete().equals("hold")? true : false : false);
+        if(dao.getListDrugCardDao().get(position).getDescription() != null){
+            dao.getListDrugCardDao().get(position).setComplete("0");
+            txtStatus.setText(dao.getListDrugCardDao().get(position).getDescription());
+        }
 
-//        if(dao.getListDrugCardDao().get(position).getStatus()!= null){
-//            if(dao.getListDrugCardDao().get(position).getComplete().equals("hold")){
-//                chkHold.setChecked(true);
-//                txtStatusHold.setEnabled(true);
-//            }else{
-//                chkHold.setChecked(false);
-//                txtStatusHold.setEnabled(false);
-//            }
-//
-//        }
-
-//        if(dao.getListDrugCardDao().get(position).getCheckDrug() == true)
-//            isCheckNoteRadio.set(position, R.id.rdb1);
-//
-//        if(isCheckNoteRadio.get(position) == 0)
-//            isCheckNoteRadio.add(position, radioGroup.getId()+1);
-//
-//        if(isCheckNoteRadio.get(position) != 0)
-//            radioGroup.check(isCheckNoteRadio.get(position));
+        if(dao.getListDrugCardDao().get(position).getIdRadio() != 0)
+            radioGroup.check(dao.getListDrugCardDao().get(position).getIdRadio());
 
         builder.setView(dialogView);
         builder.setTitle("บันทึกข้อความสำหรับเตรียมยา");
@@ -157,28 +137,34 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 radioButton = (RadioButton)dialogView.findViewById(selectedId);
                 dao.getListDrugCardDao().get(position).setDescription(txtStatus.getText().toString());
-                Log.d("check", "DialogInterface Complete = "+dao.getListDrugCardDao().get(position).getComplete());
-                Log.d("check", "DialogInterface chkHold = "+chkHold.isChecked());
-                Log.d("check", "txtStatus = "+dao.getListDrugCardDao().get(position).getDescription());
                 if(chkHold.isChecked() == true) {
-                    dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHold.getText().toString());
-                    Log.d("check", "DescriptionTemplate = "+ dao.getListDrugCardDao().get(position).getDescriptionTemplate());
+                    dao.getListDrugCardDao().get(position).setComplete("0");
+                    dao.getListDrugCardDao().get(position).setStatus("hold");
+                    dao.getListDrugCardDao().get(position).setCheckNote("1");
                     if (radioButton.isChecked()) {
-                        if (radioButton.getId() == R.id.rdb1) {
-                            dao.getListDrugCardDao().get(position).setComplete("0");
-                            dao.getListDrugCardDao().get(position).setStatus("hold");
-                        } else {
-                            dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHold.getText().toString());
-                            Log.d("check", "DescriptionTemplate = "+ dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-                            dao.getListDrugCardDao().get(position).setStatus("hold");
-                            dao.getListDrugCardDao().get(position).setComplete("0");
-                            notifyDataSetChanged();
-                        }
+                        dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHold.getText().toString());
+                        dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                     }
                 } else{
-                    dao.getListDrugCardDao().get(position).setStatus("normal");
-                    dao.getListDrugCardDao().get(position).setComplete("1");
+                    if (radioButton.isChecked()) {
+                        dao.getListDrugCardDao().get(position).setDescriptionTemplate("");
+                        dao.getListDrugCardDao().get(position).setStatus("normal");
+                        if (radioButton.getId() == R.id.rdb1) {
+                            dao.getListDrugCardDao().get(position).setComplete("1");
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                        } else {
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                        }
+                    }
+                    if(!dao.getListDrugCardDao().get(position).getDescription().equals("")){
+                        dao.getListDrugCardDao().get(position).setCheckNote("1");
+                        dao.getListDrugCardDao().get(position).setStatus("normal");
+                        dao.getListDrugCardDao().get(position).setComplete("0");
+                    }
                 }
+                notifyDataSetChanged();
             }
         });
         builder.setNegativeButton("ยกเลิก",null);

@@ -28,11 +28,9 @@ public class DrugCardDao{
     @SerializedName("prop_help") private String propHelp;
     private String site;
     private String registerDateOnly;
-    private Boolean isCheckDrug;
-    private Boolean isCheckDrugNote;
     private String checkType;
-    private String Expr1;
     private String complete;
+    private int idRadio;
     private String description;
     private String descriptionTemplate;
     private String RFID;
@@ -40,21 +38,14 @@ public class DrugCardDao{
     private String lastName;
     private String studentName;
     private String actualAdmin;
+    private String checkNote;
 
-    public Boolean getCheckDrug() {
-        return isCheckDrug;
+    public String getCheckNote() {
+        return checkNote;
     }
 
-    public void setCheckDrug(Boolean checkDrug) {
-        isCheckDrug = checkDrug;
-    }
-
-    public Boolean getCheckDrugNote() {
-        return isCheckDrugNote;
-    }
-
-    public void setCheckDrugNote(Boolean checkDrugNote) {
-        isCheckDrugNote = checkDrugNote;
+    public void setCheckNote(String checkNote) {
+        this.checkNote = checkNote;
     }
 
     public String getId() {
@@ -257,14 +248,6 @@ public class DrugCardDao{
         this.checkType = checkType;
     }
 
-    public String getExpr1() {
-        return Expr1;
-    }
-
-    public void setExpr1(String expr1) {
-        Expr1 = expr1;
-    }
-
     public String getComplete() {
         return complete;
     }
@@ -327,5 +310,13 @@ public class DrugCardDao{
 
     public void setActualAdmin(String actualAdmin) {
         this.actualAdmin = actualAdmin;
+    }
+
+    public int getIdRadio() {
+        return idRadio;
+    }
+
+    public void setIdRadio(int idRadio) {
+        this.idRadio = idRadio;
     }
 }

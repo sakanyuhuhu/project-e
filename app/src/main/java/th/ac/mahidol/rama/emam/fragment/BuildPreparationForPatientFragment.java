@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -137,10 +138,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
                 drugCardDao.setCheckType("Firstcheck");
 
-//                String json = new Gson().toJson(drugCardDao);
-//                Log.d("check", "loadMedicalData = "+json);
-
-                Log.d("check", "AdminTimeHour = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
                 loadMedicalData(drugCardDao);
             }
             else{
@@ -150,10 +147,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
                 drugCardDao.setCheckType("Firstcheck");
 
-//                String json = new Gson().toJson(drugCardDao);
-//                Log.d("check", "loadMedicalData = "+json);
-                
-                Log.d("check", "AdminTimeHour>23 = " + drugCardDao.getAdminTimeHour() + " /DrugUseDate = " + drugCardDao.getDrugUseDate() + " /MRN = " + drugCardDao.getMRN() + " /Check Type = " + drugCardDao.getCheckType());
                 loadMedicalData(drugCardDao);
             }
         }
@@ -173,6 +166,17 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
 
+    }
+
+    private void loadMedicalData(DrugCardDao drugCardDao){
+
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
+        call.enqueue(new DrugLoadCallback());
+    }
+
+    private void loadsetDrugData(ListDrugCardDao drugCardDao){
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().setNewDrugData(drugCardDao);
+        call.enqueue(new NewDrugLoadCallback());
     }
 
     private void getOnClickSpinner(){
@@ -207,29 +211,27 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
             }
         });
-
-
-    }
-
-    private void saveStatusCheckDrug(){
-//        dbHelper = new SQLiteManager(getContext());
-//        for(StatusCheckDao d : daoCheck.getStatusCheckDaoList()){
-//            dbHelper.addStatusCheck(d.getDrugID(), d.isCheckDrug(), d.isCheckDrugNote());
-//        }
-    }
-
-    private void loadMedicalData(DrugCardDao drugCardDao){
-
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
-        call.enqueue(new DrugLoadCallback());
     }
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnSave){
-//            buildDrugCardListManager.updateCache();
+            Log.d("check", "check save");
+            Boolean checkNull = true;
+            for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                if(d.getComplete() == null & d.getCheckNote() == null){
+                    checkNull = false;
+                    Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
+                }
+            }
+            if(checkNull) {
+                //loadsetDrugData(buildDrugCardListManager.getDaoAll());
+                Log.d("check", "Saved Status " + checkNull);
+            }
         }
     }
+
+
 
 
     class DrugLoadCallback implements Callback<ListDrugCardDao>{
@@ -238,15 +240,31 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             Log.d("check", "DrugCardDao.size = " + dao.getListDrugCardDao().size());
-            String json = new Gson().toJson(dao);
-            Log.d("check", "DrugLoadCallback = "+json);
+//            String json = new Gson().toJson(dao);
+//            Log.d("check", "DrugLoadCallback = "+json);
             buildDrugCardListManager.setDao(dao);
+            listView.setAdapter(buildPreparationForPatientAdapter);
             tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
         }
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
             Log.d("check", "BuildPreparationForPatientFragment Failure " + t);
+        }
+    }
+
+
+    class NewDrugLoadCallback implements Callback<ListDrugCardDao>{
+
+        @Override
+        public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
+            dao = response.body();
+            Log.d("check", "NewDrugLoadCallback = " + dao.getListDrugCardDao().size());
+        }
+
+        @Override
+        public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
+
         }
     }
 
