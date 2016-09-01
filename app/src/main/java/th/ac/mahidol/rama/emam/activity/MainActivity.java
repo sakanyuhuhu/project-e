@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 //            dbHelper.addNFCRegister(nfcTagID);
 //            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
 
+
 //            if(checkRegisterNFC == true & sdlocID != null & wardName != null){
             if(sdlocID != null & wardName != null){
                 intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
@@ -149,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         mNfcAdapter.disableForegroundDispatch(this);
     }
 
+
+
     public class getPatientByWard extends AsyncTask<Void, Void, List<PatientDao>> {
 
         @Override
@@ -169,12 +172,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+
         @Override
         protected List<PatientDao> doInBackground(Void... params) {
             List<PatientDao> itemsList = new ArrayList<PatientDao>();
             SoapManager soapManager = new SoapManager();
             //itemsList = parseXML(soapManager.getPatientByWard("Ws_SearchPatientByWard", sdlocId));
-            itemsList = parseXML(soapManager.getPatientByWard("Ws_SearchPatientByWard", "2TC"));
+//            itemsList = parseXML(soapManager.getPatientByWard("Ws_SearchPatientByWard", "2TC"));//test fix value
             return itemsList;
         }
 

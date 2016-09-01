@@ -40,7 +40,7 @@ public class PreparationForPatientFragment extends Fragment {
     private String nfcUId, sdlocId, gettimer, patientName, bedNo, mRN, strtimer, strdf2, dateToday, formatedDate, stryear;
     private TextView tvTime, tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
     private int tricker, yearstr;
-    private TextView tvDrugAllergy, tvDate;
+    private TextView tvDrugAdr, tvDate;
     private Button btnCancel, btnSave;
     private Spinner spinner1;
     private ListMedicalCardCollectionDao listMedicalCardCollectionDao;
@@ -132,7 +132,7 @@ public class PreparationForPatientFragment extends Fragment {
         tvAge = (TextView) rootView.findViewById(R.id.tvAge);
         tvSex = (TextView) rootView.findViewById(R.id.tvSex);
         tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
-        tvDrugAllergy = (TextView) rootView.findViewById(R.id.tvDrugAllergy);
+        tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
@@ -179,7 +179,7 @@ public class PreparationForPatientFragment extends Fragment {
             }
         });
         tvTime.setText(gettimer);
-        tvDrugAllergy.setText("   การแพ้ยา: ");
+        tvDrugAdr.setText("   การแพ้ยา: ");
 
         Call<ListMedicalCardCollectionDao> callDrug = HttpManager.getInstance().getService().loadListMedicalCard(mRN);
         callDrug.enqueue(new Callback<ListMedicalCardCollectionDao>() {

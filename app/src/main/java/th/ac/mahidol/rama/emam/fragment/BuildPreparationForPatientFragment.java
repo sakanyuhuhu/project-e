@@ -2,6 +2,7 @@ package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,17 +18,24 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.text.DateFormat;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationForPatientAdapter;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
@@ -35,13 +43,15 @@ import th.ac.mahidol.rama.emam.dao.buildstatusCheckDAO.ListStatusCheckDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SQLiteManager;
+import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
+import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName;
+    private String nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName;
     private int position, timeposition;
     private ListView listView;
-    private TextView tvDate, tvTime, tvDrugAllergy;
+    private TextView tvDate, tvTime, tvDrugAdr;
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildPreparationForPatientAdapter buildPreparationForPatientAdapter;
@@ -51,9 +61,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private SQLiteManager dbHelper;
     private ListStatusCheckDao daoCheck;
     private Date datetoDay;
-    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
-    Date currentLocalTime = cal.getTime();
-    DateFormat dateTimer = new SimpleDateFormat("HH:mm");
 
     public BuildPreparationForPatientFragment() {
         super();
@@ -95,6 +102,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     }
 
     private void initInstances(final View rootView, Bundle savedInstanceState) {
+//        new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
@@ -113,16 +121,19 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
-        tvDrugAllergy = (TextView) rootView.findViewById(R.id.tvDrugAllergy);
+        tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         datetoDay = new Date();
-        toDayDate = simpleDateFormat.format(datetoDay);
-        dateTimer.setTimeZone(TimeZone.getTimeZone("GMT+7:00"));
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfForActualAdmin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdfFortvDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        toDayDate = sdfForDrugUseDate.format(datetoDay);
+        dateFortvDate = sdfFortvDate.format(datetoDay);
+        dateActualAdmin = sdfForActualAdmin.format(datetoDay);
         tvTime.setText(time);
-        tvDrugAllergy.setText("   การแพ้ยา:แตะเพื่อดูข้อมูล");
 
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
@@ -152,7 +163,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         }
 
         getOnClickSpinner();
-
         btnSave.setOnClickListener(this);
     }
 
@@ -186,22 +196,22 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 String selectedItem = adapterView.getItemAtPosition(position).toString();
 
                 if(selectedItem.equals("ทั้งหมด") & dao!=null) {
-                    tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+                    tvDate.setText("  " + dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
                 else if(selectedItem.equals("กิน") & dao!=null) {
-                    tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoPO().getListDrugCardDao().size()+")");
+                    tvDate.setText("  " + dateFortvDate + " (จำนวนยา "+ buildDrugCardListManager.getDaoPO().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
                 else if(selectedItem.equals("ฉีด") & dao!=null) {
-                    tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoIV().getListDrugCardDao().size()+")");
+                    tvDate.setText("  " + dateFortvDate + " (จำนวนยา "+ buildDrugCardListManager.getDaoIV().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
                 else if(selectedItem.equals("อื่นๆ") & dao!=null){
-                    tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+ buildDrugCardListManager.getDaoOTHER().getListDrugCardDao().size()+")");
+                    tvDate.setText("  " + dateFortvDate + " (จำนวนยา "+ buildDrugCardListManager.getDaoOTHER().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoOTHER());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
@@ -219,14 +229,32 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             Log.d("check", "check save");
             Boolean checkNull = true;
             for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                Log.d("check", "Complete = "+d.getComplete() +" /CheckNote = "+d.getCheckNote());
                 if(d.getComplete() == null & d.getCheckNote() == null){
+                    d.setComplete("0");
+                    d.setCheckNote("0");
+                }
+                if(d.getComplete().equals("0") & d.getCheckNote().equals("0")){
                     checkNull = false;
-                    Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
                 }
             }
             if(checkNull) {
-                //loadsetDrugData(buildDrugCardListManager.getDaoAll());
+                for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                    d.setRFID(nfcUID);
+                    d.setFirstName(firstName);
+                    d.setLastName(lastName);
+                    d.setWardName(wardName);
+                    d.setActualAdmin(dateActualAdmin);
+                    d.setActivityHour(time);
+                }
+//                String json = new Gson().toJson(buildDrugCardListManager.getDaoAll());
+//                Log.d("check", "DrugLoadCallback = "+json);
+//                loadsetDrugData(buildDrugCardListManager.getDaoAll());
                 Log.d("check", "Saved Status " + checkNull);
+            }
+            else {
+                Log.d("check", "Can't Save Status " + checkNull);
+                Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -240,11 +268,10 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             Log.d("check", "DrugCardDao.size = " + dao.getListDrugCardDao().size());
-//            String json = new Gson().toJson(dao);
-//            Log.d("check", "DrugLoadCallback = "+json);
+            String json = new Gson().toJson(dao);
+            Log.d("check", "DrugLoadCallback = "+json);
             buildDrugCardListManager.setDao(dao);
-            listView.setAdapter(buildPreparationForPatientAdapter);
-            tvDate.setText("  " + toDayDate+" "+dateTimer.format(currentLocalTime)+" (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+            tvDate.setText("  " + dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
         }
 
         @Override
@@ -265,6 +292,48 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
 
+        }
+    }
+
+
+    public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>>{
+
+        @Override
+        protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
+            super.onPostExecute(drugAdrDaos);
+            Log.d("check", " drugAdrDaos.size() = " +  drugAdrDaos.size());
+            tvDrugAdr.setText("   การแพ้ยา:แตะเพื่อดูข้อมูล");
+        }
+
+        @Override
+        protected List<DrugAdrDao> doInBackground(Void... params) {
+            List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+            SoapManager soapManager = new SoapManager();
+            drugAdrDaoList = parseXML(soapManager.getADR("Get_Adr", "4503598"));
+            return drugAdrDaoList;
+        }
+
+        private   ArrayList<DrugAdrDao>  parseXML(String soap) {
+            List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
+            try {
+
+                SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+                SAXParser saxParser = saxParserFactory.newSAXParser();
+                XMLReader xmlReader = saxParser.getXMLReader();
+
+                SearchDrugAdrManager searchDrugAdrXMLHandler = new SearchDrugAdrManager();
+                xmlReader.setContentHandler(searchDrugAdrXMLHandler);
+                InputSource inStream = new InputSource();
+                inStream.setCharacterStream(new StringReader(soap));
+                xmlReader.parse(inStream);
+                itemsList = searchDrugAdrXMLHandler.getItemsList();
+
+                Log.w("AndroidParseXMLActivity", "Done");
+            } catch (Exception e) {
+                Log.w("AndroidParseXMLActivity", e);
+            }
+
+            return (ArrayList<DrugAdrDao>) itemsList;
         }
     }
 

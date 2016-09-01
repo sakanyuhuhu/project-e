@@ -10,9 +10,11 @@ import org.ksoap2.transport.HttpTransportSE;
 
 
 public class SoapManager {
-    private String NAME_SPACE = "http://tempuri.org/IMP_Web_Services/message/";
-//    private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
-    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+//        private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+//    private String NAME_SPACE = "http://tempuri.org/IMP_Web_Services/message/";
+//    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
+    private String NAME_SPACE = "http://tempuri.org/patientservice/message/";
+    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/patientservice.WSDL";
     private String SOAP_ACTION;
     private SoapPrimitive resultString;
 
@@ -43,6 +45,31 @@ public class SoapManager {
             Log.e("check", "Error: " + ex.getMessage());
         }
 
+        return String.valueOf(resultString);
+    }
+
+
+    public String getADR(String methodName, String mrn){
+
+        SOAP_ACTION = "http://tempuri.org/patientservice/action/patientservice."+ methodName;
+
+        try {
+
+            SoapObject request = new SoapObject(NAME_SPACE, methodName);
+            request.addProperty("hn", mrn);
+
+            SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            soapEnvelope.setOutputSoapObject(request);
+
+            HttpTransportSE transport = new HttpTransportSE(URL);
+            transport.call(SOAP_ACTION, soapEnvelope);
+
+            resultString = (SoapPrimitive) soapEnvelope.getResponse();
+
+
+        } catch (Exception ex) {
+            Log.e("check", "Error: " + ex.getMessage());
+        }
         return String.valueOf(resultString);
     }
 

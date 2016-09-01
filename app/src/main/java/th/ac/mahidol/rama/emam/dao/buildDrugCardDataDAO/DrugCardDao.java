@@ -38,7 +38,25 @@ public class DrugCardDao{
     private String lastName;
     private String studentName;
     private String actualAdmin;
+    private String wardName;//
+    private String activityHour;//
     private String checkNote;
+
+    public String getActivityHour() {
+        return activityHour;
+    }
+
+    public void setActivityHour(String activityHour) {
+        this.activityHour = activityHour;
+    }
+
+    public String getWardName() {
+        return wardName;
+    }
+
+    public void setWardName(String wardName) {
+        this.wardName = wardName;
+    }
 
     public String getCheckNote() {
         return checkNote;

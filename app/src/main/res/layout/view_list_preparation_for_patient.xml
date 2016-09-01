@@ -23,7 +23,7 @@
 
             <ImageView
                 android:layout_weight="1"
-                android:src="@android:drawable/btn_star_big_on"
+                android:src="@drawable/drugs"
                 android:layout_gravity="center_vertical"
                 android:layout_width="30dp"
                 android:layout_height="90dp" />
@@ -98,7 +98,7 @@
                 <ImageView
                     android:id="@+id/imgvNote"
                     android:layout_weight="1"
-                    android:src="@drawable/abc_ic_menu_paste_mtrl_am_alpha"
+                    android:src="@drawable/note"
                     android:layout_gravity="center"
                     android:layout_width="40dp"
                     android:layout_height="50dp" />

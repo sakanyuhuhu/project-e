@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,7 +54,6 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
     }
 
     private void initInstances() {
-        // findViewById here
         tvDrugName = (TextView) findViewById(R.id.tvDrugName);
         tvDosage = (TextView) findViewById(R.id.tvDosage);
         tvType = (TextView) findViewById(R.id.tvType);
@@ -84,7 +84,7 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
         super.onRestoreInstanceState(ss.getSuperState());
 
         Bundle bundle = ss.getBundle();
-        // Restore State from bundle here
+
     }
 
     public void setDrugName(DrugCardDao dao){
@@ -101,12 +101,17 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
     }
 
     public CheckBox isCheck(){
-
         return (CheckBox)findViewById(R.id.chkCheckDrug);
     }
 
     public ImageView imageViewNote(){
         return (ImageView) findViewById(R.id.imgvNote);
+    }
+
+    public void setChangeNote(){
+        Log.d("check", "setChangeNote");
+        imgvNote.setImageResource(R.drawable.notechange);
+
     }
 
 }
