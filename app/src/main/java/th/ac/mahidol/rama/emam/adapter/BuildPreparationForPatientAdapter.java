@@ -145,7 +145,30 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                     if (radioButton.isChecked()) {
                         dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHold.getText().toString());
-                        dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                        if (radioButton.getId() == R.id.rdb1) {
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("1");
+                        }
+                        else if (radioButton.getId() == R.id.rdb2){
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("NPO");
+                        }
+                        else if (radioButton.getId() == R.id.rdb3){
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ไม่มียา");
+                        }
+                        else if (radioButton.getId() == R.id.rdb4){
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ห้องยาส่งยาผิด");
+                        }
+                        else if (radioButton.getId() == R.id.rdb5){
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ยาตก/แตก");
+                        }
+                        else {
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ผู้ป่วยไปทำหัตการ");
+                        }
                     }
 
                 } else{
@@ -153,13 +176,40 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                         dao.getListDrugCardDao().get(position).setDescriptionTemplate("");
                         dao.getListDrugCardDao().get(position).setStatus("normal");
                         if (radioButton.getId() == R.id.rdb1) {
+                            dao.getListDrugCardDao().get(position).setCheckNote("0");
                             dao.getListDrugCardDao().get(position).setComplete("1");
                             dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
-                        } else {
-                            buildPreparationForPatientListView.setChangeNote();
+                            dao.getListDrugCardDao().get(position).setStrRadio("1");
+                        }
+                        else if (radioButton.getId() == R.id.rdb2){
                             dao.getListDrugCardDao().get(position).setCheckNote("1");
                             dao.getListDrugCardDao().get(position).setComplete("0");
                             dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("NPO");
+                        }
+                        else if (radioButton.getId() == R.id.rdb3){
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ไม่มียา");
+                        }
+                        else if (radioButton.getId() == R.id.rdb4){
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ห้องยาส่งยาผิด");
+                        }
+                        else if (radioButton.getId() == R.id.rdb5){
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ยาตก/แตก");
+                        }
+                        else {
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
+                            dao.getListDrugCardDao().get(position).setStrRadio("ผู้ป่วยไปทำหัตการ");
                         }
                     }
                     if(!dao.getListDrugCardDao().get(position).getDescription().equals("")){

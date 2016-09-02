@@ -159,6 +159,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         }
 
         getOnClickSpinner();
+
         btnSave.setOnClickListener(this);
     }
 
@@ -225,10 +226,17 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             Log.d("check", "check save");
             Boolean checkNull = true;
             for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
-                Log.d("check", "Complete = "+d.getComplete() +" /CheckNote = "+d.getCheckNote());
                 if(d.getComplete() == null & d.getCheckNote() == null){
                     d.setComplete("0");
                     d.setCheckNote("0");
+                }
+                if(d.getComplete().equals("1") & d.getCheckNote() == null){
+                    d.setComplete("1");
+                    d.setCheckNote("0");
+                }
+                if(d.getComplete() == null & d.getCheckNote().equals("1")){
+                    d.setComplete("0");
+                    d.setCheckNote("1");
                 }
                 if(d.getComplete().equals("0") & d.getCheckNote().equals("0")){
                     checkNull = false;
@@ -245,7 +253,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 }
 //                String json = new Gson().toJson(buildDrugCardListManager.getDaoAll());
 //                Log.d("check", "DrugLoadCallback = "+json);
-//                loadsetDrugData(buildDrugCardListManager.getDaoAll());
+
+                loadsetDrugData(buildDrugCardListManager.getDaoAll());
                 Log.d("check", "Saved Status " + checkNull);
             }
             else {
@@ -282,7 +291,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            Log.d("check", "NewDrugLoadCallback = " + dao.getListDrugCardDao().size());
+//            Log.d("check", "NewDrugLoadCallback = " + dao.getListDrugCardDao().size());
         }
 
         @Override
@@ -297,9 +306,13 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         @Override
         protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao size = " +  drugAdrDaos.size());
+            Log.d("check", "*****DrugAdrDao = " +  drugAdrDaos.size());
 
-            tvDrugAdr.setText("   การแพ้ยา:แตะเพื่อดูข้อมูล");
+            if(drugAdrDaos.size() != 0){
+                tvDrugAdr.setText("   การแพ้ยา:แตะเพื่อดูข้อมูล");
+            }
+            else
+                tvDrugAdr.setText("   การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
         }
 
         @Override
@@ -314,6 +327,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));//4503598  on appcenter have data, But on devfox_ws data(empty)
             }
+            Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;
         }
 

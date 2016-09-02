@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class BuildPreparationFragment extends Fragment {
     private ListView listView;
     private TextView tvUserName, tvTime, tvPreparation, tvDoublecheck, tvAdministration;
     private BuildPreparationAdapter buildPreparationAdapter;
+    private Button btnLogin;
 
     public BuildPreparationFragment() {
         super();
@@ -77,8 +79,10 @@ public class BuildPreparationFragment extends Fragment {
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
+        btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
 
         tvTime.setText(getArguments().getString("time"));
+        btnLogin.setText("ลงชื่อเข้าใช้ด้วย Username และ Password");
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPreparationAdapter = new BuildPreparationAdapter();

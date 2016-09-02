@@ -31,6 +31,7 @@ public class DrugCardDao{
     private String checkType;
     private String complete;
     private int idRadio;
+    private String strRadio;
     private String description;
     private String descriptionTemplate;
     private String RFID;
@@ -41,6 +42,14 @@ public class DrugCardDao{
     private String wardName;
     private String activityHour;
     private String checkNote;
+
+    public String getStrRadio() {
+        return strRadio;
+    }
+
+    public void setStrRadio(String strRadio) {
+        this.strRadio = strRadio;
+    }
 
     public String getActivityHour() {
         return activityHour;
