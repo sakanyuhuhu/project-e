@@ -122,7 +122,7 @@ public class BuildTimelineFragment extends Fragment {
 
         @Override
         public void onFailure(Call<TimelineDao> call, Throwable t) {
-            Log.d("check", "BuildTimelineFragment Failure " + t);
+            Log.d("check", "TimelineLoadCallback Failure " + t);
         }
     }
 }

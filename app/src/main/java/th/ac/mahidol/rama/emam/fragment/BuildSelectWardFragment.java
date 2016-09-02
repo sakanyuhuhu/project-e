@@ -136,7 +136,7 @@ public class BuildSelectWardFragment extends Fragment {
 
         @Override
         public void onFailure(Call<WardCollectionDao> call, Throwable t) {
-            Log.d("check", "BuildSelectWardFragment Failure " + t);
+            Log.d("check", "SelectWardLoadCallback Failure " + t);
         }
     }
 }

@@ -25,7 +25,7 @@ public class SearchDrugAdrManager extends DefaultHandler {
 
         currentElement = true;
         currentValue = "";
-        if (localName.equals("cur_bedWd")) {
+        if (localName.equals("tmp_adr")) {
             dao = new DrugAdrDao();
         }
 
@@ -35,7 +35,13 @@ public class SearchDrugAdrManager extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
         currentElement = false;
-
+        if (localName.equalsIgnoreCase("drugname"))
+            dao.setDrugname(currentValue);
+        else if (localName.equalsIgnoreCase("side_effect"))
+            dao.setSideEffect(currentValue);
+        else if (localName.equalsIgnoreCase("naranjo"))
+            dao.setNaranjo(currentValue);
+        else if (localName.equalsIgnoreCase("tmp_adr"))
             itemsList.add(dao);
     }
 

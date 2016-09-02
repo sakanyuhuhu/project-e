@@ -11,13 +11,13 @@
             android:layout_weight="1"
             android:src="@drawable/ramamahidol_hospital"
             android:layout_gravity="center"
-            android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_width="100dp"
+            android:layout_height="70dp" />
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
-            android:layout_weight="10">
+            android:layout_weight="1">
             <TextView
                 android:id="@+id/tvBedNo"
                 android:gravity="center_vertical"
@@ -37,7 +37,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text=" Patient Name"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_width="200dp"
                     android:layout_height="20dp" />
                 <TextView
@@ -45,7 +45,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="1234567890123"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp" />
             </LinearLayout>
@@ -58,7 +58,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text=" HN:"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_width="200dp"
                     android:layout_height="20dp" />
                 <TextView
@@ -79,7 +79,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text=" วันเกิด:30-07-1983"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_width="200dp"
                     android:layout_height="20dp" />
                 <TextView
@@ -87,7 +87,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="อายุ:"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="22dp" />
             </LinearLayout>
@@ -107,7 +107,7 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="สถานะภาพ:โสด"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="23dp" />
             </LinearLayout>

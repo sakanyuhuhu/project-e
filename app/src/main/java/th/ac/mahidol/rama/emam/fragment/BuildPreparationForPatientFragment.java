@@ -39,10 +39,8 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
-import th.ac.mahidol.rama.emam.dao.buildstatusCheckDAO.ListStatusCheckDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
-import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
@@ -58,8 +56,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();;
     private Spinner spinner1;
     private ListDrugCardDao dao;
-    private SQLiteManager dbHelper;
-    private ListStatusCheckDao daoCheck;
     private Date datetoDay;
 
     public BuildPreparationForPatientFragment() {
@@ -102,7 +98,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     }
 
     private void initInstances(final View rootView, Bundle savedInstanceState) {
-//        new getADRForPatient().execute();
+        new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
@@ -139,7 +135,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         String data = prefs.getString("patientintdata",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "dao size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
+            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
 
             if(timeposition <= 23) {
@@ -276,7 +272,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "BuildPreparationForPatientFragment Failure " + t);
+            Log.d("check", "DrugLoadCallback Failure " + t);
         }
     }
 
@@ -291,7 +287,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-
+            Log.d("check", "NewDrugLoadCallback Failure " + t);
         }
     }
 
@@ -301,16 +297,24 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         @Override
         protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", " drugAdrDaos.size() = " +  drugAdrDaos.size());
+            Log.d("check", "*****DrugAdrDao size = " +  drugAdrDaos.size());
+
             tvDrugAdr.setText("   การแพ้ยา:แตะเพื่อดูข้อมูล");
         }
 
         @Override
         protected List<DrugAdrDao> doInBackground(Void... params) {
-            List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+            List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
-            drugAdrDaoList = parseXML(soapManager.getADR("Get_Adr", "4503598"));
-            return drugAdrDaoList;
+
+            SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientintdata",null);
+            if(data != null){
+                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
+                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
+                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));//4503598  on appcenter have data, But on devfox_ws data(empty)
+            }
+            return itemsList;
         }
 
         private   ArrayList<DrugAdrDao>  parseXML(String soap) {

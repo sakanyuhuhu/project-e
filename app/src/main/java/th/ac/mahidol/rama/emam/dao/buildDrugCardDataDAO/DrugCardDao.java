@@ -38,8 +38,8 @@ public class DrugCardDao{
     private String lastName;
     private String studentName;
     private String actualAdmin;
-    private String wardName;//
-    private String activityHour;//
+    private String wardName;
+    private String activityHour;
     private String checkNote;
 
     public String getActivityHour() {

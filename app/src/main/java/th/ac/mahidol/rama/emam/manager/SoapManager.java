@@ -14,7 +14,8 @@ public class SoapManager {
 //    private String NAME_SPACE = "http://tempuri.org/IMP_Web_Services/message/";
 //    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
     private String NAME_SPACE = "http://tempuri.org/patientservice/message/";
-    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/patientservice.WSDL";
+    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/patientservice.WSDL"; // connected but no data(empty) in devfox_ws
+//    private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/patientservice.WSDL"; // use wifi can't connect
     private String SOAP_ACTION;
     private SoapPrimitive resultString;
 
@@ -40,7 +41,6 @@ public class SoapManager {
 
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
 
-
         } catch (Exception ex) {
             Log.e("check", "Error: " + ex.getMessage());
         }
@@ -49,7 +49,7 @@ public class SoapManager {
     }
 
 
-    public String getADR(String methodName, String mrn){
+    public String getDrugADR(String methodName, String mrn){
 
         SOAP_ACTION = "http://tempuri.org/patientservice/action/patientservice."+ methodName;
 
@@ -65,6 +65,7 @@ public class SoapManager {
             transport.call(SOAP_ACTION, soapEnvelope);
 
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
+            Log.d("check", "resultString = "+ resultString);
 
 
         } catch (Exception ex) {
