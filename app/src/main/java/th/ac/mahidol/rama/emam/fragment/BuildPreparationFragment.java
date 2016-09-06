@@ -20,6 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
@@ -28,9 +29,9 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
-public class BuildPreparationFragment extends Fragment {
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName;
-    private int timeposition;
+public class BuildPreparationFragment extends Fragment implements View.OnClickListener{
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID;
+    private int timeposition, tricker = 0;
     private ListView listView;
     private TextView tvUserName, tvTime, tvPreparation, tvDoublecheck, tvAdministration;
     private BuildPreparationAdapter buildPreparationAdapter;
@@ -80,9 +81,13 @@ public class BuildPreparationFragment extends Fragment {
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
+        tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
 
         tvTime.setText(getArguments().getString("time"));
         btnLogin.setText("ลงชื่อเข้าใช้ด้วย Username และ Password");
+
+        tvDoublecheck.setOnClickListener(this);
+
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPreparationAdapter = new BuildPreparationAdapter();
@@ -113,8 +118,9 @@ public class BuildPreparationFragment extends Fragment {
         String data = prefs.getString("patientintdata",null);
 
         if(data != null){
+            tricker = 1;
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
-            buildPreparationAdapter.setDao(dao);
+            buildPreparationAdapter.setDao(dao, tricker);
             listView.setAdapter(buildPreparationAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -123,6 +129,7 @@ public class BuildPreparationFragment extends Fragment {
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
+                    intent.putExtra("RFID", RFID);
                     intent.putExtra("firstname", firstName);
                     intent.putExtra("lastname", lastName);
                     intent.putExtra("timeposition", timeposition);
@@ -164,14 +171,29 @@ public class BuildPreparationFragment extends Fragment {
         editor.apply();
     }
 
-
+    @Override
+    public void onClick(View view) {
+        Log.d("check", "onClick = " + view.getId());
+        if(view.getId() == R.id.tvDoublecheck){
+            Log.d("check", "tvDoublecheck = " + tvDoublecheck);
+            Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            intent.putExtra("RFID", RFID);
+            intent.putExtra("firstname", firstName);
+            intent.putExtra("lastname", lastName);
+            intent.putExtra("timeposition", timeposition);
+            intent.putExtra("time", time);
+            getActivity().startActivity(intent);
+        }
+    }
 
     class PatientLoadCallback implements Callback<ListPatientDataDao>{
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCachePatientData(dao);
-            buildPreparationAdapter.setDao(dao);
+            buildPreparationAdapter.setDao(dao, tricker);
             listView.setAdapter(buildPreparationAdapter);
         }
 
@@ -188,6 +210,7 @@ public class BuildPreparationFragment extends Fragment {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
+            RFID = dao.getRFID();
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
             tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);

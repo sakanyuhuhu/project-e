@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp" />
         <LinearLayout
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -28,6 +29,7 @@
                 android:layout_width="30dp"
                 android:layout_height="150dp" />
             <LinearLayout
+                android:padding="5dp"
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="150dp"

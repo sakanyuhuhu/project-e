@@ -29,8 +29,6 @@ public class PreparationActivity extends AppCompatActivity {
 
         initInstance(savedInstanceState);
 
-
-
     }
 
     private void  initInstance(Bundle savedInstanceState){

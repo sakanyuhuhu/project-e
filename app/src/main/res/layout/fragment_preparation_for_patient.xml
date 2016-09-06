@@ -35,36 +35,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_weight="1"
-                android:text="เครื่องมือช่วยเหลือ"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"/>
 
-            <TextView
-                android:layout_weight="1"
-                android:text=" | "
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#ffffff"/>
-            <ImageView
-                android:layout_weight="1"
-                android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"/>
-            </LinearLayout>
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_weight="1"
+            android:entries="@array/select_arrayshelp"
+            android:textColor="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
     <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView
         android:id="@+id/headerPatientAdapter"
@@ -76,6 +55,7 @@
         android:layout_height="30dp">
         <TextView
             android:id="@+id/tvDrugAdr"
+            android:padding="5dp"
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:text=" การแพ้ยา: "
@@ -90,6 +70,7 @@
         android:background="@color/colorPrimary">
         <TextView
             android:layout_weight="1"
+            android:padding="5dp"
             android:id="@+id/tvDate"
             android:textSize="22sp"
             android:gravity="center_vertical"
@@ -107,6 +88,7 @@
     </LinearLayout>
     <ListView
         android:id="@+id/lvPrepareForPatientAdapter"
+        android:padding="5dp"
         android:layout_weight="100"
         android:textSize="50sp"
         android:layout_width="match_parent"

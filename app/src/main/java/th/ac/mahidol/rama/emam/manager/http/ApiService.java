@@ -65,6 +65,7 @@ public interface ApiService {
     Call<CheckPersonWardDao> getPersonWard(@Field("nfcUId") String nfcUId, @Field("sdlocId") String sdlocId);
 
     @POST("PatientDrugUpdateService")
-    Call<ListDrugCardDao> setNewDrugData(@Body ListDrugCardDao drugCardDao);
+    Call<ListDrugCardDao> saveDrugData(@Body ListDrugCardDao drugCardDao);
+
 
 }

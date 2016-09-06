@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import th.ac.mahidol.rama.emam.view.PatientListView;
+import th.ac.mahidol.rama.emam.view.PreparationListView;
 
 public class PreparationAdapter extends BaseAdapter {
     private String[] strPatient, strBedNo, strMrn;
@@ -33,9 +33,9 @@ public class PreparationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 
-        PatientListView patientListView = new PatientListView(viewGroup.getContext());
-        patientListView.setPatient(strPatient[position], strBedNo[position], strMrn[position]);
+        PreparationListView preparationListView = new PreparationListView(viewGroup.getContext());
+        preparationListView.setPatient(strPatient[position], strBedNo[position], strMrn[position]);
 
-        return patientListView;
+        return preparationListView;
     }
 }
