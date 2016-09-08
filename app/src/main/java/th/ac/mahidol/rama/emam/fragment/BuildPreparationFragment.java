@@ -16,6 +16,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,18 +29,16 @@ import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
-import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
-import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment implements View.OnClickListener{
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID;
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType;
     private int timeposition, tricker = 0;
     private ListView listView;
-    private TextView tvUserName, tvTime, tvPreparation, tvDoublecheck, tvAdministration;
+    private TextView tvUserName, tvTime, tvDoublecheck;
     private BuildPreparationAdapter buildPreparationAdapter;
     private Button btnLogin;
-
+    private Date datetoDay;
     public BuildPreparationFragment() {
         super();
     }
@@ -84,23 +86,32 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
 
         tvTime.setText(getArguments().getString("time"));
-        btnLogin.setText("ลงชื่อเข้าใช้ด้วย Username และ Password");
-
         tvDoublecheck.setOnClickListener(this);
 
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPreparationAdapter = new BuildPreparationAdapter();
 
-        Log.d("check", "BuildPreparationFragment initInstances = "+ nfcUID + " / " + sdlocID);
+        Log.d("check", "BuildPreparationFragment initInstances = "+ nfcUID + " / " + sdlocID + " /timeposition = "+timeposition);
+        datetoDay = new Date();
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
+        toDayDate = sdfForDrugUseDate.format(datetoDay);
+        checkType = "First Check";
         if(nfcUID != null) {
             loadPersonWard(nfcUID, sdlocID);
             loadCacheDao();
         }
         else {
-            loadPatientData();
+            if(timeposition <= 23)
+                loadPatientData(sdlocID, time, checkType, toDayDate);
+            else{
+                Calendar c = Calendar.getInstance();
+                c.setTime(datetoDay);
+                c.add(Calendar.DATE,1);
+                String tomorrowDate = sdfForDrugUseDate.format(c.getTime());
+                loadPatientData(sdlocID, time, checkType, tomorrowDate);
+            }
         }
-
     }
 
     @Override
@@ -141,19 +152,10 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    private void loadPatientData(){
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintime", Context.MODE_PRIVATE);
-        String data = prefs.getString("patienttime",null);
-
-        if(data != null){
-            TimelineDao timelineDao = new Gson().fromJson(data,TimelineDao.class);
-            MrnTimelineDao mrnListBean = new MrnTimelineDao();
-            mrnListBean.setMrn(timelineDao.getTimelineDao().get(timeposition).getMrn());
-
-            Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientData(mrnListBean);
-            call.enqueue(new PatientLoadCallback());
-        }
-
+    private void loadPatientData(String sdlocID, String time, String checkType, String toDayDate){
+        Log.d("check", "loadPatientData = "+ sdlocID+" "+time+" " +checkType+" "+toDayDate);
+        Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientDataPrepare(sdlocID, time, checkType, toDayDate);
+        call.enqueue(new PatientLoadCallback());
     }
 
     private void loadPersonWard(String nfcUID, String sdlocID){
@@ -173,16 +175,13 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        Log.d("check", "onClick = " + view.getId());
+        Log.d("check", "onClick tvDoublecheck = " + view.getId());
         if(view.getId() == R.id.tvDoublecheck){
             Log.d("check", "tvDoublecheck = " + tvDoublecheck);
             Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
-            intent.putExtra("RFID", RFID);
-            intent.putExtra("firstname", firstName);
-            intent.putExtra("lastname", lastName);
-            intent.putExtra("timeposition", timeposition);
+            intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
         }
@@ -193,6 +192,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCachePatientData(dao);
+            Log.d("check", "Pp dao.size = "+dao.getPatientDao().size());
             buildPreparationAdapter.setDao(dao, tricker);
             listView.setAdapter(buildPreparationAdapter);
         }

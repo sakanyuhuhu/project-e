@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,21 +85,11 @@ public class BuildTimelineFragment extends Fragment {
         call.enqueue(new TimelineLoadCallback());
     }
 
-    private void saveCache(TimelineDao timelineDao){
-        String json = new Gson().toJson(timelineDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintime", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patienttime",json);
-        editor.apply();
-    }
-
 
     class TimelineLoadCallback implements Callback<TimelineDao>{
         @Override
         public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
             TimelineDao dao = response.body();
-            saveCache(dao);
-
             wardName = getArguments().getString("wardname");
             buildTimelineAdapter.setDao(listTimeline, dao);
             listView.setAdapter(buildTimelineAdapter);

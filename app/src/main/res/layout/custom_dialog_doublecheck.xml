@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvDrugName"
+            android:text=" Drug Name"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chkType"
+                android:text="ผิดชนิด"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+            <EditText
+                android:id="@+id/txtStatusType"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:textSize="20sp"
+                android:layout_width="200dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chkSize"
+                android:text="ผิดขนาด"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+            <EditText
+                android:id="@+id/txtStatusSize"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:textSize="20sp"
+                android:layout_width="200dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chkForget"
+                android:text="ลืมจัด"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+            <EditText
+                android:id="@+id/txtStatusForget"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:textSize="20sp"
+                android:layout_width="200dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp">
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="300dp">
+                <EditText
+                    android:background="@color/colorWhite"
+                    android:id="@+id/txtStatus"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:gravity="center_vertical"
+                    android:cursorVisible="true"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:scrollbars="vertical"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

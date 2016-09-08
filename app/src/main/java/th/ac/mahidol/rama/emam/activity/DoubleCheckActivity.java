@@ -17,7 +17,7 @@ public class DoubleCheckActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
     private String nfcUID, nfcTagID,sdlocID, wardName, time;
-    private int timeposition;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +26,16 @@ public class DoubleCheckActivity extends AppCompatActivity {
         Log.d("check", "DoubleCheckActivity");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
-        timeposition = getIntent().getExtras().getInt("timeposition");
+        position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-
+        Log.d("check", "DoubleCheckActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
         initInstance(savedInstanceState);
     }
 
     private void  initInstance(Bundle savedInstanceState){
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
         }
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -59,7 +59,7 @@ public class DoubleCheckActivity extends AppCompatActivity {
             Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
 
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, timeposition, time)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, position, time)).commit();
         }
         super.onNewIntent(intent);
     }

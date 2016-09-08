@@ -86,6 +86,7 @@
             android:id="@+id/btnLogin"
             android:background="@color/colorBlack"
             android:layout_gravity="center"
+            android:text="ลงชื่อเข้าใช้ด้วย Username และ Password"
             android:textColor="@color/colorWhite"
             android:textSize="16sp"
             android:gravity="center"

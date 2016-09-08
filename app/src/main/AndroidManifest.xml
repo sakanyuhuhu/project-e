@@ -30,6 +30,7 @@
         <activity android:name=".activity.PreparationActivity" />
         <activity android:name=".activity.PreparationForPatientActivity" />
         <activity android:name=".activity.DoubleCheckActivity" />
+        <activity android:name=".activity.DoubleCheckForPatientActivity" />
     </application>
 
 </manifest>

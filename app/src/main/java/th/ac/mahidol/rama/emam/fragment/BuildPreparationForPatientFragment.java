@@ -57,7 +57,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildPreparationForPatientAdapter buildPreparationForPatientAdapter;
-    private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();;
+    private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
     private Spinner spinner1;
     private ListDrugCardDao dao;
     private Date datetoDay;
@@ -147,7 +147,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setAdminTimeHour(time);
                 drugCardDao.setDrugUseDate(toDayDate);
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-                drugCardDao.setCheckType("Second Check");
+                drugCardDao.setCheckType("First Check");
 
                 loadMedicalData(drugCardDao);
             }
@@ -156,14 +156,13 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setAdminTimeHour(time);
                 drugCardDao.setDrugUseDate(toDayDate+1);
                 drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-                drugCardDao.setCheckType("Second Check");
+                drugCardDao.setCheckType("First Check");
 
                 loadMedicalData(drugCardDao);
             }
         }
 
         getOnClickSpinner();
-
         btnSave.setOnClickListener(this);
     }
 

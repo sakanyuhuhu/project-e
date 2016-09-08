@@ -67,5 +67,8 @@ public interface ApiService {
     @POST("PatientDrugUpdateService")
     Call<ListDrugCardDao> saveDrugData(@Body ListDrugCardDao drugCardDao);
 
+    @FormUrlEncoded
+    @POST("PatientData")
+    Call<ListPatientDataDao> getPatientDataPrepare(@Field("sdlocId") String sdlocId, @Field("adminTime") String adminTime, @Field("checkType") String checkType, @Field("date") String date);
 
 }

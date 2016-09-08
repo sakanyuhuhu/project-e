@@ -64,15 +64,15 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete()!= null ? dao.getListDrugCardDao().get(position).getComplete().equals("1")?true : false : false);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                dao.getListDrugCardDao().get(position).setComplete( b ? "1":"0");
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1":"0");
                 dao.getListDrugCardDao().get(position).setStatus("normal");
                 dao.getListDrugCardDao().get(position).setCheckNote("0");
                 dao.getListDrugCardDao().get(position).setDescriptionTemplate("");
                 dao.getListDrugCardDao().get(position).setDescription("");
                 dao.getListDrugCardDao().get(position).setIdRadio(R.id.rdb1);
                 dao.getListDrugCardDao().get(position).setStrRadio("");
-                dao.getListDrugCardDao().get(position).setCheckType("Second Check");
+                dao.getListDrugCardDao().get(position).setCheckType("First Check");
             }
         });
 
@@ -156,7 +156,7 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 radioButton = (RadioButton)dialogView.findViewById(selectedId);
                 dao.getListDrugCardDao().get(position).setDescription(txtStatus.getText().toString());
-                dao.getListDrugCardDao().get(position).setCheckType("Second Check");
+                dao.getListDrugCardDao().get(position).setCheckType("First Check");
                 if(chkHold.isChecked() == true) {
                     buildPreparationForPatientListView.setChangeNote();
                     dao.getListDrugCardDao().get(position).setComplete("0");
