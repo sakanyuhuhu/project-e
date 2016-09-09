@@ -12,7 +12,7 @@ public class SplashScreen extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
     long delay_time;
-    long time = 3L;
+    long time = 1L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

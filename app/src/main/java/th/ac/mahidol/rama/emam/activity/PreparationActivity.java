@@ -63,7 +63,7 @@ public class PreparationActivity extends AppCompatActivity {
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
-            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
 
 //            dbHelper = new SQLiteManager(this);
 //            dbHelper.addNFCRegister(nfcTagID);

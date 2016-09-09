@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
-import th.ac.mahidol.rama.emam.view.BuildDoubleCheckListView;
+import th.ac.mahidol.rama.emam.view.BuildAdministrationListView;
 
-public class BuildDoubleCheckAdapter extends BaseAdapter {
+public class BuildAdministrationAdapter extends BaseAdapter {
     private ListPatientDataDao dao;
     private int tricker;
 
@@ -40,8 +40,8 @@ public class BuildDoubleCheckAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 
-        BuildDoubleCheckListView patientListView;
-        patientListView = new BuildDoubleCheckListView(viewGroup.getContext());
+        BuildAdministrationListView patientListView;
+        patientListView = new BuildAdministrationListView(viewGroup.getContext());
         patientListView.setPatient(dao.getPatientDao().get(position).getBedID(), dao.getPatientDao().get(position).getInitialName()+
                 dao.getPatientDao().get(position).getFirstName()+" "+dao.getPatientDao().get(position).getLastName(), dao.getPatientDao().get(position).getMRN(), tricker);
 

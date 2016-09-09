@@ -118,7 +118,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         Log.d("check", "BuildDoubleCheckForPatientFragment sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
 
-        listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
+        listView = (ListView) rootView.findViewById(R.id.lvDoubleForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
         buildDoubleCheckForPatientAdapter = new BuildDoubleCheckForPatientAdapter();
 
@@ -233,7 +233,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnSave){
-            Log.d("check", "check save");
             Boolean checkNull = true;
             for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
                 if(d.getComplete() == null & d.getCheckNote() == null){
@@ -252,6 +251,21 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             }
             if(checkNull) {
                 for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                    if(d.getStrType() != null & d.getStrSize() != null & d.getStrForget() != null)
+                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ผิดขนาด:"+d.getStrSize()+",ลืมจัด:"+d.getStrForget());
+                    else if(d.getStrType() != null & d.getStrSize() != null)
+                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ผิดขนาด:"+d.getStrSize());
+                    else if(d.getStrType() != null & d.getStrForget() != null)
+                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ลืมจัด:"+d.getStrForget());
+                    else if(d.getStrSize() != null & d.getStrForget() != null)
+                        d.setDescriptionTemplate("ผิดขนาด:"+d.getStrSize()+",ลืมจัด:"+d.getStrForget());
+                    else if(d.getStrType() != null)
+                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType());
+                    else if(d.getStrSize() != null)
+                        d.setDescriptionTemplate("ผิดขนาด:"+d.getStrSize());
+                    else if(d.getStrForget() != null)
+                        d.setDescriptionTemplate("ลืมจัด:"+d.getStrForget());
+
                     d.setRFID(RFID);
                     d.setFirstName(firstName);
                     d.setLastName(lastName);
@@ -279,6 +293,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             for(DrugCardDao d : dao.getListDrugCardDao()){
+                Log.d("check", "CHECK TYPE = "+d.getCheckType());
                 if(d.getCheckType().equals("First Check")) {
                     if ((d.getComplete().equals("1")))
                         d.setComplete(null);
@@ -303,7 +318,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "NewDrugLoadCallback Failure " + t);
+            Log.d("check", "SaveDrugLoadCallback Failure " + t);
         }
     }
 

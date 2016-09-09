@@ -4,7 +4,6 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +68,9 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
                 dao.getListDrugCardDao().get(position).setDescription("");
                 dao.getListDrugCardDao().get(position).setStrRadio("");
                 dao.getListDrugCardDao().get(position).setCheckType("Second Check");
+                dao.getListDrugCardDao().get(position).setStrType(null);
+                dao.getListDrugCardDao().get(position).setStrSize(null);
+                dao.getListDrugCardDao().get(position).setStrForget(null);
             }
         });
 
@@ -100,7 +102,10 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
         txtStatusType = (EditText) dialogView.findViewById(R.id.txtStatusType);
         txtStatus = (EditText) dialogView.findViewById(R.id.txtStatus);
 
-        tvDrugName.setText(" " + dao.getListDrugCardDao().get(position).getTradeName() + " " + dao.getListDrugCardDao().get(position).getDose() + " " + dao.getListDrugCardDao().get(position).getUnit());
+        tvDrugName.setText(" " + dao.getListDrugCardDao().get(position).getTradeName() +
+                " " + dao.getListDrugCardDao().get(position).getDose() +
+                " " + dao.getListDrugCardDao().get(position).getUnit());
+
         chkType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,25 +143,23 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
             }
         });
 
-        Log.d("check", "aaaaaa = "+dao.getListDrugCardDao().get(position).getDescriptionTemplate());
         if(dao.getListDrugCardDao().get(position).getStatus() != null){
-            if(dao.getListDrugCardDao().get(position).getStatus().equals("normal")) {
-                dao.getListDrugCardDao().get(position).setComplete("0");
-                Log.d("check", "CHECK = "+chkType.isChecked()+chkType.isChecked()+chkType.isChecked());
-                if(!txtStatusType.getText().equals("")) {
-                    chkType.setChecked(true);
-                    txtStatusType.setEnabled(true);
-                    txtStatusType.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-                }
-//                    chkSize.setChecked(true);
-//                    txtStatusSize.setEnabled(true);
-//                    txtStatusSize.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-//
-//                    chkForget.setChecked(true);
-//                    txtStatusForget.setEnabled(true);
-//                    txtStatusForget.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-
+            if(dao.getListDrugCardDao().get(position).getStrType() != null){
+                chkType.setChecked(true);
+                txtStatusType.setEnabled(true);
+                txtStatusType.setText(dao.getListDrugCardDao().get(position).getStrType());
             }
+            if(dao.getListDrugCardDao().get(position).getStrSize() != null){
+                chkSize.setChecked(true);
+                txtStatusSize.setEnabled(true);
+                txtStatusSize.setText(dao.getListDrugCardDao().get(position).getStrSize());
+            }
+            if(dao.getListDrugCardDao().get(position).getStrForget() != null){
+                chkForget.setChecked(true);
+                txtStatusForget.setEnabled(true);
+                txtStatusForget.setText(dao.getListDrugCardDao().get(position).getStrForget());
+            }
+
         }
 
         if(dao.getListDrugCardDao().get(position).getDescription() != null){
@@ -171,21 +174,20 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
             public void onClick(DialogInterface dialogInterface, int i) {
                 dao.getListDrugCardDao().get(position).setDescription(txtStatus.getText().toString());
                 dao.getListDrugCardDao().get(position).setCheckType("Second Check");
-                dao.getListDrugCardDao().get(position).setDescriptionTemplate("1:"+txtStatusType.getText().toString() +",2:"+txtStatusForget.getText().toString()+",3:"+txtStatusForget.getText().toString());
                 if(chkType.isChecked() == true){
-//                    dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusType.getText().toString());
+                    dao.getListDrugCardDao().get(position).setStrType(txtStatusType.getText().toString());
                     dao.getListDrugCardDao().get(position).setComplete("0");
                     dao.getListDrugCardDao().get(position).setStatus("normal");
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                 }
                 if(chkSize.isChecked() == true){
-//                    dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusSize.getText().toString());
+                    dao.getListDrugCardDao().get(position).setStrSize(txtStatusSize.getText().toString());
                     dao.getListDrugCardDao().get(position).setComplete("0");
                     dao.getListDrugCardDao().get(position).setStatus("normal");
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                 }
                 if(chkForget.isChecked() == true){
-//                    dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusForget.getText().toString());
+                    dao.getListDrugCardDao().get(position).setStrForget(txtStatusForget.getText().toString());
                     dao.getListDrugCardDao().get(position).setComplete("0");
                     dao.getListDrugCardDao().get(position).setStatus("normal");
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
@@ -194,6 +196,11 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                     dao.getListDrugCardDao().get(position).setStatus("normal");
                     dao.getListDrugCardDao().get(position).setComplete("0");
+                }
+                if((chkType.isChecked() == false)&(chkSize.isChecked() == false)&(chkForget.isChecked() == false) & dao.getListDrugCardDao().get(position).getDescription().equals("")){
+                    dao.getListDrugCardDao().get(position).setCheckNote("0");
+                    dao.getListDrugCardDao().get(position).setStatus("normal");
+                    dao.getListDrugCardDao().get(position).setComplete("1");
                 }
                 notifyDataSetChanged();
             }

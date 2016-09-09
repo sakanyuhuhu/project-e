@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvDrugName"
+            android:text=" Drug Name"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chkHold"
+                android:text="Hold"
+                android:layout_width="70dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:text="BP:"
+                android:textSize="16sp"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/txtStatusHoldBP"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:textSize="20sp"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:text=",Heart Rate:"
+                android:textSize="16sp"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/txtStatusHoldHR"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:textSize="20sp"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:text=",CBG:"
+                android:textSize="16sp"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/txtStatusHoldCBG"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:textSize="20sp"
+                android:layout_width="100dp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/rdb1"
+                    android:checked="true"
+                    android:text="ไม่ระบุสาเหตุตามหัวข้อข้างล่าง"
+                    android:layout_width="220dp"
+                    android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/rdb2"
+                    android:text="NPO"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/rdb3"
+                    android:text="คนไข้ปฏิเสธ"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/rdb4"
+                    android:text="คนไข้มีอาการคลื่นไส้อาเจียน"
+                    android:layout_width="250dp"
+                    android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/rdb5"
+                    android:text="แทงเส้นเลือดไม่ได้"
+                    android:layout_width="1500dp"
+                    android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/rdb6"
+                    android:text="แพทย์สั่ง off ณ เวลานั้น"
+                    android:layout_width="250dp"
+                    android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/rdb7"
+                    android:text="ผู้ป่วยไปทำหัตการ"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent" />
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp">
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="300dp">
+                <EditText
+                    android:background="@color/colorWhite"
+                    android:id="@+id/txtStatus"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:gravity="center_vertical"
+                    android:cursorVisible="true"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:scrollbars="vertical"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

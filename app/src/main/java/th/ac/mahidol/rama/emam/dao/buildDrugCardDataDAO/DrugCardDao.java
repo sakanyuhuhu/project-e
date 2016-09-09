@@ -42,6 +42,33 @@ public class DrugCardDao{
     private String wardName;
     private String activityHour;
     private String checkNote;
+    private String strType;
+    private String strSize;
+    private String strForget;
+
+    public String getStrType() {
+        return strType;
+    }
+
+    public void setStrType(String strType) {
+        this.strType = strType;
+    }
+
+    public String getStrSize() {
+        return strSize;
+    }
+
+    public void setStrSize(String strSize) {
+        this.strSize = strSize;
+    }
+
+    public String getStrForget() {
+        return strForget;
+    }
+
+    public void setStrForget(String strForget) {
+        this.strForget = strForget;
+    }
 
     public String getStrRadio() {
         return strRadio;

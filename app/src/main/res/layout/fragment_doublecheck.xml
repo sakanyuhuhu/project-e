@@ -63,7 +63,7 @@
 
         <TextView
             android:id="@+id/tvUserName"
-            android:text="แตะ Smart Card ก่อนการเตรียมยา"
+            android:text="แตะ Smart Card ก่อนการตรวจสอบยา"
             android:textColor="@color/colorRed"
             android:textSize="20sp"
             android:gravity="center"

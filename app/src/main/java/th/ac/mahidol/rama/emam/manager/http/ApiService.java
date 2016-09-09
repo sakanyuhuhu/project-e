@@ -69,6 +69,6 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("PatientData")
-    Call<ListPatientDataDao> getPatientDataPrepare(@Field("sdlocId") String sdlocId, @Field("adminTime") String adminTime, @Field("checkType") String checkType, @Field("date") String date);
+    Call<ListPatientDataDao> getPatientInfo(@Field("sdlocId") String sdlocId, @Field("adminTime") String adminTime, @Field("checkType") String checkType, @Field("date") String date);
 
 }

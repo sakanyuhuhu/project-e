@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.activity;
 
+
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,32 +12,34 @@ import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckFragment;
+import th.ac.mahidol.rama.emam.fragment.BuildAdministrationFragment;
 
-public class DoubleCheckActivity extends AppCompatActivity {
+public class AdministrationActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
-    private String nfcUID, nfcTagID,sdlocID, wardName, time;
+    private String sdlocID, nfcUID, wardName, nfcTagID, time;
     private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_administration);
-        Log.d("check", "DoubleCheckActivity");
+        setContentView(R.layout.activity_preparation);
+
+        initInstance(savedInstanceState);
+
+    }
+
+    private void  initInstance(Bundle savedInstanceState){
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "DoubleCheckActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
-        initInstance(savedInstanceState);
-    }
-
-    private void  initInstance(Bundle savedInstanceState){
+        Log.d("check", "AdministrationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
         }
+
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
@@ -47,19 +50,32 @@ public class DoubleCheckActivity extends AppCompatActivity {
                 startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
             }
         }
+
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("check","DoubleCheckActivity new intent");
+        Log.d("check","AdministrationActivity new intent");
+        boolean checkRegisterNFC;
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
 //            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
 
-            nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, position, time)).commit();
+//            dbHelper = new SQLiteManager(this);
+//            dbHelper.addNFCRegister(nfcTagID);
+//            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
+
+//            if(checkRegisterNFC == true){
+                nfcUID = nfcTagID;
+//                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
+
+//            }
+//            else{
+//                Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
+//            }
         }
         super.onNewIntent(intent);
     }
@@ -80,19 +96,6 @@ public class DoubleCheckActivity extends AppCompatActivity {
         return out;
     }
 
-    private void enableForegroundDispatchSystem(){
-        Intent intent = getIntent();
-        intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        IntentFilter[] intentFilters = new IntentFilter[]{};
-        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
-
-    }
-
-    private void disableForegroundDispatchSystem(){
-        mNfcAdapter.disableForegroundDispatch(this);
-    }
-
     @Override
     protected void onResume() {
         if(mNfcAdapter != null)
@@ -107,5 +110,17 @@ public class DoubleCheckActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    private void enableForegroundDispatchSystem(){
+        Intent intent = getIntent();
+        intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        IntentFilter[] intentFilters = new IntentFilter[]{};
+        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
+
+    }
+
+    private void disableForegroundDispatchSystem(){
+        mNfcAdapter.disableForegroundDispatch(this);
+    }
 
 }
