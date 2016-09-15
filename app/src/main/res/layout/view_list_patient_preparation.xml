@@ -11,8 +11,7 @@
 
         <ImageView
             android:layout_weight="1"
-            android:id="@+id/testnote"
-            android:src="@drawable/note"
+            android:src="@drawable/ramamahidol_hospital"
             android:layout_gravity="center"
             android:layout_width="60dp"
             android:layout_height="60dp" />
@@ -51,7 +50,8 @@
 
         <ImageView
             android:layout_weight="1"
-            android:src="@android:drawable/presence_invisible"
+            android:id="@+id/point"
+            android:src="@drawable/red"
             android:layout_gravity="center"
             android:layout_width="60dp"
             android:layout_height="20dp" />

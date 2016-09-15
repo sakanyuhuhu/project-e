@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
         android:background="@color/colorPrimary">
         <TextView
             android:layout_weight="1"
@@ -21,13 +20,14 @@
             android:textColor="#ffffff" />
         <TextView
             android:layout_weight="1"
-            android:text="ADMINISTRATION"
+            android:text="PREPARATION"
             android:textSize="18sp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffff" />
         <TextView
+            android:id="@+id/tvHistory"
             android:layout_weight="1"
             android:text="HISTORY"
             android:textSize="18sp"
@@ -39,9 +39,9 @@
         <Spinner
             android:id="@+id/spinner2"
             android:layout_weight="1"
-            android:entries="@array/select_arrayshelp"
+            android:entries="@array/select_arrayshelpadmin"
             android:textColor="#ffffff"
-            android:layout_width="match_parent"
+            android:layout_width="700dp"
             android:layout_height="match_parent" />
 
     </LinearLayout>

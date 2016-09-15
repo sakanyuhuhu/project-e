@@ -11,10 +11,12 @@ import th.ac.mahidol.rama.emam.view.TimelineListView;
 public class BuildTimelineAdapter extends BaseAdapter{
     private TimelineDao dao;
     private String[] timeline;
+    private String focustimer;
 
-    public void setDao(String[] timeline, TimelineDao dao){
+    public void setDao(String[] timeline, TimelineDao dao, String focustimer){
         this.timeline = timeline;
         this.dao = dao;
+        this.focustimer = focustimer;
     }
     @Override
     public int getCount() {
@@ -39,7 +41,7 @@ public class BuildTimelineAdapter extends BaseAdapter{
     public View getView(int position, View view, ViewGroup viewGroup) {
         TimelineListView timelineListView;
         timelineListView = new TimelineListView(viewGroup.getContext());
-        timelineListView.setTime(timeline[position] ,(dao.getTimelineDao().get(position).getMrn() == null)? 0 :dao.getTimelineDao().get(position).getMrn().size());
+        timelineListView.setTime(timeline[position] ,(dao.getTimelineDao().get(position).getMrn() == null)? 0 :dao.getTimelineDao().get(position).getMrn().size(), focustimer);
 
         return timelineListView;
     }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
@@ -15,7 +14,6 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 public class BuildAdministrationListView extends BaseCustomViewGroup {
 
     private TextView tvPatient, tvBedNo, tvMrn;
-    private ImageView testnote;
 
     public BuildAdministrationListView(Context context) {
         super(context);
@@ -54,7 +52,6 @@ public class BuildAdministrationListView extends BaseCustomViewGroup {
         tvPatient = (TextView) findViewById(R.id.tvPatient);
         tvBedNo = (TextView) findViewById(R.id.tvBedNo);
         tvMrn = (TextView) findViewById(R.id.tvMrn);
-        testnote = (ImageView) findViewById(R.id.testnote);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -93,10 +90,7 @@ public class BuildAdministrationListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setPatient(String textBedNo, String textPatient, String textMrn, int tricker){
-        if(tricker == 1){
-            testnote.setImageResource(R.drawable.notechange);
-        }
+    public void setPatient(String textBedNo, String textPatient, String textMrn){
         tvPatient.setText(textPatient);
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
         tvMrn.setText("HN: " + textMrn);

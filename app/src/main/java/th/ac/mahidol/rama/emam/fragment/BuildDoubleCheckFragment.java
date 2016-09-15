@@ -40,7 +40,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
     private ListView listView;
     private TextView tvPreparation, tvAdministration, tvUserName, tvTime;
     private BuildDoubleCheckAdapter buildDoubleCheckAdapter;
-    private int timeposition, tricker = 0;
+    private int timeposition;
     private Button btnLogin;
     private Date datetoDay;
 
@@ -155,7 +155,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientdoublecheck",null);
         if(data != null){
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
-            buildDoubleCheckAdapter.setDao(dao, tricker);
+            buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
         }
     }
@@ -166,9 +166,8 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
 
         if(data != null){
             Log.d("check", "loadCacheDao "+ data);
-            tricker = 1;
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
-            buildDoubleCheckAdapter.setDao(dao, tricker);
+            buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -239,7 +238,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             ListPatientDataDao dao = response.body();
             saveCacheDoubleCheckData(dao);
             Log.d("check", "DBC dao.size = "+dao.getPatientDao().size());
-            buildDoubleCheckAdapter.setDao(dao, tricker);
+            buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
         }
 

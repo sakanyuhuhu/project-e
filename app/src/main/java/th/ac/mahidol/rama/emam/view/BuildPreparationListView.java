@@ -15,7 +15,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 public class BuildPreparationListView extends BaseCustomViewGroup {
 
     private TextView tvPatient, tvBedNo, tvMrn;
-    private ImageView testnote;
+    private ImageView point;
 
     public BuildPreparationListView(Context context) {
         super(context);
@@ -54,7 +54,7 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
         tvPatient = (TextView) findViewById(R.id.tvPatient);
         tvBedNo = (TextView) findViewById(R.id.tvBedNo);
         tvMrn = (TextView) findViewById(R.id.tvMrn);
-        testnote = (ImageView) findViewById(R.id.testnote);
+        point = (ImageView) findViewById(R.id.point);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -93,10 +93,7 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setPatient(String textBedNo, String textPatient, String textMrn, int tricker){
-        if(tricker == 1){
-            testnote.setImageResource(R.drawable.notechange);
-        }
+    public void setPatient(String textBedNo, String textPatient, String textMrn){
         tvPatient.setText(textPatient);
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
         tvMrn.setText("HN: " + textMrn);

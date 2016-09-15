@@ -56,26 +56,14 @@ public class AdministrationActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.d("check","AdministrationActivity new intent");
-        boolean checkRegisterNFC;
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
-//            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
+            nfcUID = nfcTagID;
+//          Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
 
-//            dbHelper = new SQLiteManager(this);
-//            dbHelper.addNFCRegister(nfcTagID);
-//            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
-
-//            if(checkRegisterNFC == true){
-                nfcUID = nfcTagID;
-//                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
-
-//            }
-//            else{
-//                Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
-//            }
         }
         super.onNewIntent(intent);
     }

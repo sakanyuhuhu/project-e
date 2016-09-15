@@ -159,7 +159,7 @@ public class PreparationForPatientAdapter extends BaseAdapter {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View dialogView = inflater.inflate(R.layout.custom_dialog_prepare, null);
-                dialogView.setBackgroundResource(R.color.colorPeachPuff);
+                dialogView.setBackgroundResource(R.color.colorLemonChiffon);
 
                 tvDrugName = (TextView)dialogView.findViewById(R.id.tvDrugName);
                 tvDrugName.setText(" "+strDrugName.get(position)+" "+strDosage.get(position)+" "+strUnit.get(position));

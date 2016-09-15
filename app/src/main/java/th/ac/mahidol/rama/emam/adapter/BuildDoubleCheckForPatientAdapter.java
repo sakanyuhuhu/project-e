@@ -159,7 +159,6 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
                 txtStatusForget.setEnabled(true);
                 txtStatusForget.setText(dao.getListDrugCardDao().get(position).getStrForget());
             }
-
         }
 
         if(dao.getListDrugCardDao().get(position).getDescription() != null){
@@ -207,6 +206,6 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
         });
         builder.setNegativeButton("ยกเลิก",null);
         builder.create();
-        builder.show();
+        builder.show().getWindow().setLayout(1200,1250);
     }
 }

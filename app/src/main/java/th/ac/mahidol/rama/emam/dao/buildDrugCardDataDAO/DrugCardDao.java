@@ -45,6 +45,33 @@ public class DrugCardDao{
     private String strType;
     private String strSize;
     private String strForget;
+    private String strBP;
+    private String strHR;
+    private String strCBG;
+
+    public String getStrBP() {
+        return strBP;
+    }
+
+    public void setStrBP(String strBP) {
+        this.strBP = strBP;
+    }
+
+    public String getStrHR() {
+        return strHR;
+    }
+
+    public void setStrHR(String strHR) {
+        this.strHR = strHR;
+    }
+
+    public String getStrCBG() {
+        return strCBG;
+    }
+
+    public void setStrCBG(String strCBG) {
+        this.strCBG = strCBG;
+    }
 
     public String getStrType() {
         return strType;

@@ -10,11 +10,9 @@ import th.ac.mahidol.rama.emam.view.BuildAdministrationListView;
 
 public class BuildAdministrationAdapter extends BaseAdapter {
     private ListPatientDataDao dao;
-    private int tricker;
 
-    public void setDao(ListPatientDataDao dao, int tricker){
+    public void setDao(ListPatientDataDao dao){
         this.dao = dao;
-        this.tricker = tricker;
 
     }
 
@@ -43,7 +41,7 @@ public class BuildAdministrationAdapter extends BaseAdapter {
         BuildAdministrationListView patientListView;
         patientListView = new BuildAdministrationListView(viewGroup.getContext());
         patientListView.setPatient(dao.getPatientDao().get(position).getBedID(), dao.getPatientDao().get(position).getInitialName()+
-                dao.getPatientDao().get(position).getFirstName()+" "+dao.getPatientDao().get(position).getLastName(), dao.getPatientDao().get(position).getMRN(), tricker);
+                dao.getPatientDao().get(position).getFirstName()+" "+dao.getPatientDao().get(position).getLastName(), dao.getPatientDao().get(position).getMRN());
 
         return patientListView;
     }

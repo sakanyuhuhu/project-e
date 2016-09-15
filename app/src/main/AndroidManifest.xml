@@ -33,6 +33,7 @@
         <activity android:name=".activity.DoubleCheckForPatientActivity" />
         <activity android:name=".activity.AdministrationActivity" />
         <activity android:name=".activity.AdministrationForPatientActivity" />
+        <activity android:name=".activity.HistoryPrepareActivity"/>
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
@@ -20,6 +21,7 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
     private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
     private CheckBox chkCheckDrug;
     private ImageView imgvNote;
+    private LinearLayout bg;
 
     public BuildPreparationForPatientListView(Context context) {
         super(context);
@@ -54,6 +56,7 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
     }
 
     private void initInstances() {
+        bg = (LinearLayout) findViewById(R.id.bg);
         tvDrugName = (TextView) findViewById(R.id.tvDrugName);
         tvDosage = (TextView) findViewById(R.id.tvDosage);
         tvType = (TextView) findViewById(R.id.tvType);
@@ -88,16 +91,45 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
     }
 
     public void setDrugName(DrugCardDao dao){
-        tvDrugName.setText(String.valueOf(dao.getTradeName()));
-        tvDosage.setText("Dosage: " + dao.getDose()+" "+ String.valueOf(dao.getUnit()));
-        if(dao.getAdminType().equals("C")) {
-            tvType.setText("Type: Continue");
-        }else{
-            tvType.setText("Type: One day");
+        if(dao.getRoute().equals("PO")) {
+            bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            if (dao.getAdminType().equals("C")) {
+                tvType.setText("Type: Continue");
+            } else {
+                tvType.setText("Type: One day");
+            }
+            tvRoute.setText("Route: " + dao.getRoute());
+            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvSite.setText("Site: " + dao.getSite());
         }
-        tvRoute.setText("Route: " + dao.getRoute());
-        tvFrequency.setText("Frequency: " + dao.getFrequency()+" ("+dao.getAdminTime()+")");
-        tvSite.setText("Site: " + dao.getSite());
+        else if(dao.getRoute().equals("IV")){
+            bg.setBackgroundColor(getResources().getColor(R.color.colorPink));
+            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            if (dao.getAdminType().equals("C")) {
+                tvType.setText("Type: Continue");
+            } else {
+                tvType.setText("Type: One day");
+            }
+            tvRoute.setText("Route: " + dao.getRoute());
+            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvSite.setText("Site: " + dao.getSite());
+        }
+        else {
+            bg.setBackgroundColor(getResources().getColor(R.color.colorBluesky));
+            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            if (dao.getAdminType().equals("C")) {
+                tvType.setText("Type: Continue");
+            } else {
+                tvType.setText("Type: One day");
+            }
+            tvRoute.setText("Route: " + dao.getRoute());
+            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvSite.setText("Site: " + dao.getSite());
+        }
     }
 
     public CheckBox isCheck(){

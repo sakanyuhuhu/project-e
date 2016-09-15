@@ -74,7 +74,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                 dao.getListDrugCardDao().get(position).setIdRadio(R.id.rdb1);
                 dao.getListDrugCardDao().get(position).setStrRadio("");
                 dao.getListDrugCardDao().get(position).setCheckType("Administration");
-                Log.d("check", "Complete = "+dao.getListDrugCardDao().get(position).getComplete());
             }
         });
 
@@ -94,8 +93,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View dialogView = inflater.inflate(R.layout.custom_dialog_administration, null);
         dialogView.setBackgroundResource(R.color.colorLemonChiffon);
-
-//        Dialog d = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
 
         tvDrugName = (TextView) dialogView.findViewById(R.id.tvDrugName);
         chkHold = (CheckBox) dialogView.findViewById(R.id.chkHold);
@@ -130,6 +127,7 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
         Log.d("check", "Status = "+dao.getListDrugCardDao().get(position).getStatus());
         Log.d("check", "strRadio = "+dao.getListDrugCardDao().get(position).getStrRadio());
         Log.d("check", "getDescription = "+dao.getListDrugCardDao().get(position).getDescription());
+        Log.d("check", "getDescriptionTemplate = "+dao.getListDrugCardDao().get(position).getDescriptionTemplate());
         if(dao.getListDrugCardDao().get(position).getStatus() != null){
             if(dao.getListDrugCardDao().get(position).getStatus().equals("hold")) {
                 chkHold.setChecked(true);
@@ -163,6 +161,7 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
             else if (dao.getListDrugCardDao().get(position).getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
                 radioGroup.check(R.id.rdb7);
         }
+
         builder.setView(dialogView);
         builder.setTitle("บันทึกข้อความสำหรับบริหารยา");
         builder.setPositiveButton("บันทึก", new DialogInterface.OnClickListener() {
@@ -177,8 +176,11 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                     dao.getListDrugCardDao().get(position).setComplete("0");
                     dao.getListDrugCardDao().get(position).setStatus("hold");
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
+                    dao.getListDrugCardDao().get(position).setStrBP(txtStatusHoldBP.getText().toString());
+                    dao.getListDrugCardDao().get(position).setStrHR(txtStatusHoldHR.getText().toString());
+                    dao.getListDrugCardDao().get(position).setStrCBG(txtStatusHoldCBG.getText().toString());
+//                    dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHoldBP.getText().toString()+txtStatusHoldHR.getText().toString()+txtStatusHoldCBG.getText().toString());
                     if (radioButton.isChecked()) {
-                        dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHoldBP.getText().toString()+txtStatusHoldHR.getText().toString()+txtStatusHoldCBG.getText().toString());
                         if (radioButton.getId() == R.id.rdb1) {
                             dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                             dao.getListDrugCardDao().get(position).setStrRadio("");
@@ -273,6 +275,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
         });
         builder.setNegativeButton("ยกเลิก",null);
         builder.create();
-        builder.show();
+        builder.show().getWindow().setLayout(1200,1250);
     }
 }

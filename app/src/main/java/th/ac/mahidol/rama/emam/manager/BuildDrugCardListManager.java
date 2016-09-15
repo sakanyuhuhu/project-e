@@ -98,6 +98,8 @@ public class BuildDrugCardListManager {
         editor.putString("drugdataperson",json);
         editor.apply();
 
+//        Log.d("check", "DrugLoadCallback = "+json);
+
     }
 
     private void loadCache(){
@@ -108,13 +110,4 @@ public class BuildDrugCardListManager {
         dao = new Gson().fromJson(data,ListDrugCardDao.class);
     }
 
-    public void updateCache(){
-        ListDrugCardDao cacheDao = new ListDrugCardDao();
-        if(daoPO != null & daoPO.getListDrugCardDao() != null & daoIV != null & daoIV.getListDrugCardDao() != null & daoOTHER != null & daoOTHER.getListDrugCardDao() != null) {
-            cacheDao.getListDrugCardDao().addAll(daoPO.getListDrugCardDao());
-            cacheDao.getListDrugCardDao().addAll(daoIV.getListDrugCardDao());
-            cacheDao.getListDrugCardDao().addAll(daoOTHER.getListDrugCardDao());
-        }
-        setDao(cacheDao);
-    }
 }

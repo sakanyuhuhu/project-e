@@ -35,7 +35,7 @@ import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAdministrationFragment extends Fragment implements View.OnClickListener{
     private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate;
-    private int timeposition, tricker = 0;
+    private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvPreparation;
     private Button btnLogin;
@@ -139,9 +139,8 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         String data = prefs.getString("patientadministration",null);
 
         if(data != null){
-            tricker = 1;
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
-            buildAdministrationAdapter.setDao(dao, tricker);
+            buildAdministrationAdapter.setDao(dao);
             listView.setAdapter(buildAdministrationAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -213,7 +212,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             ListPatientDataDao dao = response.body();
             saveCachePatientAdminData(dao);
             Log.d("check", "Admin dao.size = "+dao.getPatientDao().size());
-            buildAdministrationAdapter.setDao(dao, tricker);
+            buildAdministrationAdapter.setDao(dao);
             listView.setAdapter(buildAdministrationAdapter);
         }
 

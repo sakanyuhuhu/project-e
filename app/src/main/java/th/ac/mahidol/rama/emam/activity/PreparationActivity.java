@@ -32,6 +32,7 @@ public class PreparationActivity extends AppCompatActivity {
     }
 
     private void  initInstance(Bundle savedInstanceState){
+        nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");

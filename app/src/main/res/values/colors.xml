@@ -6,7 +6,12 @@
     <color name="colorAccent">#009688</color>
     <color name="colorWhite">#ffffffff</color>
     <color name="colorRed">#cc0000</color>
-    <color name="colorNavajoWhite">#FFDEAD</color>
-    <color name="colorPeachPuff">#FFDAB9</color>
-    <color name="colorLemonChiffon">#FFFACD</color>
+    <color name="colorBluesky">#E8F7FC</color>
+    <color name="colorPink"> #FCEEFB</color>
+    <color name="colorLemonChiffon">#FFFBF3CC</color>
+    <color name="colorOrange">#FACFA6</color>
+    <color name="colorPrimaryWhite">#B4E3DA</color>
+    <color name="colorGray">#EBEBEB</color>
+    <color name="colorBlue">#A7DFF0</color>
+    <color name="colorRedwhite">#EE6464</color>
 </resources>

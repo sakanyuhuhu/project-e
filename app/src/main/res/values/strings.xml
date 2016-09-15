@@ -14,11 +14,17 @@
         <item>อื่นๆ</item>
     </string-array>
 
-    <string-array name="select_arrayshelp">
+    <string-array name="select_arrayshelpfirst">
         <item>เครื่องมือช่วยเหลือ</item>
         <item>เลือกยาทั้งหมด</item>
         <item>เพิ่มบันทึกข้อความ NPO</item>
         <item>เพิ่มยา PRN</item>
         <item>เพิ่มยาที่ไม่บริหารก่อนหน้านี้</item>
+    </string-array>
+
+    <string-array name="select_arrayshelpadmin">
+        <item>เครื่องมือช่วยเหลือ</item>
+        <item>เลือกยาทั้งหมด</item>
+        <item>เพิ่มบันทึกข้อความ NPO</item>
     </string-array>
 </resources>

@@ -2,7 +2,6 @@ package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,10 +24,12 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildTimelineFragment extends Fragment {
-    private String sdlocID, wardName;
+    private String sdlocID, wardName, focustimer;
     private String[] listTimeline = {"0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "0:00", "1:00", "2:00"};
     private ListView listView;
     private BuildTimelineAdapter buildTimelineAdapter;
+    private String currentTime[], dateToday[], year[];
+    private TextView tvDateToday;
 
     public BuildTimelineFragment() {
         super();
@@ -41,7 +46,7 @@ public class BuildTimelineFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init(savedInstanceState);
 
@@ -62,9 +67,23 @@ public class BuildTimelineFragment extends Fragment {
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-
+        tvDateToday = (TextView) rootView.findViewById(R.id.tvDateToday);
         listView = (ListView) rootView.findViewById(R.id.lvTimelineAdapter);
         buildTimelineAdapter = new BuildTimelineAdapter();
+
+        dateToday = DateFormat.getDateInstance(0).format(new Date()).split("ที่");
+        currentTime = DateFormat.getTimeInstance().format(new Date()).split(":");
+        if(currentTime[0].equals("00")|currentTime[0].equals("01")|currentTime[0].equals("02")|currentTime[0].equals("03")|currentTime[0].equals("04")|currentTime[0].equals("05")|
+                currentTime[0].equals("06")|currentTime[0].equals("07")|currentTime[0].equals("08")|currentTime[0].equals("09")){
+            focustimer = currentTime[0].substring(1);
+            Log.d("check", "focustimer = "+ focustimer);
+        }
+        else {
+            focustimer = currentTime[0];
+            Log.d("check", "focustimer = "+ focustimer);
+        }
+        year = dateToday[1].split("ค.ศ.");
+        tvDateToday.setText(dateToday[0]+","+year[0]+","+year[1]);
 
         loadTimeline();
     }
@@ -91,11 +110,11 @@ public class BuildTimelineFragment extends Fragment {
         public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
             TimelineDao dao = response.body();
             wardName = getArguments().getString("wardname");
-            buildTimelineAdapter.setDao(listTimeline, dao);
+            buildTimelineAdapter.setDao(listTimeline, dao, focustimer);
             listView.setAdapter(buildTimelineAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                     Intent intent = new Intent(getContext(), PreparationActivity.class);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);

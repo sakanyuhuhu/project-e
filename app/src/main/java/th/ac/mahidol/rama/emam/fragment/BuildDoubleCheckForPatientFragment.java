@@ -191,8 +191,8 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         call.enqueue(new DrugLoadCallback());
     }
 
-    private void saveDrugData(ListDrugCardDao drugCardDao){
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().saveDrugData(drugCardDao);
+    private void updateDrugData(ListDrugCardDao drugCardDao){
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().updateDrugData(drugCardDao);
         call.enqueue(new SaveDrugDataCallback());
     }
 
@@ -235,15 +235,30 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         if(view.getId() == R.id.btnSave){
             Boolean checkNull = true;
             for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                Log.d("check", "Complete = "+d.getComplete() + " /Note = "+d.getCheckNote());
                 if(d.getComplete() == null & d.getCheckNote() == null){
                     d.setComplete("0");
                     d.setCheckNote("0");
                 }
-                if(d.getComplete().equals("1") & d.getCheckNote() == null)
+                else if(d.getComplete().equals("1") & d.getCheckNote() == null) {
                     d.setCheckNote("0");
-
-                if(d.getComplete() == null & d.getCheckNote().equals("1"))
+                    d.setComplete("1");
+                }
+                else if(d.getComplete() == null & d.getCheckNote() != null) {
                     d.setComplete("0");
+                    if(d.getCheckNote().equals("0"))
+                        d.setCheckNote("0");
+                    else
+                        d.setCheckNote("1");
+                }
+                else if(d.getComplete().equals("0") & d.getCheckNote() == null) {
+                    d.setComplete("0");
+                    d.setCheckNote("1");//check again
+                }
+                else if(d.getComplete() == null & d.getCheckNote().equals("0")) {
+                    d.setComplete("1");//check again
+                    d.setCheckNote("0");
+                }
 
                 if(d.getComplete().equals("0") & d.getCheckNote().equals("0"))
                     checkNull = false;
@@ -251,6 +266,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             }
             if(checkNull) {
                 for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+//                    wait p'farm edit in service
                     if(d.getStrType() != null & d.getStrSize() != null & d.getStrForget() != null)
                         d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ผิดขนาด:"+d.getStrSize()+",ลืมจัด:"+d.getStrForget());
                     else if(d.getStrType() != null & d.getStrSize() != null)
@@ -273,7 +289,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                     d.setActualAdmin(dateActualAdmin);
                     d.setActivityHour(time);
                 }
-                saveDrugData(buildDrugCardListManager.getDaoAll());
+                updateDrugData(buildDrugCardListManager.getDaoAll());
                 Log.d("check", "Saved Status " + checkNull);
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             }
@@ -295,8 +311,13 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             for(DrugCardDao d : dao.getListDrugCardDao()){
                 Log.d("check", "CHECK TYPE = "+d.getCheckType());
                 if(d.getCheckType().equals("First Check")) {
+                    Log.d("check", "Complete = "+d.getComplete());
                     if ((d.getComplete().equals("1")))
                         d.setComplete(null);
+                    else {
+                        d.setDescription(null);
+                        d.setDescriptionTemplate(null);
+                    }
                 }
             }
             buildDrugCardListManager.setDao(dao);
@@ -348,8 +369,8 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
 
-            SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientintdata",null);
+            SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientdoublecheck",null);
             if(data != null){
                 ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
                 Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());

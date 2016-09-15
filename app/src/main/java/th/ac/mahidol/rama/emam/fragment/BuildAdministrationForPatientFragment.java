@@ -59,7 +59,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildAdministrationForPatientAdapter buildAdministrationForPatientAdapter;
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
-    private Spinner spinner1;
+    private Spinner spinner1, spinner2;
     private ListDrugCardDao dao;
     private Date datetoDay;
 
@@ -124,6 +124,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
+        spinner2 = (Spinner) rootView.findViewById(R.id.spinner2);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
 
         datetoDay = new Date();
@@ -141,8 +142,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
 
         tvTime.setText(time);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientintdata",null);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
+        String data = prefs.getString("patientadministration",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
             Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
@@ -168,7 +169,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             }
         }
 
-        getOnClickSpinner();
+        getOnClickSpinnerDrugRoute();
+        getOnClickSpinnerHelp();
         btnSave.setOnClickListener(this);
     }
 
@@ -190,16 +192,16 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         call.enqueue(new DrugLoadCallback());
     }
 
-    private void saveDrugData(ListDrugCardDao drugCardDao){
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().saveDrugData(drugCardDao);
+    private void updateDrugData(ListDrugCardDao drugCardDao){
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().updateDrugData(drugCardDao);
         call.enqueue(new SaveDrugDataCallback());
     }
 
-    private void getOnClickSpinner(){
+    private void getOnClickSpinnerDrugRoute(){
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String selectedItem = adapterView.getItemAtPosition(position).toString();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
 
                 if(selectedItem.equals("ทั้งหมด") & dao!=null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
@@ -229,24 +231,85 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         });
     }
 
+    private void getOnClickSpinnerHelp(){
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if(selectedItem.equals("เลือกยาทั้งหมด")){
+                    Log.d("check", "เลือกยาทั้งหมด");
+                    for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                        d.setComplete("1");
+                        d.setCheckNote("0");
+                        d.setStatus("normal");
+                        d.setDescriptionTemplate("");
+                        d.setDescription("");
+                        d.setIdRadio(R.id.rdb1);
+                        d.setStrRadio("");
+                        d.setCheckType("Administration");
+                    }
+                    buildAdministrationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
+                    listView.setAdapter(buildAdministrationForPatientAdapter);
+                }
+                else if(selectedItem.equals("เพิ่มบันทึกข้อความ NPO")){
+                    Log.d("check", "เพิ่มบันทึกข้อความ NPO");
+                    for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                        d.setComplete("0");
+                        d.setCheckNote("1");
+                        d.setStatus("normal");
+                        d.setDescriptionTemplate("");
+                        d.setDescription("");
+                        d.setIdRadio(R.id.rdb2);
+                        d.setStrRadio("NPO");
+                        d.setCheckType("Administration");
+                    }
+                    buildAdministrationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
+                    listView.setAdapter(buildAdministrationForPatientAdapter);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnSave){
             Boolean checkNull = true;
             for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                Log.d("check", "Complete = "+d.getComplete() + " /Note = "+d.getCheckNote());
                 if(d.getComplete() == null & d.getCheckNote() == null){
                     d.setComplete("0");
                     d.setCheckNote("0");
                 }
-                if(d.getComplete().equals("1") & d.getCheckNote() == null)
+                else if(d.getComplete().equals("1") & d.getCheckNote() == null) {
                     d.setCheckNote("0");
-
-                if(d.getComplete() == null & d.getCheckNote().equals("1"))
+                    d.setComplete("1");
+                }
+                else if(d.getComplete() == null & d.getCheckNote() != null) {
                     d.setComplete("0");
+                    if(d.getCheckNote().equals("0"))
+                        d.setCheckNote("0");
+                    else
+                        d.setCheckNote("1");
+                }
+                else if(d.getComplete().equals("0") & d.getCheckNote() == null) {
+                    d.setComplete("0");
+                    if(d.getStrRadio().equals("NPO"))
+                        d.setCheckNote("1");
+                    else
+                        d.setCheckNote("0");
+                }
+                else if(d.getComplete() == null & d.getCheckNote().equals("0")) {
+                    d.setComplete("0");
+                    d.setCheckNote("0");
+                }
 
                 if(d.getComplete().equals("0") & d.getCheckNote().equals("0"))
                     checkNull = false;
-
             }
             if(checkNull) {
                 for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
@@ -258,7 +321,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                     d.setActivityHour(time);
                 }
 
-//                saveDrugData(buildDrugCardListManager.getDaoAll());
+                updateDrugData(buildDrugCardListManager.getDaoAll());
                 Log.d("check", "Saved Status " + checkNull);
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             }
@@ -283,6 +346,12 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 if(d.getCheckType().equals("Second Check")) {
                     if ((d.getComplete().equals("1")))
                         d.setComplete(null);
+                    else{
+                        d.setDescriptionTemplate(null);
+                        d.setDescription(null);
+                        d.setStrRadio(null);
+                    }
+
                 }
             }
             buildDrugCardListManager.setDao(dao);
@@ -336,8 +405,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
 
-            SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientintdata",null);
+            SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientadministration",null);
             if(data != null){
                 ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
                 Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
