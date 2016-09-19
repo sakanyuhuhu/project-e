@@ -381,8 +381,21 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
+            for(DrugCardDao d : dao.getListDrugCardDao()){
+                if(d.getDescriptionTemplate() != null){
+                    String[] strRadio = d.getDescriptionTemplate().split(",");
+                    if (strRadio.length == 1) {
+                        d.setDescriptionTemplate(strRadio[0]);
+                    } else if (strRadio.length == 2) {
+                        d.setDescriptionTemplate(strRadio[0]);
+                        d.setStrRadio(strRadio[1]);
+                    }
+                }
+            }
             buildDrugCardListManager.setDao(dao);
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+
+
         }
 
         @Override

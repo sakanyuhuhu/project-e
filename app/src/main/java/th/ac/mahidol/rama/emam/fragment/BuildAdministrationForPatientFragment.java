@@ -298,13 +298,11 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 }
                 else if(d.getComplete().equals("0") & d.getCheckNote() == null) {
                     d.setComplete("0");
-                    if(d.getStrRadio().equals("NPO"))
-                        d.setCheckNote("1");
-                    else
-                        d.setCheckNote("0");
+                    d.setCheckNote("1");
+
                 }
                 else if(d.getComplete() == null & d.getCheckNote().equals("0")) {
-                    d.setComplete("0");
+                    d.setComplete("1");
                     d.setCheckNote("0");
                 }
 
@@ -313,6 +311,24 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             }
             if(checkNull) {
                 for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
+                    Log.d("check", "Hold:BP " + d.getStrBP() + "|Heart Rate " + d.getStrHR() + "|CBG " + d.getStrCBG());
+                    if (d.getStrBP() != null & d.getStrHR() != null & d.getStrCBG() != null) {
+                        d.setDescriptionTemplate("Hold:BP " + d.getStrBP() + "|Heart Rate " + d.getStrHR() + "|CBG " + d.getStrCBG());
+                    } else if (d.getStrBP() == null & d.getStrHR() == null & d.getStrCBG() != null) {
+                        d.setDescriptionTemplate("Hold:CBG " + d.getStrCBG());
+                    } else if (d.getStrBP() == null & d.getStrHR() != null & d.getStrCBG() != null) {
+                        d.setDescriptionTemplate("Hold:Heart Rate " + d.getStrHR() + "|CBG " + d.getStrCBG());
+                    } else if (d.getStrBP() == null & d.getStrHR() != null & d.getStrCBG() == null){
+                        d.setDescriptionTemplate("Hold:Heart Rate " + d.getStrHR());
+                    }else if(d.getStrBP() != null & d.getStrHR() == null & d.getStrCBG() == null) {
+                        d.setDescriptionTemplate("Hold:BP " + d.getStrBP());
+                    }else if(d.getStrBP() != null & d.getStrHR() != null & d.getStrCBG() == null) {
+                        d.setDescriptionTemplate("Hold:BP " + d.getStrBP() + "|Heart Rate " + d.getStrHR());
+                    }else if(d.getStrBP() != null & d.getStrHR() == null & d.getStrCBG() != null) {
+                        d.setDescriptionTemplate("Hold:BP " + d.getStrBP() + "|CBG " + d.getStrCBG());
+                    }else if(d.getStrBP() == null & d.getStrHR() == null & d.getStrCBG() == null) {
+                        d.setDescriptionTemplate("");
+                    }
                     d.setRFID(RFID);
                     d.setFirstName(firstName);
                     d.setLastName(lastName);
@@ -344,14 +360,66 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             for(DrugCardDao d : dao.getListDrugCardDao()){
                 Log.d("check", "CHECK TYPE = "+d.getCheckType());
                 if(d.getCheckType().equals("Second Check")) {
-                    if ((d.getComplete().equals("1")))
+                    if (d.getComplete().equals("1"))
                         d.setComplete(null);
-                    else{
+                    else {
                         d.setDescriptionTemplate(null);
                         d.setDescription(null);
                         d.setStrRadio(null);
                     }
+                }
+                else {
+                    if(d.getDescriptionTemplate() != null){
+                        Log.d("check", "DescriptionTemplate = "+d.getDescriptionTemplate());
+                        String[] strRadio = d.getDescriptionTemplate().split(",");
+                        if(strRadio.length == 1){
+                            String[] strHold1 = strRadio[0].split(":");
+                            Log.d("check", "strHold1 = "+strHold1.length);
+                            if(strHold1.length > 1) {
+                                String[] strHold2 = strHold1[1].split("\\|");
+                                Log.d("check", "strHold2 = " + strHold2.length);
+                                String[] bp = strHold2[0].split("\\s");
+                                if (bp.length == 1)
+                                    d.setStrBP("");
+                                else
+                                    d.setStrBP(bp[1]);
 
+                                String[] hr = strHold2[1].split("\\s");
+                                if (hr.length == 2)
+                                    d.setStrHR("");
+                                else
+                                    d.setStrHR(hr[2]);
+
+                                String[] cbg = strHold2[2].split("\\s");
+                                if (cbg.length == 1)
+                                    d.setStrCBG("");
+                                else
+                                    d.setStrCBG(cbg[1]);
+                            }
+                        }
+                        else if (strRadio.length == 2) {
+                            d.setStrRadio(strRadio[1]);
+                            String[] strHold1 = strRadio[0].split(":");
+                            String[] strHold2 = strHold1[1].split("\\|");
+                            String[] bp = strHold2[0].split("\\s");
+                            if(bp.length == 1)
+                                d.setStrBP("");
+                            else
+                                d.setStrBP(bp[1]);
+
+                            String[] hr = strHold2[1].split("\\s");
+                            if(hr.length == 2)
+                                d.setStrHR("");
+                            else
+                                d.setStrHR(hr[2]);
+
+                            String[] cbg = strHold2[2].split("\\s");
+                            if(cbg.length == 1)
+                                d.setStrCBG("");
+                            else
+                                d.setStrCBG(cbg[1]);
+                        }
+                    }
                 }
             }
             buildDrugCardListManager.setDao(dao);

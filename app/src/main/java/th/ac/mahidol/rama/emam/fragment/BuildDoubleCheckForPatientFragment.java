@@ -253,10 +253,10 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 }
                 else if(d.getComplete().equals("0") & d.getCheckNote() == null) {
                     d.setComplete("0");
-                    d.setCheckNote("1");//check again
+                    d.setCheckNote("1");
                 }
                 else if(d.getComplete() == null & d.getCheckNote().equals("0")) {
-                    d.setComplete("1");//check again
+                    d.setComplete("1");
                     d.setCheckNote("0");
                 }
 
@@ -265,22 +265,24 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
             }
             if(checkNull) {
-                for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
-//                    wait p'farm edit in service
-                    if(d.getStrType() != null & d.getStrSize() != null & d.getStrForget() != null)
-                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ผิดขนาด:"+d.getStrSize()+",ลืมจัด:"+d.getStrForget());
-                    else if(d.getStrType() != null & d.getStrSize() != null)
-                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ผิดขนาด:"+d.getStrSize());
-                    else if(d.getStrType() != null & d.getStrForget() != null)
-                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType()+",ลืมจัด:"+d.getStrForget());
-                    else if(d.getStrSize() != null & d.getStrForget() != null)
-                        d.setDescriptionTemplate("ผิดขนาด:"+d.getStrSize()+",ลืมจัด:"+d.getStrForget());
-                    else if(d.getStrType() != null)
-                        d.setDescriptionTemplate("ผิดชนิด:"+d.getStrType());
-                    else if(d.getStrSize() != null)
-                        d.setDescriptionTemplate("ผิดขนาด:"+d.getStrSize());
-                    else if(d.getStrForget() != null)
-                        d.setDescriptionTemplate("ลืมจัด:"+d.getStrForget());
+                for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
+                    if (d.getStrType() != null & d.getStrSize() != null & d.getStrForget() != null) {
+                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ผิดขนาด:" + d.getStrSize() + ",ลืมจัด:" + d.getStrForget());
+                    } else if (d.getStrType() == null & d.getStrSize() == null & d.getStrForget() != null) {
+                        d.setDescriptionTemplate("ลืมจัด:" + d.getStrForget());
+                    } else if (d.getStrType() == null & d.getStrSize() != null & d.getStrForget() != null) {
+                        d.setDescriptionTemplate("ผิดขนาด:" + d.getStrSize() + ",ลืมจัด:" + d.getStrForget());
+                    } else if (d.getStrType() == null & d.getStrSize() != null & d.getStrForget() == null){
+                        d.setDescriptionTemplate("ผิดขนาด:" + d.getStrSize());
+                    }else if(d.getStrType() != null & d.getStrSize() == null & d.getStrForget() == null) {
+                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType());
+                    }else if(d.getStrType() != null & d.getStrSize() != null & d.getStrForget() == null) {
+                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ผิดขนาด:" + d.getStrSize());
+                    }else if(d.getStrType() != null& d.getStrSize() == null & d.getStrForget() != null) {
+                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ลืมจัด:" + d.getStrForget());
+                    }else if(d.getStrType() == null & d.getStrSize() == null & d.getStrForget() == null) {
+                        d.setDescriptionTemplate("");
+                    }
 
                     d.setRFID(RFID);
                     d.setFirstName(firstName);
@@ -317,6 +319,121 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                     else {
                         d.setDescription(null);
                         d.setDescriptionTemplate(null);
+                    }
+                }
+                else{
+                    if(d.getDescriptionTemplate() != null){
+                        String[] strCheckbox1 = d.getDescriptionTemplate().split(",");
+                        if (strCheckbox1.length == 1) {
+                            String[] strCheckbox2 = strCheckbox1[0].split(":");
+                            if(strCheckbox2.length > 1) {
+                                if (strCheckbox2[0].equals("ผิดชนิด"))
+                                    d.setStrType(strCheckbox2[1]);
+                                else if (strCheckbox2[0].equals("ผิดขนาด"))
+                                    d.setStrSize(strCheckbox2[1]);
+                                else if (strCheckbox2[0].equals("ลืมจัด"))
+                                    d.setStrForget(strCheckbox2[1]);
+                            }
+                            else {
+                                if (strCheckbox2[0].equals("ผิดชนิด"))
+                                    d.setStrType("");
+                                else if (strCheckbox2[0].equals("ผิดขนาด"))
+                                    d.setStrSize("");
+                                else if (strCheckbox2[0].equals("ลืมจัด"))
+                                    d.setStrForget("");
+                            }
+
+                        } else if (strCheckbox1.length == 2) {
+                            String[] strCheckbox2 = strCheckbox1[0].split(":");
+                            String[] strCheckbox3 = strCheckbox1[1].split(":");
+                            if(strCheckbox2.length > 1) {
+                                if (strCheckbox2[0].equals("ผิดชนิด"))
+                                    d.setStrType(strCheckbox2[1]);
+                                else if (strCheckbox2[0].equals("ผิดขนาด"))
+                                    d.setStrSize(strCheckbox2[1]);
+                                else if (strCheckbox2[0].equals("ลืมจัด"))
+                                    d.setStrForget(strCheckbox2[1]);
+                            }
+                            else {
+                                if (strCheckbox2[0].equals("ผิดชนิด"))
+                                    d.setStrType("");
+                                else if (strCheckbox2[0].equals("ผิดขนาด"))
+                                    d.setStrSize("");
+                                else if (strCheckbox2[0].equals("ลืมจัด"))
+                                    d.setStrForget("");
+                            }
+
+                            if(strCheckbox3.length > 1) {
+                                if (strCheckbox3[0].equals("ผิดชนิด"))
+                                    d.setStrType(strCheckbox3[1]);
+                                else if (strCheckbox3[0].equals("ผิดขนาด"))
+                                    d.setStrSize(strCheckbox3[1]);
+                                else if (strCheckbox3[0].equals("ลืมจัด"))
+                                    d.setStrForget(strCheckbox3[1]);
+                            }
+                            else {
+                                if (strCheckbox3[0].equals("ผิดชนิด"))
+                                    d.setStrType("");
+                                else if (strCheckbox3[0].equals("ผิดขนาด"))
+                                    d.setStrSize("");
+                                else if (strCheckbox3[0].equals("ลืมจัด"))
+                                    d.setStrForget("");
+                            }
+                        } else if (strCheckbox1.length == 3) {
+                            String[] strCheckbox2 = strCheckbox1[0].split(":");
+                            String[] strCheckbox3 = strCheckbox1[1].split(":");
+                            String[] strCheckbox4 = strCheckbox1[2].split(":");
+                            if(strCheckbox2.length > 1) {
+                                if (strCheckbox2[0].equals("ผิดชนิด"))
+                                    d.setStrType(strCheckbox2[1]);
+                                else if (strCheckbox2[0].equals("ผิดขนาด"))
+                                    d.setStrSize(strCheckbox2[1]);
+                                else if (strCheckbox2[0].equals("ลืมจัด"))
+                                    d.setStrForget(strCheckbox2[1]);
+                            }
+                            else {
+                                if (strCheckbox2[0].equals("ผิดชนิด"))
+                                    d.setStrType("");
+                                else if (strCheckbox2[0].equals("ผิดขนาด"))
+                                    d.setStrSize("");
+                                else if (strCheckbox2[0].equals("ลืมจัด"))
+                                    d.setStrForget("");
+                            }
+
+                            if(strCheckbox3.length > 1) {
+                                if (strCheckbox3[0].equals("ผิดชนิด"))
+                                    d.setStrType(strCheckbox3[1]);
+                                else if (strCheckbox3[0].equals("ผิดขนาด"))
+                                    d.setStrSize(strCheckbox3[1]);
+                                else if (strCheckbox3[0].equals("ลืมจัด"))
+                                    d.setStrForget(strCheckbox3[1]);
+                            }
+                            else {
+                                if (strCheckbox3[0].equals("ผิดชนิด"))
+                                    d.setStrType("");
+                                else if (strCheckbox3[0].equals("ผิดขนาด"))
+                                    d.setStrSize("");
+                                else if (strCheckbox3[0].equals("ลืมจัด"))
+                                    d.setStrForget("");
+                            }
+
+                            if(strCheckbox4.length > 1) {
+                                if (strCheckbox4[0].equals("ผิดชนิด"))
+                                    d.setStrType(strCheckbox4[1]);
+                                else if (strCheckbox4[0].equals("ผิดขนาด"))
+                                    d.setStrSize(strCheckbox4[1]);
+                                else if (strCheckbox4[0].equals("ลืมจัด"))
+                                    d.setStrForget(strCheckbox4[1]);
+                            }
+                            else {
+                                if (strCheckbox4[0].equals("ผิดชนิด"))
+                                    d.setStrType("");
+                                else if (strCheckbox4[0].equals("ผิดขนาด"))
+                                    d.setStrSize("");
+                                else if (strCheckbox4[0].equals("ลืมจัด"))
+                                    d.setStrForget("");
+                            }
+                        }
                     }
                 }
             }

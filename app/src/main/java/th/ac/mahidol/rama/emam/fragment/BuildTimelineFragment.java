@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,18 +19,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildTimelineAdapter;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
-public class BuildTimelineFragment extends Fragment {
+public class BuildTimelineFragment extends Fragment implements View.OnClickListener {
     private String sdlocID, wardName, focustimer;
     private String[] listTimeline = {"0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "0:00", "1:00", "2:00"};
     private ListView listView;
     private BuildTimelineAdapter buildTimelineAdapter;
     private String currentTime[], dateToday[], year[];
     private TextView tvDateToday;
+    private Button tvAddPRN;
 
     public BuildTimelineFragment() {
         super();
@@ -67,7 +70,11 @@ public class BuildTimelineFragment extends Fragment {
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        tvAddPRN = (Button) rootView.findViewById(R.id.tvAddPRN);
         tvDateToday = (TextView) rootView.findViewById(R.id.tvDateToday);
+
+        tvAddPRN.setOnClickListener(this);
+
         listView = (ListView) rootView.findViewById(R.id.lvTimelineAdapter);
         buildTimelineAdapter = new BuildTimelineAdapter();
 
@@ -102,6 +109,16 @@ public class BuildTimelineFragment extends Fragment {
         sdlocID = getArguments().getString("sdlocId");
         Call<TimelineDao> call = HttpManager.getInstance().getService().getTimeline(sdlocID);
         call.enqueue(new TimelineLoadCallback());
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.tvAddPRN){
+            Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
+        }
     }
 
 

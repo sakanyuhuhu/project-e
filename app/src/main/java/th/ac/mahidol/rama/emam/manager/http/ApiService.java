@@ -11,6 +11,7 @@ import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildListWard.WardCollectionDao;
+import th.ac.mahidol.rama.emam.dao.buildPRNPatientDAO.MRNDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
@@ -70,5 +71,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("PatientData")
     Call<ListPatientDataDao> getPatientInfo(@Field("sdlocId") String sdlocId, @Field("adminTime") String adminTime, @Field("checkType") String checkType, @Field("date") String date);
+
+    @FormUrlEncoded
+    @POST("PatientPrnWardService")
+    Call<MRNDao> getPatientPRN(@Field("sdlocId") String sdlocId);
 
 }

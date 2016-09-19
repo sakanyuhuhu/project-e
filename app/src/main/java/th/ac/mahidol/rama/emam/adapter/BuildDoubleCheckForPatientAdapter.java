@@ -191,6 +191,15 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
                     dao.getListDrugCardDao().get(position).setStatus("normal");
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                 }
+                if(chkType.isChecked() == false)
+                    dao.getListDrugCardDao().get(position).setStrType(null);
+
+                if(chkSize.isChecked() == false)
+                    dao.getListDrugCardDao().get(position).setStrSize(null);
+
+                if(chkForget.isChecked() == false)
+                    dao.getListDrugCardDao().get(position).setStrForget(null);
+
                 if(!dao.getListDrugCardDao().get(position).getDescription().equals("")){
                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                     dao.getListDrugCardDao().get(position).setStatus("normal");

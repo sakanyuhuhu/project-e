@@ -127,16 +127,16 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
         Log.d("check", "Status = "+dao.getListDrugCardDao().get(position).getStatus());
         Log.d("check", "strRadio = "+dao.getListDrugCardDao().get(position).getStrRadio());
         Log.d("check", "getDescription = "+dao.getListDrugCardDao().get(position).getDescription());
-        Log.d("check", "getDescriptionTemplate = "+dao.getListDrugCardDao().get(position).getDescriptionTemplate());
+        Log.d("check", "BP = "+dao.getListDrugCardDao().get(position).getStrBP()+" Heart Rate = "+dao.getListDrugCardDao().get(position).getStrHR()+" CBG = "+dao.getListDrugCardDao().get(position).getStrCBG());
         if(dao.getListDrugCardDao().get(position).getStatus() != null){
             if(dao.getListDrugCardDao().get(position).getStatus().equals("hold")) {
                 chkHold.setChecked(true);
                 txtStatusHoldBP.setEnabled(true);
                 txtStatusHoldHR.setEnabled(true);
                 txtStatusHoldCBG.setEnabled(true);
-                txtStatusHoldBP.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-                txtStatusHoldHR.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
-                txtStatusHoldCBG.setText(dao.getListDrugCardDao().get(position).getDescriptionTemplate());
+                txtStatusHoldBP.setText(dao.getListDrugCardDao().get(position).getStrBP());
+                txtStatusHoldHR.setText(dao.getListDrugCardDao().get(position).getStrHR());
+                txtStatusHoldCBG.setText(dao.getListDrugCardDao().get(position).getStrCBG());
             }
         }
 
@@ -179,7 +179,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                     dao.getListDrugCardDao().get(position).setStrBP(txtStatusHoldBP.getText().toString());
                     dao.getListDrugCardDao().get(position).setStrHR(txtStatusHoldHR.getText().toString());
                     dao.getListDrugCardDao().get(position).setStrCBG(txtStatusHoldCBG.getText().toString());
-//                    dao.getListDrugCardDao().get(position).setDescriptionTemplate(txtStatusHoldBP.getText().toString()+txtStatusHoldHR.getText().toString()+txtStatusHoldCBG.getText().toString());
                     if (radioButton.isChecked()) {
                         if (radioButton.getId() == R.id.rdb1) {
                             dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
