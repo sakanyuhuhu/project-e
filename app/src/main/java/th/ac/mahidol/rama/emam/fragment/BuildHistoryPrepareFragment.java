@@ -24,6 +24,7 @@ import org.xml.sax.XMLReader;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -110,6 +111,13 @@ public class BuildHistoryPrepareFragment extends Fragment{
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         tvTime.setText("     "+time);
+
+        Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
         if(data != null){

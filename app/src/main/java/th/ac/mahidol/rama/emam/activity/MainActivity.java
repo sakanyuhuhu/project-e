@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("check","MainActivity new intent");
         boolean checkRegisterNFC;
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){

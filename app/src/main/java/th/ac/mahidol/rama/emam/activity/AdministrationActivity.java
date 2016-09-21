@@ -55,13 +55,11 @@ public class AdministrationActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("check","AdministrationActivity new intent");
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-//          Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
             getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
 
         }

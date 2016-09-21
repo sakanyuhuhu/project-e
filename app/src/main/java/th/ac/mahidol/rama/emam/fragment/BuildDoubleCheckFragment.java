@@ -89,7 +89,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
 
-        Log.d("check", "BuildDoubleCheckFragment initInstances = " + nfcUID +" / "+ sdlocID + " / " + wardName + " / " + time);
 
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
@@ -104,7 +103,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         listView = (ListView) rootView.findViewById(R.id.lvDoubleCheckAdapter);
         buildDoubleCheckAdapter = new BuildDoubleCheckAdapter();
 
-        Log.d("check", "BuildDoubleCheckFragment initInstances = "+ nfcUID + " / " + sdlocID + " /timeposition = "+timeposition);
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
         toDayDate = sdfForDrugUseDate.format(datetoDay);
@@ -165,7 +163,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientdoublecheck",null);
 
         if(data != null){
-            Log.d("check", "loadCacheDao "+ data);
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
@@ -189,13 +186,11 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
     }
 
     private void loadPatientData(String sdlocID, String time, String checkType, String toDayDate){
-        Log.d("check", "loadPatientData = "+ sdlocID+" "+time+" " +checkType+" "+toDayDate);
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, toDayDate);
         call.enqueue(new PatientLoadCallback());
     }
 
     private void loadPersonWard(String nfcUID, String sdlocID){
-        Log.d("check", "BuildDoubleCheckFragment loadPersonWard = "+ nfcUID + " / " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
@@ -237,14 +232,13 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCacheDoubleCheckData(dao);
-            Log.d("check", "DBC dao.size = "+dao.getPatientDao().size());
             buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
         }
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "PatientLoadCallback Failure " + t);
+            Log.d("check", "Double PatientLoadCallback Failure " + t);
         }
     }
 
@@ -254,7 +248,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            Log.d("check", "CheckPersonWardDao = "+dao.getRFID()+" "+dao.getFirstName()+" "+dao.getLastName());
             RFID = dao.getRFID();
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
@@ -263,7 +256,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "BuildDoubleCheckFragment PersonWardLoadCallback Failure " + t);
+            Log.d("check", "Double PersonWardLoadCallback Failure " + t);
         }
     }
 }

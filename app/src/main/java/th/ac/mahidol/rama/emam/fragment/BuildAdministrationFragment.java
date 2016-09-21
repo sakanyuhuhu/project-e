@@ -10,10 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -26,6 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AdministrationForPatientActivity;
+import th.ac.mahidol.rama.emam.activity.CameraScanActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAdministrationAdapter;
@@ -34,13 +35,14 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAdministrationFragment extends Fragment implements View.OnClickListener{
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate;
-    private int timeposition;
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, message;
+    private int timeposition, num = 0;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvPreparation;
-    private Button btnLogin;
+    private Button btnLogin, btnScan;
     private BuildAdministrationAdapter buildAdministrationAdapter;
     private Date datetoDay;
+    private boolean found;
 
     public BuildAdministrationFragment() {
         super();
@@ -85,10 +87,10 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
-        Log.d("check", "BuildAdministrationFragment initInstances = "+ nfcUID + " / " + sdlocID + " /timeposition = "+timeposition);
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
+        btnScan = (Button) rootView.findViewById(R.id.btnScan);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
@@ -120,18 +122,14 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                 loadPatientData(sdlocID, time, checkType, tomorrowDate);
             }
         }
-
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
-
     }
 
     private void loadCacheDao(){
@@ -142,36 +140,35 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildAdministrationAdapter.setDao(dao);
             listView.setAdapter(buildAdministrationAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("RFID", RFID);
-                    intent.putExtra("firstname", firstName);
-                    intent.putExtra("lastname", lastName);
-                    intent.putExtra("timeposition", timeposition);
-                    intent.putExtra("position", position);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
-                }
-            });
+            btnScan.setVisibility(getView().VISIBLE);
+            btnScan.setOnClickListener(this);
+//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                    Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
+//                    intent.putExtra("nfcUId", nfcUID);
+//                    intent.putExtra("sdlocId", sdlocID);
+//                    intent.putExtra("wardname", wardName);
+//                    intent.putExtra("RFID", RFID);
+//                    intent.putExtra("firstname", firstName);
+//                    intent.putExtra("lastname", lastName);
+//                    intent.putExtra("timeposition", timeposition);
+//                    intent.putExtra("position", position);
+//                    intent.putExtra("time", time);
+//                    getActivity().startActivity(intent);
+//                }
+//            });
         }
     }
 
     private void loadPatientData(String sdlocID, String time, String checkType, String toDayDate){
-        Log.d("check", "loadPatientData = "+ sdlocID+" "+time+" " +checkType+" "+toDayDate);
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, toDayDate);
         call.enqueue(new PatientLoadCallback());
     }
 
     private void loadPersonWard(String nfcUID, String sdlocID){
-        Log.d("check", "loadPersonWard = "+ nfcUID + " / " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
-
     }
 
     private void saveCachePatientAdminData(ListPatientDataDao listPatientDataDao){
@@ -180,6 +177,45 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("patientadministration",json);
         editor.apply();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(data != null) {
+                message = data.getStringExtra("MESSAGE");
+                Log.d("check", "message = " + message);
+                SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
+                String patient = prefs.getString("patientadministration", null);
+                if (patient != null) {
+                    ListPatientDataDao dao = new Gson().fromJson(patient, ListPatientDataDao.class);
+                    for (int i=0; i< dao.getPatientDao().size(); i++) {
+                        if (dao.getPatientDao().get(i).getMRN().equals(message)) {
+                            Log.d("check", i+" MRN = " + dao.getPatientDao().get(i).getMRN());
+                            found = true;
+                            num = i;
+                            break;
+                        } else
+                            found = false;
+                    }
+                    if (found) {
+                        Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", num);
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                    } else
+                        Toast.makeText(getActivity(), "Not found!", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     @Override
@@ -192,7 +228,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
         }
-        else if(view.getId() == R.id.tvPreparation){
+        else if (view.getId() == R.id.tvPreparation){
             Intent intent = new Intent(getContext(), PreparationActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
@@ -200,7 +236,10 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
         }
-
+        else if (view.getId() == R.id.btnScan){
+            Intent intent = new Intent(getContext(), CameraScanActivity.class);
+            startActivityForResult(intent, 1);
+        }
     }
 
 
@@ -211,14 +250,13 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCachePatientAdminData(dao);
-            Log.d("check", "Admin dao.size = "+dao.getPatientDao().size());
             buildAdministrationAdapter.setDao(dao);
             listView.setAdapter(buildAdministrationAdapter);
         }
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "PatientLoadCallback Failure " + t);
+            Log.d("check", "Admin PatientLoadCallback Failure " + t);
         }
     }
 
@@ -235,7 +273,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "PersonWardLoadCallback Failure " + t);
+            Log.d("check", "Admin PersonWardLoadCallback Failure " + t);
         }
     }
 }

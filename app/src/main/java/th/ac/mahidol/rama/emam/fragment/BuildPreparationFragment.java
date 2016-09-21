@@ -163,13 +163,11 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     }
 
     private void loadPatientData(String sdlocID, String time, String checkType, String toDayDate){
-        Log.d("check", "loadPatientData = "+ sdlocID+" "+time+" " +checkType+" "+toDayDate);
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, toDayDate);
         call.enqueue(new PatientLoadCallback());
     }
 
     private void loadPersonWard(String nfcUID, String sdlocID){
-        Log.d("check", "loadPersonWard = "+ nfcUID + " / " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
@@ -210,7 +208,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().startActivity(intent);
         }
         else if(view.getId() == R.id.btnLogin){
-            Log.d("check", "Login");
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
@@ -219,7 +216,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().startActivity(intent);
         }
         else if(view.getId() == R.id.tvAddPRN){
-            Log.d("check", "ADD PRN");
             Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
@@ -234,7 +230,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             ListPatientDataDao dao = response.body();
             saveCachePatientData(dao);
-            Log.d("check", "PP dao.size = "+dao.getPatientDao().size());
             if(dao.getPatientDao().size() != 0) {
                 buildPreparationAdapter.setDao(dao);
                 listView.setAdapter(buildPreparationAdapter);
@@ -245,7 +240,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "PatientLoadCallback Failure " + t);
+            Log.d("check", "Prepare PatientLoadCallback Failure " + t);
         }
     }
 
@@ -265,7 +260,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "PersonWardLoadCallback Failure " + t);
+            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
         }
     }
 

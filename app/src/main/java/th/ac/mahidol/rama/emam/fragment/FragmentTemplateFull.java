@@ -36,7 +36,7 @@ public class FragmentTemplateFull extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main_menu, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main_select_menu, container, false);
         initInstances(rootView, savedInstanceState);
         return rootView;
     }

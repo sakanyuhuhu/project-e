@@ -1,8 +1,10 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +33,7 @@ public class BuildTimelineFragment extends Fragment implements View.OnClickListe
     private ListView listView;
     private BuildTimelineAdapter buildTimelineAdapter;
     private String currentTime[], dateToday[], year[];
-    private TextView tvDateToday;
+    private TextView tvDateToday, tvPRN;
     private Button tvAddPRN;
 
     public BuildTimelineFragment() {
@@ -80,15 +82,13 @@ public class BuildTimelineFragment extends Fragment implements View.OnClickListe
 
         dateToday = DateFormat.getDateInstance(0).format(new Date()).split("ที่");
         currentTime = DateFormat.getTimeInstance().format(new Date()).split(":");
+
         if(currentTime[0].equals("00")|currentTime[0].equals("01")|currentTime[0].equals("02")|currentTime[0].equals("03")|currentTime[0].equals("04")|currentTime[0].equals("05")|
-                currentTime[0].equals("06")|currentTime[0].equals("07")|currentTime[0].equals("08")|currentTime[0].equals("09")){
+                currentTime[0].equals("06")|currentTime[0].equals("07")|currentTime[0].equals("08")|currentTime[0].equals("09"))
             focustimer = currentTime[0].substring(1);
-            Log.d("check", "focustimer = "+ focustimer);
-        }
-        else {
+        else
             focustimer = currentTime[0];
-            Log.d("check", "focustimer = "+ focustimer);
-        }
+
         year = dateToday[1].split("ค.ศ.");
         tvDateToday.setText(dateToday[0]+","+year[0]+","+year[1]);
 
@@ -138,6 +138,31 @@ public class BuildTimelineFragment extends Fragment implements View.OnClickListe
                     intent.putExtra("position", position);
                     intent.putExtra("time", listTimeline[position]);
                     getActivity().startActivity(intent);
+                }
+            });
+
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d("check", "onItemLongClick position = "+ position);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View dialogView = inflater.inflate(R.layout.custom_dialog_prn, null);
+                    tvPRN = (TextView) dialogView.findViewById(R.id.tvPRN);
+
+                    tvPRN.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
+                            intent.putExtra("sdlocId", sdlocID);
+                            intent.putExtra("wardname", wardName);
+                            getActivity().startActivity(intent);
+                        }
+                    });
+                    builder.setView(dialogView);
+                    builder.create();
+                    builder.show().getWindow().setLayout(1200, 165);
+                    return true;
                 }
             });
         }

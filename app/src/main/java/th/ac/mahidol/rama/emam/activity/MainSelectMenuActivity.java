@@ -7,16 +7,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.fragment.MainMenuFragment;
+import th.ac.mahidol.rama.emam.fragment.MainSelectMenuFragment;
 
 public class MainSelectMenuActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
+    private ListView listView;
     private String sdlocID, nfcUID, wardName;
 
     @Override
@@ -26,16 +27,16 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
-        Log.d("check", "MainSelectMenuActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName);
+
         initInstance();
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainMenuFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainSelectMenuFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
         }
     }
 
     private void initInstance() {
-
+        listView = (ListView) findViewById(R.id.lvMenu);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
@@ -68,5 +69,6 @@ public class MainSelectMenuActivity extends AppCompatActivity {
             return true;
         return super.onOptionsItemSelected(item);
     }
+    
 }
 

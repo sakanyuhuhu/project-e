@@ -245,6 +245,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         });
         builder.setNegativeButton("ยกเลิก",null);
         builder.create();
-        builder.show();
+        builder.show().getWindow().setLayout(1200,1250);
     }
 }

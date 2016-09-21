@@ -113,8 +113,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
 
-        Log.d("check", "BuildAdministrationForPatientFragment sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
 
         listView = (ListView) rootView.findViewById(R.id.lvAdminForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -146,7 +144,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         String data = prefs.getString("patientadministration",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
 
             if(timeposition <= 23) {
@@ -237,7 +234,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 if(selectedItem.equals("เลือกยาทั้งหมด")){
-                    Log.d("check", "เลือกยาทั้งหมด");
                     for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
                         d.setComplete("1");
                         d.setCheckNote("0");
@@ -252,7 +248,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                     listView.setAdapter(buildAdministrationForPatientAdapter);
                 }
                 else if(selectedItem.equals("เพิ่มบันทึกข้อความ NPO")){
-                    Log.d("check", "เพิ่มบันทึกข้อความ NPO");
                     for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
                         d.setComplete("0");
                         d.setCheckNote("1");
@@ -338,13 +333,11 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 }
 
                 updateDrugData(buildDrugCardListManager.getDaoAll());
-                Log.d("check", "Saved Status " + checkNull);
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             }
-            else {
-                Log.d("check", "Can't Save Status " + checkNull);
+            else
                 Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
-            }
+
         }
 
     }
@@ -356,9 +349,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            Log.d("check", "SIZE = "+dao.getListDrugCardDao().size());
             for(DrugCardDao d : dao.getListDrugCardDao()){
-                Log.d("check", "CHECK TYPE = "+d.getCheckType());
                 if(d.getCheckType().equals("Second Check")) {
                     if (d.getComplete().equals("1"))
                         d.setComplete(null);
@@ -374,10 +365,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                         String[] strRadio = d.getDescriptionTemplate().split(",");
                         if(strRadio.length == 1){
                             String[] strHold1 = strRadio[0].split(":");
-                            Log.d("check", "strHold1 = "+strHold1.length);
                             if(strHold1.length > 1) {
                                 String[] strHold2 = strHold1[1].split("\\|");
-                                Log.d("check", "strHold2 = " + strHold2.length);
                                 String[] bp = strHold2[0].split("\\s");
                                 if (bp.length == 1)
                                     d.setStrBP("");

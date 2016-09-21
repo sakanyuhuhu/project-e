@@ -51,13 +51,10 @@ public class DoubleCheckActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("check","DoubleCheckActivity new intent");
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
-//            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
-
             nfcUID = nfcTagID;
             getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, position, time)).commit();
         }

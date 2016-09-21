@@ -115,8 +115,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
 
-        Log.d("check", "BuildDoubleCheckForPatientFragment sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
 
         listView = (ListView) rootView.findViewById(R.id.lvDoubleForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -148,7 +146,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         String data = prefs.getString("patientdoublecheck",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
 
             if(timeposition <= 23) {
@@ -292,11 +289,9 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                     d.setActivityHour(time);
                 }
                 updateDrugData(buildDrugCardListManager.getDaoAll());
-                Log.d("check", "Saved Status " + checkNull);
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             }
             else {
-                Log.d("check", "Can't Save Status " + checkNull);
                 Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
             }
         }
@@ -311,7 +306,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             for(DrugCardDao d : dao.getListDrugCardDao()){
-                Log.d("check", "CHECK TYPE = "+d.getCheckType());
                 if(d.getCheckType().equals("First Check")) {
                     Log.d("check", "Complete = "+d.getComplete());
                     if ((d.getComplete().equals("1")))
