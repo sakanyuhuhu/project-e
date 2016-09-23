@@ -22,7 +22,7 @@ public class AddPatientPRNActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
     private ListView listView;
-    private String sdlocID, wardName, time;
+    private String nfcUID, sdlocID, wardName, time;
     private int timeposition;
 
     @Override
@@ -30,14 +30,15 @@ public class AddPatientPRNActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prn_patient_add);
 
+        nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "AddPatientPRNActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time);
+        Log.d("check", "AddPatientPRNActivity nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(sdlocID, wardName, timeposition, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time)).commit();
         }
 
         initInstance();

@@ -137,7 +137,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private void loadCacheDao(){
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
-
         if(data != null){
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildPreparationAdapter.setDao(dao);
@@ -156,14 +155,13 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     intent.putExtra("position", position);
                     intent.putExtra("time", time);
                     getActivity().startActivity(intent);
-//                    getActivity().finish();
                 }
             });
         }
     }
 
-    private void loadPatientData(String sdlocID, String time, String checkType, String toDayDate){
-        Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, toDayDate);
+    private void loadPatientData(String sdlocID, String time, String checkType, String dayDate){
+        Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, dayDate);
         call.enqueue(new PatientLoadCallback());
     }
 

@@ -14,7 +14,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class TimelineListView extends BaseCustomViewGroup {
 
-    private TextView tvTime, tvPatienTime;
+    private TextView tvTime, tvPatienTime, tvPatienPRNTime;
     private LinearLayout bgfocus;
 
     public TimelineListView(Context context) {
@@ -54,6 +54,7 @@ public class TimelineListView extends BaseCustomViewGroup {
         bgfocus = (LinearLayout) findViewById(R.id.bgfocus);
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvPatienTime = (TextView) findViewById(R.id.tvPatienTime);
+        tvPatienPRNTime = (TextView) findViewById(R.id.tvPatienPRNTime);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -92,13 +93,14 @@ public class TimelineListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setTime(String textTime, int patientTime, String focustimer){
+    public void setTime(String textTime, int patientTime, String focustimer, int patientTime2){
         String test[] = textTime.split(":");
         if(focustimer.equals(test[0])){
             bgfocus.setBackgroundColor(getResources().getColor(R.color.colorPrimaryWhite));
         }
         tvTime.setText(textTime);
         tvPatienTime.setText(String.valueOf(patientTime));
+        tvPatienPRNTime.setText("("+patientTime2+")");
     }
 
 

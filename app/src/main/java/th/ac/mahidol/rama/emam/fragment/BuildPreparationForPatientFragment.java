@@ -395,7 +395,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             buildDrugCardListManager.setDao(dao);
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
 
-
         }
 
         @Override

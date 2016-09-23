@@ -75,4 +75,17 @@ public interface ApiService {
     @POST("PatientPrnWardService")
     Call<MrnTimelineDao> getPatientPRN(@Field("sdlocId") String sdlocId);
 
+    @FormUrlEncoded
+    @POST("ListCountPatientPRN")
+    Call<TimelineDao> getListCountPatientPRN(@Field("sdlocId") String sdlocId);
+
+    @FormUrlEncoded
+    @POST("ListCountPatientExcPRN")
+    Call<TimelineDao> getListCountPatientExcPRN(@Field("sdlocId") String sdlocId);
+
+    @FormUrlEncoded
+    @POST("ListMedicalCardForPreparePRN")
+    Call<ListDrugCardDao> getListMedicalCardForPreparePRN(@Field("mrn") String mrn);
+
+
 }

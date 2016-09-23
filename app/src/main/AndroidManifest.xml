@@ -39,6 +39,7 @@
         <activity android:name=".activity.HistoryPrepareActivity"/>
         <activity android:name=".activity.AddPatientPRNActivity" />
         <activity android:name=".activity.CameraScanActivity" />
+        <activity android:name=".activity.AddDrugPatientPRNActivity" />
     </application>
 
 </manifest>

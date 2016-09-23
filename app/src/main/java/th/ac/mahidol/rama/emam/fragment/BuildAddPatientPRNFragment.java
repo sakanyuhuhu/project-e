@@ -1,11 +1,15 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -15,9 +19,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientPRNAdapter;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddPatientPRNFragment extends Fragment{
@@ -30,9 +36,10 @@ public class BuildAddPatientPRNFragment extends Fragment{
         super();
     }
 
-    public static BuildAddPatientPRNFragment newInstance(String sdlocID, String wardName, int timeposition, String time) {
+    public static BuildAddPatientPRNFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time) {
         BuildAddPatientPRNFragment fragment = new BuildAddPatientPRNFragment();
         Bundle args = new Bundle();
+        args.putString("ncfUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -76,6 +83,13 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         loadPatientPRN(sdlocID);
 
+// enable / disable
+        SharedPreferences prefs2 = getContext().getSharedPreferences("patientinclude", Context.MODE_PRIVATE);
+        String patientinclude = prefs2.getString("patientinclude",null);
+        if(patientinclude != null){
+            TimelineDao in = new Gson().fromJson(patientinclude, TimelineDao.class);
+            Log.d("check", "patientinclude = "+in.getTimelineDao().size());
+        }
 
     }
 
@@ -98,6 +112,14 @@ public class BuildAddPatientPRNFragment extends Fragment{
     private void loadPatientPRN(String sdlocID){
         Call<MrnTimelineDao> call = HttpManager.getInstance().getService().getPatientPRN(sdlocID);
         call.enqueue(new PatientPRNLoadCallback());
+    }
+
+    private void saveCachePatientData(ListPatientDataDao patientDataDao){
+        String json = new Gson().toJson(patientDataDao);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("patientprn",json);
+        editor.apply();
     }
 
 
@@ -123,13 +145,23 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
-            ListPatientDataDao dao = response.body();
-            String json = new Gson().toJson(dao);
-            Log.d("check", "ListPatientDataDao = "+json);
-
+            final ListPatientDataDao dao = response.body();
+            saveCachePatientData(dao);
             if(dao.getPatientDao().size() != 0) {
                 buildPatientPRNAdapter.setDao(dao);
                 listView.setAdapter(buildPatientPRNAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                    }
+                });
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
