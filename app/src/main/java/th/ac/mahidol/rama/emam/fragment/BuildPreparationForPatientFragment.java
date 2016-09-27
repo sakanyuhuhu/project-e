@@ -54,7 +54,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory;
@@ -70,7 +70,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String userName) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -82,6 +82,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
+        args.putString("userName", userName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -117,6 +118,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
+        userName = getArguments().getString("userName");
 
         Log.d("check", "BuildPreparationForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);

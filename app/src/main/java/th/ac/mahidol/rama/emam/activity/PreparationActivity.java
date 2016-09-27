@@ -19,7 +19,7 @@ public class PreparationActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time;
+    private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null;
     private int position;
 
     @Override
@@ -37,10 +37,10 @@ public class PreparationActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
+        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /namePrepare = "+namePrepare);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, namePrepare)).commit();
         }
 
 
@@ -72,7 +72,7 @@ public class PreparationActivity extends AppCompatActivity {
 //            if(checkRegisterNFC == true){
                 nfcUID = nfcTagID;
 //                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time,namePrepare)).commit();
 
 //            }
 //            else{

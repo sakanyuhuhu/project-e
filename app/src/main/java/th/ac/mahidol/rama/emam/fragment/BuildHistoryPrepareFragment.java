@@ -41,7 +41,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildHistoryPrepareFragment extends Fragment{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName;
     private int position, timeposition;
     private ListView listView;
     private TextView tvTime, tvDrugAdr;
@@ -64,6 +64,7 @@ public class BuildHistoryPrepareFragment extends Fragment{
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
+//        args.putString("userName", userName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -100,9 +101,10 @@ public class BuildHistoryPrepareFragment extends Fragment{
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
+//        userName = getArguments().getString("userName");
 
         Log.d("check", "BuildHistoryPrepareFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
+                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);

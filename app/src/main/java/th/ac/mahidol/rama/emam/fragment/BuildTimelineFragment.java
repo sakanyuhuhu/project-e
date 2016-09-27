@@ -72,12 +72,12 @@ public class BuildTimelineFragment extends Fragment {
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-        nfcUID = getArguments().getString("ncfUId");
+        nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
+
         listView = (ListView) rootView.findViewById(R.id.lvTimelineAdapter);
         buildTimelineAdapter = new BuildTimelineAdapter();
-
         currentTime = DateFormat.getTimeInstance().format(new Date()).split(":");
 
         if(currentTime[0].equals("00")|currentTime[0].equals("01")|currentTime[0].equals("02")|currentTime[0].equals("03")|currentTime[0].equals("04")|currentTime[0].equals("05")|
@@ -171,6 +171,7 @@ public class BuildTimelineFragment extends Fragment {
     private void loadTimelineExclude(){
         Call<TimelineDao> call = HttpManager.getInstance().getService().getListCountPatientExcPRN(sdlocID);
         call.enqueue(new TimelineExcLoadCallback());
+
     }
 
     private void loadTimelineInclude(){

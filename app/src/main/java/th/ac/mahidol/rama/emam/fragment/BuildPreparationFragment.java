@@ -28,7 +28,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.AdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
-import th.ac.mahidol.rama.emam.activity.LoginActivity;
+import th.ac.mahidol.rama.emam.activity.LoginPreparationActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
@@ -36,7 +36,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment implements View.OnClickListener{
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate;
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, namePrepare;
     private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvAdministration, tvAddPRN;
@@ -50,7 +50,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
 
 
-    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time) {
+    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time, String namePrepare) {
         BuildPreparationFragment fragment = new BuildPreparationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
@@ -58,6 +58,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
         args.putString("time", time);
+        args.putString("namePrepare", namePrepare);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,6 +85,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
+        namePrepare = getArguments().getString("namePrepare");
+        Log.d("check", "BuildPreparationFragment nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /namePrepare = "+namePrepare);
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
@@ -92,7 +95,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
         tvAddPRN = (TextView) rootView.findViewById(R.id.tvAddPRN);
 
-        tvTime.setText(getArguments().getString("time"));
+        tvTime.setText(time);
         btnLogin.setOnClickListener(this);
         tvDoublecheck.setOnClickListener(this);
         tvAdministration.setOnClickListener(this);
@@ -116,10 +119,17 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             loadCacheDao();
         }
         else {
-            if(timeposition <= 23)
-                loadPatientData(sdlocID, time, checkType, toDayDate);
-            else{
-                loadPatientData(sdlocID, time, checkType, tomorrowDate);
+            if(namePrepare != null) {
+                loadCacheDao();
+                tvUserName.setText("จัดเตรียมยาโดย  " + namePrepare);
+                tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+            else {
+                if (timeposition <= 23)
+                    loadPatientData(sdlocID, time, checkType, toDayDate);
+                else {
+                    loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                }
             }
         }
     }
@@ -154,6 +164,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     intent.putExtra("timeposition", timeposition);
                     intent.putExtra("position", position);
                     intent.putExtra("time", time);
+                    intent.putExtra("namePrepare", namePrepare);
                     getActivity().startActivity(intent);
                 }
             });
@@ -206,12 +217,13 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().startActivity(intent);
         }
         else if(view.getId() == R.id.btnLogin){
-            Intent intent = new Intent(getContext(), LoginActivity.class);
+            Intent intent = new Intent(getContext(), LoginPreparationActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if(view.getId() == R.id.tvAddPRN){
             Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
@@ -254,6 +266,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
             tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
+            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+            Toast.makeText(getActivity(), ""+firstName+" "+lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override

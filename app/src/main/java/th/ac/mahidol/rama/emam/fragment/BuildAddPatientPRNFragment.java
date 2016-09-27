@@ -21,13 +21,14 @@ import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientPRNAdapter;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddPatientPRNFragment extends Fragment{
-    private String sdlocID, nfcUID, wardName, time;
+    private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName;
     private int timeposition;
     private ListView listView;
     private BuildAddPatientPRNAdapter buildPatientPRNAdapter;
@@ -39,7 +40,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
     public static BuildAddPatientPRNFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time) {
         BuildAddPatientPRNFragment fragment = new BuildAddPatientPRNFragment();
         Bundle args = new Bundle();
-        args.putString("ncfUId", nfcUID);
+        args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -76,19 +77,21 @@ public class BuildAddPatientPRNFragment extends Fragment{
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
-
+        Log.d("check", "BuildAddPatientPRNFragment nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientPRNAdapter = new BuildAddPatientPRNAdapter();
 
+        loadPersonWard(nfcUID, sdlocID);
         loadPatientPRN(sdlocID);
+
 
 // enable / disable
         SharedPreferences prefs2 = getContext().getSharedPreferences("patientinclude", Context.MODE_PRIVATE);
         String patientinclude = prefs2.getString("patientinclude",null);
         if(patientinclude != null){
             TimelineDao in = new Gson().fromJson(patientinclude, TimelineDao.class);
-            Log.d("check", "patientinclude = "+in.getTimelineDao().size());
+//            Log.d("check", "patientinclude = "+in.getTimelineDao().get(5).getMrn());
         }
 
     }
@@ -108,6 +111,12 @@ public class BuildAddPatientPRNFragment extends Fragment{
         call.enqueue(new PatientPRNDataLoadCallback());
     }
 
+    private void loadPersonWard(String nfcUID, String sdlocID){
+        Log.d("check", "loadPersonWard = "+nfcUID+"  "+sdlocID);
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
 
     private void loadPatientPRN(String sdlocID){
         Call<MrnTimelineDao> call = HttpManager.getInstance().getService().getPatientPRN(sdlocID);
@@ -119,6 +128,14 @@ public class BuildAddPatientPRNFragment extends Fragment{
         SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("patientprn",json);
+        editor.apply();
+    }
+
+    private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
+        String json = new Gson().toJson(checkPersonWardDao);
+        SharedPreferences prefs = getContext().getSharedPreferences("checkperson", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("checkperson",json);
         editor.apply();
     }
 
@@ -157,6 +174,10 @@ public class BuildAddPatientPRNFragment extends Fragment{
                         intent.putExtra("nfcUId", nfcUID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
                         intent.putExtra("position", position);
                         intent.putExtra("time", time);
                         getActivity().startActivity(intent);
@@ -170,6 +191,24 @@ public class BuildAddPatientPRNFragment extends Fragment{
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
 
+        }
+    }
+
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao>{
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            saveCachePersonWard(dao);
+            RFID = dao.getRFID();
+            firstName = dao.getFirstName();
+            lastName = dao.getLastName();
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
         }
     }
 }

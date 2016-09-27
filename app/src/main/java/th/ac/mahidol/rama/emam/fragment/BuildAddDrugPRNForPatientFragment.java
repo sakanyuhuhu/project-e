@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.PreparationActivity;
+import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddDrugPRNForPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
@@ -50,8 +50,8 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, dateFortvDate, time;
-    private int position;
+    private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID;
+    private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
@@ -65,13 +65,17 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         super();
     }
 
-    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time) {
+    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
         BuildAddDrugPRNForPatientFragment fragment = new BuildAddDrugPRNForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
-        args.putInt("position", timeposition);
+        args.putString("RFID", RFID);
+        args.putString("firstname", firstName);
+        args.putString("lastname", lastName);
+        args.putInt("timeposition", timeposition);
+        args.putInt("position", position);
         args.putString("time", time);
         fragment.setArguments(args);
         return fragment;
@@ -102,10 +106,15 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
+        RFID = getArguments().getString("RFID");
+        firstName = getArguments().getString("firstname");
+        lastName = getArguments().getString("lastname");
+        timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
 
-        Log.d("check", "BuildAddDrugPRNForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = " + position+" /time = "+time);
+        Log.d("check", "BuildAddDrugPRNForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
+               " /timeposition = "+timeposition+" /position = " + position+" /time = "+time);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -160,7 +169,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         if(view.getId() == R.id.btnAdd){
             Boolean checkNull = false;
             for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
-                Log.d("check", "Complete = "+d.getComplete() + " /Drug Name = "+d.getTradeName());
+//                Log.d("check", "Complete = "+d.getComplete() + " /Drug Name = "+d.getTradeName());
                 if(d.getComplete() == null)
                     d.setComplete("0");
                 if(d.getComplete().equals("1"))
@@ -169,9 +178,14 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
             if(checkNull) {
                 updateDrugData(buildDrugCardListManager.getDaoAll());
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), PreparationActivity.class);
+                Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
+                intent.putExtra("RFID", RFID);
+                intent.putExtra("firstname", firstName);
+                intent.putExtra("lastname", lastName);
+                intent.putExtra("timeposition", timeposition);
                 intent.putExtra("position", position);
                 intent.putExtra("time", time);
                 getActivity().startActivity(intent);

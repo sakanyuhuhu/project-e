@@ -16,7 +16,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckFragment;
 public class DoubleCheckActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
-    private String nfcUID, nfcTagID,sdlocID, wardName, time;
+    private String nfcUID, nfcTagID,sdlocID, wardName, time, nameDouble = null;
     private int position;
 
     @Override
@@ -28,14 +28,14 @@ public class DoubleCheckActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "DoubleCheckActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
+        Log.d("check", "DoubleCheckActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /nameDouble = "+nameDouble);
         initInstance(savedInstanceState);
     }
 
     private void  initInstance(Bundle savedInstanceState){
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, position, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameDouble)).commit();
         }
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -56,7 +56,7 @@ public class DoubleCheckActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, position, time)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, position, time, nameDouble)).commit();
         }
         super.onNewIntent(intent);
     }

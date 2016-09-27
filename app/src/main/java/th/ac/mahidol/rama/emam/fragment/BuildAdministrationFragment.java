@@ -28,6 +28,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AdministrationForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.CameraScanActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
+import th.ac.mahidol.rama.emam.activity.LoginAdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAdministrationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
@@ -35,7 +36,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAdministrationFragment extends Fragment implements View.OnClickListener{
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, message;
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, message, nameAdmin;
     private int timeposition, num = 0;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvPreparation;
@@ -48,7 +49,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         super();
     }
 
-    public static BuildAdministrationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time) {
+    public static BuildAdministrationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time, String nameAdmin) {
         BuildAdministrationFragment fragment = new BuildAdministrationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
@@ -56,6 +57,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
         args.putString("time", time);
+        args.putString("nameAdmin", nameAdmin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -87,6 +89,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
+        nameAdmin = getArguments().getString("nameAdmin");
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
@@ -98,6 +101,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         tvTime.setText(getArguments().getString("time"));
         tvDoublecheck.setOnClickListener(this);
         tvPreparation.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
 
         listView = (ListView) rootView.findViewById(R.id.lvAdministrationAdapter);
         buildAdministrationAdapter = new BuildAdministrationAdapter();
@@ -116,10 +120,17 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             loadCacheDao();
         }
         else {
-            if(timeposition <= 23)
-                loadPatientData(sdlocID, time, checkType, toDayDate);
-            else{
-                loadPatientData(sdlocID, time, checkType, tomorrowDate);
+            if(nameAdmin != null){
+                tvUserName.setText("ตรวจสอบยาโดย  " + nameAdmin);
+                tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+                loadCacheDao();
+            }
+            else {
+                if (timeposition <= 23)
+                    loadPatientData(sdlocID, time, checkType, toDayDate);
+                else {
+                    loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                }
             }
         }
     }
@@ -240,6 +251,15 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             Intent intent = new Intent(getContext(), CameraScanActivity.class);
             startActivityForResult(intent, 1);
         }
+        else if (view.getId() == R.id.btnLogin){
+            Intent intent = new Intent(getContext(), LoginAdministrationActivity.class);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            intent.putExtra("position", timeposition);
+            intent.putExtra("time", time);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
     }
 
 
@@ -269,6 +289,8 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
             tvUserName.setText("บริหารยาโดย  " + firstName + " " + lastName);
+            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+            Toast.makeText(getActivity(), ""+firstName+" "+lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override

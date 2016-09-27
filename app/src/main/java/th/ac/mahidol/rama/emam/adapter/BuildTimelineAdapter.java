@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
-import th.ac.mahidol.rama.emam.view.TimelineDateTodayListView;
-import th.ac.mahidol.rama.emam.view.TimelineDateTomorrowListView;
-import th.ac.mahidol.rama.emam.view.TimelineListView;
+import th.ac.mahidol.rama.emam.view.BuildTimelineDateTodayListView;
+import th.ac.mahidol.rama.emam.view.BuildTimelineDateTomorrowListView;
+import th.ac.mahidol.rama.emam.view.BuildTimelineListView;
 
 public class BuildTimelineAdapter extends BaseAdapter{
     private TimelineDao exc, in;
@@ -43,25 +43,25 @@ public class BuildTimelineAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
         if(position == 0){
-            TimelineDateTodayListView timelineDateTodayListView;
-            timelineDateTodayListView = new TimelineDateTodayListView(viewGroup.getContext());
-            timelineDateTodayListView.setTime(timeline[position] ,(exc.getTimelineDao().get(position).getMrn() == null)? 0 :exc.getTimelineDao().get(position).getMrn().size(), focustimer,
+            BuildTimelineDateTodayListView buildTimelineDateTodayListView;
+            buildTimelineDateTodayListView = new BuildTimelineDateTodayListView(viewGroup.getContext());
+            buildTimelineDateTodayListView.setTime(timeline[position] ,(exc.getTimelineDao().get(position).getMrn() == null)? 0 :exc.getTimelineDao().get(position).getMrn().size(), focustimer,
                     (in.getTimelineDao().get(position).getMrn() == null)? 0 :in.getTimelineDao().get(position).getMrn().size());
-            return timelineDateTodayListView;
+            return buildTimelineDateTodayListView;
         }
         else if(position == 24){
-            TimelineDateTomorrowListView timelineDateTomorrowListView;
-            timelineDateTomorrowListView = new TimelineDateTomorrowListView(viewGroup.getContext());
-            timelineDateTomorrowListView.setTime(timeline[position] ,(exc.getTimelineDao().get(position).getMrn() == null)? 0 :exc.getTimelineDao().get(position).getMrn().size(), focustimer,
+            BuildTimelineDateTomorrowListView buildTimelineDateTomorrowListView;
+            buildTimelineDateTomorrowListView = new BuildTimelineDateTomorrowListView(viewGroup.getContext());
+            buildTimelineDateTomorrowListView.setTime(timeline[position] ,(exc.getTimelineDao().get(position).getMrn() == null)? 0 :exc.getTimelineDao().get(position).getMrn().size(), focustimer,
                     (in.getTimelineDao().get(position).getMrn() == null)? 0 :in.getTimelineDao().get(position).getMrn().size());
-            return timelineDateTomorrowListView;
+            return buildTimelineDateTomorrowListView;
         }
         else {
-            TimelineListView timelineListView;
-            timelineListView = new TimelineListView(viewGroup.getContext());
-            timelineListView.setTime(timeline[position] ,(exc.getTimelineDao().get(position).getMrn() == null)? 0 :exc.getTimelineDao().get(position).getMrn().size(), focustimer,
+            BuildTimelineListView buildTimelineListView;
+            buildTimelineListView = new BuildTimelineListView(viewGroup.getContext());
+            buildTimelineListView.setTime(timeline[position] ,(exc.getTimelineDao().get(position).getMrn() == null)? 0 :exc.getTimelineDao().get(position).getMrn().size(), focustimer,
                     (in.getTimelineDao().get(position).getMrn() == null)? 0 :in.getTimelineDao().get(position).getMrn().size());
-            return timelineListView;
+            return buildTimelineListView;
         }
     }
 }

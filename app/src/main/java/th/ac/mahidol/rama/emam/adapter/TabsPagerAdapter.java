@@ -11,7 +11,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
  * Created by mac-mini-1 on 9/15/2016 AD.
  */
 public class TabsPagerAdapter extends FragmentPagerAdapter {
-    private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID;
+    private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID, userName;
     private int position, timeposition;
 
     public TabsPagerAdapter(FragmentManager fm, String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
@@ -31,7 +31,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int index) {
         switch (index) {
             case 0:
-                return new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time);
+                return new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, userName);
             case 1:
                 return new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time);
         }

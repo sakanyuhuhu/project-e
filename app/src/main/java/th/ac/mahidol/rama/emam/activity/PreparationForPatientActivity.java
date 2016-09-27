@@ -13,7 +13,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 
 public class PreparationForPatientActivity extends AppCompatActivity {
 
-    private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID;
+    private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID, userName;
     private int position, timeposition;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -41,8 +41,9 @@ public class PreparationForPatientActivity extends AppCompatActivity {
         timeposition = getIntent().getExtras().getInt("timeposition");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
+        userName = getIntent().getExtras().getString("userName");
         Log.d("check", "PreparationForPatientActivity nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
+                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName);
 
 //        if (savedInstanceState == null) {
 //            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time)).commit();
@@ -51,7 +52,7 @@ public class PreparationForPatientActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time), "PREPARATION");
+        adapter.addFragment(new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,userName), "PREPARATION");
         adapter.addFragment(new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time), "HISTORY");
         viewPager.setAdapter(adapter);
     }

@@ -8,8 +8,8 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.fragment.BuildAddDrugPRNForPatientFragment;
 
 public class AddDrugPatientPRNActivity extends AppCompatActivity {
-    private String nfcUID, sdlocID, wardName, time;
-    private int timeposition;
+    private String nfcUID, sdlocID, wardName, time, RFID, firstName, lastName;
+    private int position, timeposition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +23,18 @@ public class AddDrugPatientPRNActivity extends AppCompatActivity {
         nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
-        timeposition = getIntent().getExtras().getInt("position");
+        RFID = getIntent().getExtras().getString("RFID");
+        firstName = getIntent().getExtras().getString("firstname");
+        lastName = getIntent().getExtras().getString("lastname");
+        timeposition = getIntent().getExtras().getInt("timeposition");
+        position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
 
-        Log.d("check", "AddDrugPatientPRNActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time);
+        Log.d("check", "AddDrugPatientPRNActivity nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
+               " /timeposition= "+timeposition+" /position = " + position+" /time = "+time);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddDrugPRNForPatientFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddDrugPRNForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time)).commit();
         }
 
     }
