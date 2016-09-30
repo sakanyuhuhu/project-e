@@ -18,8 +18,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +37,7 @@ import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment implements View.OnClickListener{
@@ -43,6 +48,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private BuildPreparationAdapter buildPreparationAdapter;
     private Button btnLogin;
     private Date datetoDay;
+    private ListPatientDataDao dao, daoPrn;
 
     public BuildPreparationFragment() {
         super();
@@ -127,9 +133,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             else {
                 if (timeposition <= 23)
                     loadPatientData(sdlocID, time, checkType, toDayDate);
-                else {
+                else
                     loadPatientData(sdlocID, time, checkType, tomorrowDate);
-                }
             }
         }
     }
@@ -235,17 +240,89 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         }
     }
 
+
     class PatientLoadCallback implements Callback<ListPatientDataDao>{
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
-            ListPatientDataDao dao = response.body();
-            saveCachePatientData(dao);
-            if(dao.getPatientDao().size() != 0) {
-                buildPreparationAdapter.setDao(dao);
-                listView.setAdapter(buildPreparationAdapter);
+            dao = response.body();
+            SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientprn",null);
+            if(dao.getPatientDao().size() != 0){
+                if(data != null){
+                    daoPrn = new Gson().fromJson(data,ListPatientDataDao.class);
+                    if(daoPrn.getPatientDao().size() != 0) {
+                        if (daoPrn.getPatientDao().get(0).getTime().equals(time)) {
+                            List<String> checkUniqe = new ArrayList<>();
+                            List<PatientDataDao> patientDao = new ArrayList<>();
+                            for (PatientDataDao p : dao.getPatientDao()) {
+                                checkUniqe.add(p.getMRN());
+                                patientDao.add(p);
+                            }
+
+                            for (PatientDataDao p : daoPrn.getPatientDao()) {
+                                if(!checkUniqe.contains(p.getMRN())){
+                                    checkUniqe.add(p.getMRN());
+                                    patientDao.add(p);
+                                }
+                            }
+                            Collections.sort(patientDao, new Comparator<PatientDataDao>() {
+                                @Override
+                                public int compare(PatientDataDao object1, PatientDataDao object2) {
+                                    return object1.getBedID().compareTo(object2.getBedID());
+                                }
+
+                                @Override
+                                public boolean equals(Object object) {
+                                    return false;
+                                }
+                            });
+
+                            dao.setPatientDao(patientDao);
+                            saveCachePatientData(dao);
+                            buildPreparationAdapter.setDao(dao);
+                            listView.setAdapter(buildPreparationAdapter);
+                        }
+                        else{
+                            List<PatientDataDao> patientDao = new ArrayList<>();
+                            for (PatientDataDao p : dao.getPatientDao()) {
+                                patientDao.add(p);
+                            }
+                            dao.setPatientDao(patientDao);
+                            saveCachePatientData(dao);
+                            buildPreparationAdapter.setDao(dao);
+                            listView.setAdapter(buildPreparationAdapter);
+                        }
+                    }
+                }
+            }
+            else if(dao.getPatientDao().size() == 0){
+                if(data != null){
+                    daoPrn = new Gson().fromJson(data,ListPatientDataDao.class);
+                    if(daoPrn.getPatientDao().size() != 0) {
+                        if (daoPrn.getPatientDao().get(0).getTime().equals(time)) {
+                            List<PatientDataDao> patientDao = new ArrayList<>();
+                            for (PatientDataDao p : daoPrn.getPatientDao()) {
+                                patientDao.add(p);
+                            }
+                            dao.setPatientDao(patientDao);
+                            saveCachePatientData(dao);
+                            buildPreparationAdapter.setDao(dao);
+                            listView.setAdapter(buildPreparationAdapter);
+                        }
+                    }
+                }
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
+
+//            before edit
+//            saveCachePatientData(dao);
+//            if(dao.getPatientDao().size() != 0) {
+//                buildPreparationAdapter.setDao(dao);
+//                listView.setAdapter(buildPreparationAdapter);
+//            }
+//            else
+//                Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
         }
 
         @Override

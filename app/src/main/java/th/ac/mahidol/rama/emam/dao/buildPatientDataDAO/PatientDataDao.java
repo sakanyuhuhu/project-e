@@ -17,6 +17,15 @@ public class PatientDataDao {
     private String wardName;
     @SerializedName("sdloc_id")private String sdlocId;
     private String age;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getAge() {
         return age;

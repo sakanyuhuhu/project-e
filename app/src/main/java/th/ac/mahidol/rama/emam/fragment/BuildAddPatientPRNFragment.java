@@ -24,7 +24,6 @@ import th.ac.mahidol.rama.emam.adapter.BuildAddPatientPRNAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
-import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddPatientPRNFragment extends Fragment{
@@ -84,16 +83,6 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         loadPersonWard(nfcUID, sdlocID);
         loadPatientPRN(sdlocID);
-
-
-// enable / disable
-        SharedPreferences prefs2 = getContext().getSharedPreferences("patientinclude", Context.MODE_PRIVATE);
-        String patientinclude = prefs2.getString("patientinclude",null);
-        if(patientinclude != null){
-            TimelineDao in = new Gson().fromJson(patientinclude, TimelineDao.class);
-//            Log.d("check", "patientinclude = "+in.getTimelineDao().get(5).getMrn());
-        }
-
     }
 
     @Override
@@ -125,9 +114,9 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
     private void saveCachePatientData(ListPatientDataDao patientDataDao){
         String json = new Gson().toJson(patientDataDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientprn",json);
+        editor.putString("patientintdata",json);
         editor.apply();
     }
 
@@ -147,8 +136,8 @@ public class BuildAddPatientPRNFragment extends Fragment{
         @Override
         public void onResponse(Call<MrnTimelineDao> call, Response<MrnTimelineDao> response) {
             MrnTimelineDao dao = response.body();
-            String json = new Gson().toJson(dao);
-            Log.d("check", "MrnTimelineDao = "+json);
+//            String json = new Gson().toJson(dao);
+//            Log.d("check", "MrnTimelineDao = "+json);
             loadPatientData(dao);
         }
 

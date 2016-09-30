@@ -131,7 +131,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     loadCacheDao();
                 }
             }
-
         }
         else {
             if(nameDouble != null){

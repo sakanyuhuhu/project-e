@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,23 +44,23 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
-import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
-public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener{
+public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener, Serializable{
     private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildAddDrugPRNForPatientAdapter buildAddDrugPRNForPatientAdapter;
-    private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
-    private ListDrugCardDao dao;
+    private ListDrugCardDao dao, listDrugCardDao;
     private Date datetoDay;
     private Button btnAdd;
+    private ListPatientDataDao listPatientDataDao;
 
     public BuildAddDrugPRNForPatientFragment() {
         super();
@@ -131,10 +132,10 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
         tvTime.setText(time);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientprn",null);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+        String data = prefs.getString("patientintdata",null);
         if(data != null){
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
+            listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
             loadDrugPRNData(listPatientDataDao.getPatientDao().get(position).getMRN());
         }
@@ -152,6 +153,14 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
     }
 
+    private void saveCachePatientData(ListPatientDataDao patientDataDao){
+        String json = new Gson().toJson(patientDataDao);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("patientprn",json);
+        editor.apply();
+    }
+
     private void loadDrugPRNData(String mrn){
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getListMedicalCardForPreparePRN(mrn);
         call.enqueue(new DrugLoadCallback());
@@ -162,22 +171,68 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         call.enqueue(new SaveDrugDataCallback());
     }
 
-
-
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnAdd){
             Boolean checkNull = false;
-            for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
-//                Log.d("check", "Complete = "+d.getComplete() + " /Drug Name = "+d.getTradeName());
+            for (DrugCardDao d : dao.getListDrugCardDao()) {
                 if(d.getComplete() == null)
                     d.setComplete("0");
                 if(d.getComplete().equals("1"))
                     checkNull = true;
             }
             if(checkNull) {
-                updateDrugData(buildDrugCardListManager.getDaoAll());
-                Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
+                List<PatientDataDao> patientDataDaoList = new ArrayList<>();
+                PatientDataDao patientDataDao = new PatientDataDao();
+                patientDataDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                patientDataDao.setBedID(listPatientDataDao.getPatientDao().get(position).getBedID());
+                patientDataDao.setInitialName(listPatientDataDao.getPatientDao().get(position).getInitialName());
+                patientDataDao.setFirstName(listPatientDataDao.getPatientDao().get(position).getFirstName());
+                patientDataDao.setLastName(listPatientDataDao.getPatientDao().get(position).getLastName());
+                patientDataDao.setIdCardNo(listPatientDataDao.getPatientDao().get(position).getIdCardNo());
+                patientDataDao.setMaritalstatus(listPatientDataDao.getPatientDao().get(position).getMaritalstatus());
+                patientDataDao.setDob(listPatientDataDao.getPatientDao().get(position).getDob());
+                patientDataDao.setGender(listPatientDataDao.getPatientDao().get(position).getGender());
+                patientDataDao.setWardName(listPatientDataDao.getPatientDao().get(position).getWardName());
+                patientDataDao.setSdlocId(listPatientDataDao.getPatientDao().get(position).getSdlocId());
+                patientDataDao.setAge(listPatientDataDao.getPatientDao().get(position).getAge());
+                patientDataDao.setTime(time);
+                patientDataDaoList.add(patientDataDao);
+                listPatientDataDao.setPatientDao(patientDataDaoList);
+                saveCachePatientData(listPatientDataDao);
+
+                listDrugCardDao = new ListDrugCardDao();
+                List<DrugCardDao> listDaoPRN = new ArrayList<>();
+                for(DrugCardDao d : dao.getListDrugCardDao()){
+                    if(d.getComplete().equals("1")){
+                        d.setActivityHour(String.valueOf(timeposition));
+                        listDaoPRN.add(d);
+                    }
+                }
+                listDrugCardDao.setListDrugCardDao(listDaoPRN);
+//                int i=0;
+//                for (DrugCardDao d : listDrugCardDao.getListDrugCardDao()) {
+//                    Log.d("check", i+" id "+ d.getId());
+//                    Log.d("check", i+" getAdminTimeHour "+ d.getAdminTimeHour());
+//                    Log.d("check", i+" getDrugUseDate "+ d.getDrugUseDate());
+//                    Log.d("check", i+" getTradeName "+ d.getTradeName());
+//                    Log.d("check", i+" getMRNv"+ d.getMRN());
+//                    Log.d("check", i+" getAdminType"+ d.getAdminType());
+//                    Log.d("check", i+" getAdminTime "+ d.getAdminTime());
+//                    Log.d("check", i+" getPrn "+ d.getPrn());
+//                    Log.d("check", i+" getStatus "+ d.getStatus());
+//                    Log.d("check", i+" getCheckType "+ d.getCheckType());
+//                    Log.d("check", i+" getCheckNote "+ d.getCheckNote());
+//                    Log.d("check", i+" getRFID "+ d.getRFID());
+//                    Log.d("check", i+" getFirstName "+ d.getFirstName());
+//                    Log.d("check", i+" getLastName "+ d.getLastName());
+//                    Log.d("check", i+" getActualAdmin "+ d.getActualAdmin());
+//                    Log.d("check", i+" getWardName "+ d.getWardName());
+//                    Log.d("check", i+" getActivityHour "+ d.getActivityHour());
+//                    i++;
+//                }
+//                updateDrugData(listDrugCardDao);
+                Toast.makeText(getContext(), "เพิ่มยาเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                 intent.putExtra("nfcUId", nfcUID);
                 intent.putExtra("sdlocId", sdlocID);
@@ -188,7 +243,9 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 intent.putExtra("timeposition", timeposition);
                 intent.putExtra("position", position);
                 intent.putExtra("time", time);
+                intent.putExtra("dao",listDrugCardDao);
                 getActivity().startActivity(intent);
+                getActivity().finish();
             }
             else
                 Toast.makeText(getContext(), "กรุณาใส่เครื่องหมายถูกให้ยาที่จะเพิ่ม", Toast.LENGTH_LONG).show();
@@ -201,13 +258,9 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            for(int i=0; i<dao.getListDrugCardDao().size();i++) {
-                Log.d("check", "Check Complete = " + dao.getListDrugCardDao().get(i).getComplete());
-            }
-            buildDrugCardListManager.setDao(dao);
 
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-            buildAddDrugPRNForPatientAdapter.setDao(getContext(),  buildDrugCardListManager.getDaoAll());
+            buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao);
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);
         }
 
@@ -258,8 +311,8 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
 
-            SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientprn",null);
+            SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientintdata",null);
             if(data != null){
                 ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
                 Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());

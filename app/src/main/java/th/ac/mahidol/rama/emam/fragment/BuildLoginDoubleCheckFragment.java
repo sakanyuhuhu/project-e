@@ -12,11 +12,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.LoginUserDoubleCheckActivity;
 
-public class BuildLoginDoubleCheckFragment extends Fragment{
+public class BuildLoginDoubleCheckFragment extends Fragment implements View.OnClickListener{
     private EditText edUsername, edPassword;
-    private Button btnLogin;
+    private Button btnLogin, btnCancle;
     private String sdlocID, wardName, time;
     private int timeposition;
 
@@ -67,25 +68,10 @@ public class BuildLoginDoubleCheckFragment extends Fragment{
         edUsername = (EditText) rootView.findViewById(R.id.edUsername);
         edPassword = (EditText) rootView.findViewById(R.id.edPassword);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
+        btnCancle = (Button) rootView.findViewById(R.id.btnCancle);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!(edUsername.getText().toString().equals("") | edPassword.getText().toString().equals(""))){
-                    Intent intent = new Intent(getContext(), LoginUserDoubleCheckActivity.class);
-                    intent.putExtra("username", edUsername.getText().toString());
-                    intent.putExtra("password", edPassword.getText().toString());
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("position", timeposition);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
-                }
-                else
-                    Toast.makeText(getActivity(), "กรุณาใส่ Username และ Password ให้ถูกต้อง", Toast.LENGTH_LONG).show();
-            }
-        });
+        btnLogin.setOnClickListener(this);
+        btnCancle.setOnClickListener(this);
     }
 
 
@@ -100,5 +86,31 @@ public class BuildLoginDoubleCheckFragment extends Fragment{
     }
 
 
-
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.btnLogin){
+            if(!(edUsername.getText().toString().equals("") | edPassword.getText().toString().equals(""))){
+                Intent intent = new Intent(getContext(), LoginUserDoubleCheckActivity.class);
+                intent.putExtra("username", edUsername.getText().toString());
+                intent.putExtra("password", edPassword.getText().toString());
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", timeposition);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+            else
+                Toast.makeText(getActivity(), "กรุณาใส่ Username และ Password ให้ถูกต้อง", Toast.LENGTH_LONG).show();
+        }
+        else if(view.getId() == R.id.btnCancle){
+            Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            intent.putExtra("position", timeposition);
+            intent.putExtra("time", time);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
+    }
 }

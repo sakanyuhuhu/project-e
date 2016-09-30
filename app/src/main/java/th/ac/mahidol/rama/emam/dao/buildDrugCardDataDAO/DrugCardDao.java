@@ -1,14 +1,17 @@
 package th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class DrugCardDao{
+public class DrugCardDao implements Parcelable{
     private String id;
     private String adminTimeHour;
     private String drugUseDate;
     private String tradeName;
-    private String drugImageUul;
+    private String drugImageUrl;
     private String MRN;
     private String dose;
     private String unit;
@@ -48,6 +51,68 @@ public class DrugCardDao{
     private String strBP;
     private String strHR;
     private String strCBG;
+
+    public DrugCardDao() {
+    }
+
+    protected DrugCardDao(Parcel in) {
+        id = in.readString();
+        adminTimeHour = in.readString();
+        drugUseDate = in.readString();
+        tradeName = in.readString();
+        drugImageUrl = in.readString();
+        MRN = in.readString();
+        dose = in.readString();
+        unit = in.readString();
+        route = in.readString();
+        frequency = in.readString();
+        adminType = in.readString();
+        method = in.readString();
+        adminTime = in.readString();
+        prn = in.readString();
+        status = in.readString();
+        drugID = in.readString();
+        registerDate = in.readString();
+        lastVisited = in.readString();
+        lastUpdated = in.readString();
+        orderId = in.readString();
+        stopdt = in.readString();
+        propHelp = in.readString();
+        site = in.readString();
+        registerDateOnly = in.readString();
+        checkType = in.readString();
+        complete = in.readString();
+        idRadio = in.readInt();
+        strRadio = in.readString();
+        description = in.readString();
+        descriptionTemplate = in.readString();
+        RFID = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        studentName = in.readString();
+        actualAdmin = in.readString();
+        wardName = in.readString();
+        activityHour = in.readString();
+        checkNote = in.readString();
+        strType = in.readString();
+        strSize = in.readString();
+        strForget = in.readString();
+        strBP = in.readString();
+        strHR = in.readString();
+        strCBG = in.readString();
+    }
+
+    public static final Creator<DrugCardDao> CREATOR = new Creator<DrugCardDao>() {
+        @Override
+        public DrugCardDao createFromParcel(Parcel in) {
+            return new DrugCardDao(in);
+        }
+
+        @Override
+        public DrugCardDao[] newArray(int size) {
+            return new DrugCardDao[size];
+        }
+    };
 
     public String getStrBP() {
         return strBP;
@@ -305,12 +370,12 @@ public class DrugCardDao{
         this.registerDateOnly = registerDateOnly;
     }
 
-    public String getDrugImageUul() {
-        return drugImageUul;
+    public String getDrugImageUrl() {
+        return drugImageUrl;
     }
 
-    public void setDrugImageUul(String drugImageUul) {
-        this.drugImageUul = drugImageUul;
+    public void setDrugImageUrl(String drugImageUrl) {
+        this.drugImageUrl = drugImageUrl;
     }
 
     public String getPrn() {
@@ -399,5 +464,58 @@ public class DrugCardDao{
 
     public void setIdRadio(int idRadio) {
         this.idRadio = idRadio;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adminTimeHour);
+        dest.writeString(drugUseDate);
+        dest.writeString(tradeName);
+        dest.writeString(drugImageUrl);
+        dest.writeString(MRN);
+        dest.writeString(dose);
+        dest.writeString(unit);
+        dest.writeString(route);
+        dest.writeString(frequency);
+        dest.writeString(adminType);
+        dest.writeString(method);
+        dest.writeString(adminTime);
+        dest.writeString(prn);
+        dest.writeString(status);
+        dest.writeString(drugID);
+        dest.writeString(registerDate);
+        dest.writeString(lastVisited);
+        dest.writeString(lastUpdated);
+        dest.writeString(orderId);
+        dest.writeString(stopdt);
+        dest.writeString(propHelp);
+        dest.writeString(site);
+        dest.writeString(registerDateOnly);
+        dest.writeString(checkType);
+        dest.writeString(complete);
+        dest.writeInt(idRadio);
+        dest.writeString(strRadio);
+        dest.writeString(description);
+        dest.writeString(descriptionTemplate);
+        dest.writeString(RFID);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(studentName);
+        dest.writeString(actualAdmin);
+        dest.writeString(wardName);
+        dest.writeString(activityHour);
+        dest.writeString(checkNote);
+        dest.writeString(strType);
+        dest.writeString(strSize);
+        dest.writeString(strForget);
+        dest.writeString(strBP);
+        dest.writeString(strHR);
+        dest.writeString(strCBG);
     }
 }

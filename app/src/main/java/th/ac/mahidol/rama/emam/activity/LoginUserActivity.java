@@ -70,7 +70,6 @@ public class LoginUserActivity extends AppCompatActivity {
                 getApplicationContext().startActivity(intent);
                 finish();
             }
-
         }
 
         @Override

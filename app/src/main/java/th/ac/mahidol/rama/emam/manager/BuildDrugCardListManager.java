@@ -30,7 +30,6 @@ public class BuildDrugCardListManager {
     }
 
 
-
     public void setDao(ListDrugCardDao dao){
         this.dao = dao;
         saveCache();

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.fragment.BuildHistoryPrepareFragment;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 
@@ -13,8 +14,9 @@ import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 public class TabsPagerAdapter extends FragmentPagerAdapter {
     private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID, userName;
     private int position, timeposition;
+    private ListDrugCardDao listDrugCardDao;
 
-    public TabsPagerAdapter(FragmentManager fm, String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public TabsPagerAdapter(FragmentManager fm, String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, ListDrugCardDao listDrugCardDao) {
         super(fm);
         this.nfcUID = nfcUID;
         this.sdlocID = sdlocID;
@@ -25,13 +27,14 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         this.RFID = RFID;
         this.timeposition = timeposition;
         this.position = position;
+        this.listDrugCardDao = listDrugCardDao;
     }
 
     @Override
     public Fragment getItem(int index) {
         switch (index) {
             case 0:
-                return new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, userName);
+                return new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, userName, listDrugCardDao);
             case 1:
                 return new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time);
         }

@@ -22,7 +22,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:background="@drawable/ramamahidol_hos" />
         <TextView
             android:layout_weight="1"

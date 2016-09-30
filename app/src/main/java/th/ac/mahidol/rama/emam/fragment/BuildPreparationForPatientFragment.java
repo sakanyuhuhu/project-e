@@ -40,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.HistoryPrepareActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationForPatientAdapter;
@@ -63,14 +64,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private BuildPreparationForPatientAdapter buildPreparationForPatientAdapter;
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
     private Spinner spinner1, spinner2;
-    private ListDrugCardDao dao;
+    private ListDrugCardDao dao, daoPRN, daoDrug;
     private Date datetoDay;
 
     public BuildPreparationForPatientFragment() {
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String userName) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String userName,ListDrugCardDao listDrugCardDao) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -83,6 +84,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         args.putInt("position", position);
         args.putString("time", time);
         args.putString("userName", userName);
+        args.putParcelable("listdrugcard",listDrugCardDao);
         fragment.setArguments(args);
         return fragment;
     }
@@ -119,9 +121,11 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
         userName = getArguments().getString("userName");
-
+        daoPRN = getArguments().getParcelable("listdrugcard");
         Log.d("check", "BuildPreparationForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
+
+        Log.d("check", "daoPRN = "+daoPRN);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -150,6 +154,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         String tomorrowDate = sdfForDrugUseDate.format(c.getTime());
 
         tvTime.setText(time);
+        tvDate.setText(dateFortvDate );
 
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
@@ -199,7 +204,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     }
 
     private void loadMedicalData(DrugCardDao drugCardDao){
-
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
         call.enqueue(new DrugLoadCallback());
     }
@@ -214,22 +218,22 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
-                if(selectedItem.equals("ทั้งหมด") & dao!=null) {
-                    tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+                if(selectedItem.equals("ทั้งหมด") & daoDrug != null) {
+                    tvDate.setText(dateFortvDate + " (จำนวนยา "+daoDrug.getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("กิน") & dao!=null) {
+                else if(selectedItem.equals("กิน") & daoDrug != null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา "+ buildDrugCardListManager.getDaoPO().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("ฉีด") & dao!=null) {
+                else if(selectedItem.equals("ฉีด") & daoDrug != null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา "+ buildDrugCardListManager.getDaoIV().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
                     listView.setAdapter(buildPreparationForPatientAdapter);
                 }
-                else if(selectedItem.equals("อื่นๆ") & dao!=null){
+                else if(selectedItem.equals("อื่นๆ") & daoDrug != null){
                     tvDate.setText(dateFortvDate + " (จำนวนยา "+ buildDrugCardListManager.getDaoOTHER().getListDrugCardDao().size()+")");
                     buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoOTHER());
                     listView.setAdapter(buildPreparationForPatientAdapter);
@@ -263,25 +267,33 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     listView.setAdapter(buildPreparationForPatientAdapter);
                }
                else if(selectedItem.equals("เพิ่มบันทึกข้อความ NPO")){
-                    Log.d("check", "เพิ่มบันทึกข้อความ NPO");
-                    for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
-                        d.setComplete("0");
-                        d.setCheckNote("1");
-                        d.setStatus("normal");
-                        d.setDescriptionTemplate("");
-                        d.setDescription("");
-                        d.setIdRadio(R.id.rdb2);
-                        d.setStrRadio("NPO");
-                        d.setCheckType("First Check");
-                    }
-                    buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
-                    listView.setAdapter(buildPreparationForPatientAdapter);
-                }
-                else if(selectedItem.equals("เพิ่มยา PRN")){
-                    Log.d("check", "เพิ่มยา PRN");
+                   Log.d("check", "เพิ่มบันทึกข้อความ NPO");
                    for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
-                       Log.d("check", "PRN = "+d.getPrn());
+                       d.setComplete("0");
+                       d.setCheckNote("1");
+                       d.setStatus("normal");
+                       d.setDescriptionTemplate("");
+                       d.setDescription("");
+                       d.setIdRadio(R.id.rdb2);
+                       d.setStrRadio("NPO");
+                       d.setCheckType("First Check");
                    }
+                   buildPreparationForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
+                   listView.setAdapter(buildPreparationForPatientAdapter);
+               }
+               else if(selectedItem.equals("เพิ่มยา PRN")){
+                   Log.d("check", "เพิ่มยา PRN");
+                   Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+                   intent.putExtra("nfcUId", nfcUID);
+                   intent.putExtra("sdlocId", sdlocID);
+                   intent.putExtra("wardname", wardName);
+                   intent.putExtra("RFID", RFID);
+                   intent.putExtra("firstname", firstName);
+                   intent.putExtra("lastname", lastName);
+                   intent.putExtra("timeposition", timeposition);
+                   intent.putExtra("position", position);
+                   intent.putExtra("time", time);
+                   getActivity().startActivity(intent);
                 }
                 else if(selectedItem.equals("เพิ่มยาที่ไม่บริหารก่อนหน้านี้")){
                     Log.d("check", "เพิ่มยาที่ไม่บริหารก่อนหน้านี้");
@@ -318,9 +330,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 }
                 else if(d.getComplete().equals("0") & d.getCheckNote() == null) {
                     d.setComplete("0");
-                    if(d.getStrRadio().equals("NPO")|d.getStrRadio().equals("ไม่มียา")|d.getStrRadio().equals("ห้องยาส่งยาผิด")|
-                            d.getStrRadio().equals("ยาตก/แตก")|d.getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
-                        d.setCheckNote("1");
+                    if(d.getStrRadio() != null | d.getStrRadio() != null | d.getStrRadio() != null |
+                            d.getStrRadio() != null | d.getStrRadio() != null) {
+                        if (d.getStrRadio().equals("NPO") | d.getStrRadio().equals("ไม่มียา") | d.getStrRadio().equals("ห้องยาส่งยาผิด") |
+                                d.getStrRadio().equals("ยาตก/แตก") | d.getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
+                            d.setCheckNote("1");
+                        else
+                            d.setCheckNote("0");
+                    }
                     else
                         d.setCheckNote("0");
                 }
@@ -375,28 +392,122 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         }
     }
 
+    private void saveCacheDrug(ListDrugCardDao listDrugCardDao){
+        String json = new Gson().toJson(listDrugCardDao);
+        SharedPreferences prefs = getContext().getSharedPreferences("drug", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("drug",json);
+        editor.apply();
+    }
 
 
 
     class DrugLoadCallback implements Callback<ListDrugCardDao>{
-
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            for(DrugCardDao d : dao.getListDrugCardDao()){
-                if(d.getDescriptionTemplate() != null){
-                    String[] strRadio = d.getDescriptionTemplate().split(",");
-                    if (strRadio.length == 1) {
-                        d.setDescriptionTemplate(strRadio[0]);
-                    } else if (strRadio.length == 2) {
-                        d.setDescriptionTemplate(strRadio[0]);
-                        d.setStrRadio(strRadio[1]);
+            if(daoPRN != null) {
+                if (dao.getListDrugCardDao().size() == 0 & daoPRN.getListDrugCardDao().size() != 0) {
+                    Log.d("check", "daoPRN DrugLoadCallback = " + daoPRN.getListDrugCardDao().size());
+                    daoDrug = new ListDrugCardDao();
+                    List<DrugCardDao> listDaoPRN = new ArrayList<>();
+                    for (DrugCardDao d : daoPRN.getListDrugCardDao()) {
+                        if(d.getComplete().equals("1")){
+                            d.setComplete("0");
+                        }
+                            listDaoPRN.add(d);
                     }
+                    daoDrug.setListDrugCardDao(listDaoPRN);
+                    Log.d("check", "daoPRN = "+daoDrug.getListDrugCardDao().size());
+                    buildDrugCardListManager.setDao(daoDrug);
+                    tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
+                }
+
+                else if (dao.getListDrugCardDao().size() != 0 & daoPRN.getListDrugCardDao().size() != 0) {
+                    Log.d("check", "dao = "+dao.getListDrugCardDao().size()+" /daoPRN = "+daoPRN.getListDrugCardDao().size());
+                    daoDrug = new ListDrugCardDao();
+                    List<DrugCardDao> listDaoSum = new ArrayList<>();
+                    for (DrugCardDao d : dao.getListDrugCardDao()) {
+                        if(d.getPrn().equals("0")){
+                            listDaoSum.add(d);
+                        }
+                    }
+                    for (DrugCardDao d : daoPRN.getListDrugCardDao()) {
+                        if(d.getComplete().equals("1")){
+                            d.setComplete("0");
+                        }
+                        listDaoSum.add(d);
+                    }
+                    daoDrug.setListDrugCardDao(listDaoSum);
+//                    saveCacheDrug(daoDrug);
+//                    int i=0;
+//                    for (DrugCardDao d : daoDrug.getListDrugCardDao()) {
+//                        Log.d("check", i+" id "+ d.getId());
+//                        Log.d("check", i+" getAdminTimeHour "+ d.getAdminTimeHour());
+//                        Log.d("check", i+" getDrugUseDate "+ d.getDrugUseDate());
+//                        Log.d("check", i+" getTradeName "+ d.getTradeName());
+//                        Log.d("check", i+" getMRN "+ d.getMRN());
+//                        Log.d("check", i+" getAdminType"+ d.getAdminType());
+//                        Log.d("check", i+" getAdminTime "+ d.getAdminTime());
+//                        Log.d("check", i+" getPrn "+ d.getPrn());
+//                        Log.d("check", i+" getStatus "+ d.getStatus());
+//                        Log.d("check", i+" getCheckType "+ d.getCheckType());
+//                        Log.d("check", i+" getCheckNote "+ d.getCheckNote());
+//                        Log.d("check", i+" getRFID "+ d.getRFID());
+//                        Log.d("check", i+" getFirstName "+ d.getFirstName());
+//                        Log.d("check", i+" getLastName "+ d.getLastName());
+//                        Log.d("check", i+" getActualAdmin "+ d.getActualAdmin());
+//                        Log.d("check", i+" getWardName "+ d.getWardName());
+//                        Log.d("check", i+" getActivityHour "+ d.getActivityHour());
+//                        i++;
+//                    }
+                    Log.d("check", "daoDrug = "+daoDrug.getListDrugCardDao().size());
+                    buildDrugCardListManager.setDao(daoDrug);
+                    tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
+                }
+            } else {
+                if (dao.getListDrugCardDao().size() != 0) {
+                    daoDrug = new ListDrugCardDao();
+                    List<DrugCardDao> listDaoNoPRN = new ArrayList<>();
+                    for (DrugCardDao d : dao.getListDrugCardDao()) {
+                        Log.d("check", "PRN = "+d.getPrn()+" /Complete = "+d.getComplete());
+                        if(d.getPrn().equals("0")){
+                            listDaoNoPRN.add(d);
+                        }
+                        if(d.getPrn().equals("1") & d.getComplete() != null){
+                            if(d.getComplete().equals("1") | d.getCheckNote() != null) {
+                                listDaoNoPRN.add(d);
+                            }
+                        }
+                        if (d.getDescriptionTemplate() != null) {
+                            String[] strRadio = d.getDescriptionTemplate().split(",");
+                            if (strRadio.length == 1) {
+                                d.setDescriptionTemplate(strRadio[0]);
+                            } else if (strRadio.length == 2) {
+                                d.setDescriptionTemplate(strRadio[0]);
+                                d.setStrRadio(strRadio[1]);
+                            }
+                        }
+                    }
+                    daoDrug.setListDrugCardDao(listDaoNoPRN);
+                    Log.d("check", "daoNoPRN DrugLoadCallback = " + daoDrug.getListDrugCardDao().size());
+                    buildDrugCardListManager.setDao(daoDrug);
+                    tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
                 }
             }
-            buildDrugCardListManager.setDao(dao);
-            tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-
+//            for(DrugCardDao d : dao.getListDrugCardDao()){
+//                if(d.getDescriptionTemplate() != null){
+//                    String[] strRadio = d.getDescriptionTemplate().split(",");
+//                    if (strRadio.length == 1) {
+//                        d.setDescriptionTemplate(strRadio[0]);
+//                    } else if (strRadio.length == 2) {
+//                        d.setDescriptionTemplate(strRadio[0]);
+//                        d.setStrRadio(strRadio[1]);
+//                    }
+//                }
+//            }
+//            buildDrugCardListManager.setDao(dao);
+//            tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
         }
 
         @Override
