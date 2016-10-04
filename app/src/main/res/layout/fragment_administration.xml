@@ -84,27 +84,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <TextView
-            android:layout_weight="10"
-            android:layout_gravity="left"
-            android:gravity="center"
-            android:layout_width="100dp"
-            android:layout_height="50dp"/>
-        <Button
-            android:id="@+id/btnScan"
-            android:visibility="invisible"
-            android:layout_gravity="right"
-            android:text="Scan"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:layout_width="120dp"
-            android:layout_height="70dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
         <Button
             android:id="@+id/btnLogin"
             android:background="@color/colorBlack"

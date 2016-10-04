@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,10 +38,10 @@ import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAdministrationFragment extends Fragment implements View.OnClickListener{
     private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, message, nameAdmin;
-    private int timeposition, num = 0;
+    private int timeposition, num;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvPreparation;
-    private Button btnLogin, btnScan;
+    private Button btnLogin;
     private BuildAdministrationAdapter buildAdministrationAdapter;
     private Date datetoDay;
     private boolean found;
@@ -93,7 +94,6 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
-        btnScan = (Button) rootView.findViewById(R.id.btnScan);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
@@ -148,11 +148,20 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         String data = prefs.getString("patientadministration",null);
 
         if(data != null){
-            ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
+            final ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildAdministrationAdapter.setDao(dao);
             listView.setAdapter(buildAdministrationAdapter);
-            btnScan.setVisibility(getView().VISIBLE);
-            btnScan.setOnClickListener(this);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    num = position;
+                    Intent intent = new Intent(getContext(), CameraScanActivity.class);
+                    startActivityForResult(intent, 1);
+                }
+            });
+
+
+//            before edit
 //            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //                @Override
 //                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -199,18 +208,10 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                 Log.d("check", "message = " + message);
                 SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
                 String patient = prefs.getString("patientadministration", null);
-                if (patient != null) {
+                if(patient != null){
                     ListPatientDataDao dao = new Gson().fromJson(patient, ListPatientDataDao.class);
-                    for (int i=0; i< dao.getPatientDao().size(); i++) {
-                        if (dao.getPatientDao().get(i).getMRN().equals(message)) {
-                            Log.d("check", i+" MRN = " + dao.getPatientDao().get(i).getMRN());
-                            found = true;
-                            num = i;
-                            break;
-                        } else
-                            found = false;
-                    }
-                    if (found) {
+                    if (dao.getPatientDao().get(num).getMRN().equals(message)) {
+                        found = true;
                         Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
                         intent.putExtra("sdlocId", sdlocID);
@@ -222,9 +223,39 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                         intent.putExtra("position", num);
                         intent.putExtra("time", time);
                         getActivity().startActivity(intent);
-                    } else
+                    }else {
+                        found = false;
                         Toast.makeText(getActivity(), "Not found!", Toast.LENGTH_LONG).show();
+                    }
                 }
+
+//                before in btnScan
+//                if (patient != null) {
+//                    ListPatientDataDao dao = new Gson().fromJson(patient, ListPatientDataDao.class);
+//                    for (int i=0; i< dao.getPatientDao().size(); i++) {
+//                        if (dao.getPatientDao().get(i).getMRN().equals(message)) {
+//                            Log.d("check", i+" MRN = " + dao.getPatientDao().get(i).getMRN());
+//                            found = true;
+//                            num = i;
+//                            break;
+//                        } else
+//                            found = false;
+//                    }
+//                    if (found) {
+//                        Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
+//                        intent.putExtra("nfcUId", nfcUID);
+//                        intent.putExtra("sdlocId", sdlocID);
+//                        intent.putExtra("wardname", wardName);
+//                        intent.putExtra("RFID", RFID);
+//                        intent.putExtra("firstname", firstName);
+//                        intent.putExtra("lastname", lastName);
+//                        intent.putExtra("timeposition", timeposition);
+//                        intent.putExtra("position", num);
+//                        intent.putExtra("time", time);
+//                        getActivity().startActivity(intent);
+//                    } else
+//                        Toast.makeText(getActivity(), "Not found!", Toast.LENGTH_LONG).show();
+//                }
             }
         }
     }
@@ -246,10 +277,6 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
-        }
-        else if (view.getId() == R.id.btnScan){
-            Intent intent = new Intent(getContext(), CameraScanActivity.class);
-            startActivityForResult(intent, 1);
         }
         else if (view.getId() == R.id.btnLogin){
             Intent intent = new Intent(getContext(), LoginAdministrationActivity.class);

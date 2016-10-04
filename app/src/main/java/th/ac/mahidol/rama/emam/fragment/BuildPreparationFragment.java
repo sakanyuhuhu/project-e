@@ -245,6 +245,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             dao = response.body();
+            Log.d("check", "dao patient = "+dao.getPatientDao().size());
             SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
             String data = prefs.getString("patientprn",null);
             if(dao.getPatientDao().size() != 0){

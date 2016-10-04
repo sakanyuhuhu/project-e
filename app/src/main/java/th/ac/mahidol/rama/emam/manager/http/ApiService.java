@@ -58,5 +58,8 @@ public interface ApiService {
     @POST("ListMedicalCardForPreparePRN")
     Call<ListDrugCardDao> getListMedicalCardForPreparePRN(@Field("mrn") String mrn);
 
+    @POST("CompareDrug")
+    Call<ListDrugCardDao> getCompareDrug(@Body DrugCardDao drugCardDao);
+
 
 }

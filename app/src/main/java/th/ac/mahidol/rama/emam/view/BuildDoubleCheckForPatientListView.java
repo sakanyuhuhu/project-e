@@ -89,7 +89,7 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
     }
 
     public void setDrugName(DrugCardDao dao){
-        if(dao.getRoute().equals("PO")) {
+        if(dao.getRoute().equals("PO") & dao.getPrn().equals("0")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
             tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
@@ -102,8 +102,21 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
             tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
             tvSite.setText("Site: " + dao.getSite());
         }
-        else if(dao.getRoute().equals("IV")){
+        else if(dao.getRoute().equals("IV") & dao.getPrn().equals("0")){
             bg.setBackgroundColor(getResources().getColor(R.color.colorPink));
+            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            if (dao.getAdminType().equals("C")) {
+                tvType.setText("Type: Continue");
+            } else {
+                tvType.setText("Type: One day");
+            }
+            tvRoute.setText("Route: " + dao.getRoute());
+            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvSite.setText("Site: " + dao.getSite());
+        }
+        else if(dao.getPrn().equals("1")){
+            bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
             tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
             if (dao.getAdminType().equals("C")) {
@@ -128,6 +141,45 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
             tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
             tvSite.setText("Site: " + dao.getSite());
         }
+//        if(dao.getRoute().equals("PO")) {
+//            bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+//            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+//            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+//            if (dao.getAdminType().equals("C")) {
+//                tvType.setText("Type: Continue");
+//            } else {
+//                tvType.setText("Type: One day");
+//            }
+//            tvRoute.setText("Route: " + dao.getRoute());
+//            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+//            tvSite.setText("Site: " + dao.getSite());
+//        }
+//        else if(dao.getRoute().equals("IV")){
+//            bg.setBackgroundColor(getResources().getColor(R.color.colorPink));
+//            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+//            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+//            if (dao.getAdminType().equals("C")) {
+//                tvType.setText("Type: Continue");
+//            } else {
+//                tvType.setText("Type: One day");
+//            }
+//            tvRoute.setText("Route: " + dao.getRoute());
+//            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+//            tvSite.setText("Site: " + dao.getSite());
+//        }
+//        else {
+//            bg.setBackgroundColor(getResources().getColor(R.color.colorBluesky));
+//            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+//            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+//            if (dao.getAdminType().equals("C")) {
+//                tvType.setText("Type: Continue");
+//            } else {
+//                tvType.setText("Type: One day");
+//            }
+//            tvRoute.setText("Route: " + dao.getRoute());
+//            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+//            tvSite.setText("Site: " + dao.getSite());
+//        }
     }
 
     public CheckBox isCheck(){

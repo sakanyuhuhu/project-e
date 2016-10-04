@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +52,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener, Serializable{
-    private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID;
+    private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID, toDayDate;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr;
@@ -128,7 +129,13 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
         datetoDay = new Date();
         SimpleDateFormat sdfFortvDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd");
         dateFortvDate = sdfFortvDate.format(datetoDay);
+        toDayDate = sdfForDrugUseDate.format(datetoDay);
+        Calendar c = Calendar.getInstance();
+        c.setTime(datetoDay);
+        c.add(Calendar.DATE,1);
+        String tomorrowDate = sdfForDrugUseDate.format(c.getTime());
 
         tvTime.setText(time);
 
@@ -137,7 +144,25 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         if(data != null){
             listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
-            loadDrugPRNData(listPatientDataDao.getPatientDao().get(position).getMRN());
+//            loadDrugPRNData(listPatientDataDao.getPatientDao().get(position).getMRN());
+            if(timeposition <= 23) {
+                DrugCardDao drugCardDao = new DrugCardDao();
+                drugCardDao.setAdminTimeHour(time);
+                drugCardDao.setDrugUseDate(toDayDate);
+                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                drugCardDao.setCheckType("First Check");
+
+                loadDrugPRNData(drugCardDao);
+            }
+            else{
+                DrugCardDao drugCardDao = new DrugCardDao();
+                drugCardDao.setAdminTimeHour(time);
+                drugCardDao.setDrugUseDate(tomorrowDate);
+                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                drugCardDao.setCheckType("First Check");
+
+                loadDrugPRNData(drugCardDao);
+            }
         }
 
         btnAdd.setOnClickListener(this);
@@ -161,14 +186,9 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         editor.apply();
     }
 
-    private void loadDrugPRNData(String mrn){
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getListMedicalCardForPreparePRN(mrn);
+    private void loadDrugPRNData(DrugCardDao drugCardDao){
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getCompareDrug(drugCardDao);
         call.enqueue(new DrugLoadCallback());
-    }
-
-    private void updateDrugData(ListDrugCardDao drugCardDao){
-        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().updateDrugData(drugCardDao);
-        call.enqueue(new SaveDrugDataCallback());
     }
 
     @Override
@@ -205,33 +225,15 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 List<DrugCardDao> listDaoPRN = new ArrayList<>();
                 for(DrugCardDao d : dao.getListDrugCardDao()){
                     if(d.getComplete().equals("1")){
-                        d.setActivityHour(String.valueOf(timeposition));
+                        d.setActivityHour(time);
+                        d.setWardName(wardName);
+                        d.setRFID(RFID);
+                        d.setFirstName(firstName);
+                        d.setLastName(lastName);
                         listDaoPRN.add(d);
                     }
                 }
                 listDrugCardDao.setListDrugCardDao(listDaoPRN);
-//                int i=0;
-//                for (DrugCardDao d : listDrugCardDao.getListDrugCardDao()) {
-//                    Log.d("check", i+" id "+ d.getId());
-//                    Log.d("check", i+" getAdminTimeHour "+ d.getAdminTimeHour());
-//                    Log.d("check", i+" getDrugUseDate "+ d.getDrugUseDate());
-//                    Log.d("check", i+" getTradeName "+ d.getTradeName());
-//                    Log.d("check", i+" getMRNv"+ d.getMRN());
-//                    Log.d("check", i+" getAdminType"+ d.getAdminType());
-//                    Log.d("check", i+" getAdminTime "+ d.getAdminTime());
-//                    Log.d("check", i+" getPrn "+ d.getPrn());
-//                    Log.d("check", i+" getStatus "+ d.getStatus());
-//                    Log.d("check", i+" getCheckType "+ d.getCheckType());
-//                    Log.d("check", i+" getCheckNote "+ d.getCheckNote());
-//                    Log.d("check", i+" getRFID "+ d.getRFID());
-//                    Log.d("check", i+" getFirstName "+ d.getFirstName());
-//                    Log.d("check", i+" getLastName "+ d.getLastName());
-//                    Log.d("check", i+" getActualAdmin "+ d.getActualAdmin());
-//                    Log.d("check", i+" getWardName "+ d.getWardName());
-//                    Log.d("check", i+" getActivityHour "+ d.getActivityHour());
-//                    i++;
-//                }
-//                updateDrugData(listDrugCardDao);
                 Toast.makeText(getContext(), "เพิ่มยาเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                 intent.putExtra("nfcUId", nfcUID);
@@ -254,7 +256,6 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
 
     class DrugLoadCallback implements Callback<ListDrugCardDao>{
-
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
@@ -271,22 +272,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     }
 
 
-    class SaveDrugDataCallback implements Callback<ListDrugCardDao>{
-
-        @Override
-        public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
-            dao = response.body();
-        }
-
-        @Override
-        public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "NewDrugLoadCallback Failure " + t);
-        }
-    }
-
-
     public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>>{
-
         @Override
         protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);

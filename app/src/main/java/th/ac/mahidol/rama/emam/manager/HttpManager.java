@@ -24,10 +24,10 @@ public class HttpManager {
         mContext = Contextor.getInstance().getContext();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://webdemo.rama.mahidol.ac.th:8080/EMAMService/")
-//                .baseUrl("http://10.0.2.2:8080/EMAMService/service/EMAMService/")
-//                .baseUrl("http://10.6.165.86:8080/EMAMService/")
-//                .baseUrl("http://10.6.165.87:8080/EMAMService/")
+//                .baseUrl("http://webdemo.rama.mahidol.ac.th:8080/EMAMService/")  //deploy webdemo
+//                .baseUrl("http://10.0.2.2:8080/EMAMService/service/EMAMService/")    //emulator
+                .baseUrl("http://10.6.165.86:8080/EMAMService/")  //p'farmstyle
+//                .baseUrl("http://10.6.165.87:8080/EMAMService/")  //labtop
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
