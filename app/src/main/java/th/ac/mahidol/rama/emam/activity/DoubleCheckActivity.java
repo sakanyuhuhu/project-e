@@ -24,6 +24,7 @@ public class DoubleCheckActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administration);
         Log.d("check", "DoubleCheckActivity");
+        nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");

@@ -49,13 +49,45 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_weight="1"
-            android:id="@+id/point"
-            android:src="@drawable/red"
-            android:layout_gravity="center"
-            android:layout_width="60dp"
-            android:layout_height="20dp" />
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="70dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp" />
+                <ImageView
+                    android:layout_weight="1"
+                    android:id="@+id/point"
+                    android:src="@drawable/red"
+                    android:layout_gravity="bottom"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+                <ImageView
+                    android:layout_weight="1"
+                    android:id="@+id/imgvNote"
+                    android:src="@drawable/notechange"
+                    android:layout_gravity="bottom"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:visibility="invisible"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tvComplete"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="เตรียมยา"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:visibility="invisible"/>
         </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

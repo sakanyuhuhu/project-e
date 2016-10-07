@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.HistoryPrepareActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
+import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationForPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
@@ -57,9 +59,9 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName;
-    private int position, timeposition;
-    private ListView listView, listViewAdr;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName, prn;
+    private int position, timeposition, positionPrepare;
+    private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory;
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
@@ -68,12 +70,13 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private Spinner spinner1, spinner2;
     private ListDrugCardDao dao, daoPRN, daoDrug;
     private Date datetoDay;
+    private boolean checkNote = false;
 
     public BuildPreparationForPatientFragment() {
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String userName,ListDrugCardDao listDrugCardDao) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String userName,ListDrugCardDao listDrugCardDao, String prn) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -85,8 +88,9 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
-        args.putString("userName", userName);
+        args.putString("namePrepare", userName);
         args.putParcelable("listdrugcard",listDrugCardDao);
+        args.putString("prn", prn);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,6 +102,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
+
     }
 
     @Override
@@ -122,10 +127,12 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
-        userName = getArguments().getString("userName");
+        userName = getArguments().getString("namePrepare");
         daoPRN = getArguments().getParcelable("listdrugcard");
+        prn = getArguments().getString("prn");
+        positionPrepare = position;
         Log.d("check", "BuildPreparationForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
+                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /namePrepare = "+userName+" /prn = "+prn);
 
         Log.d("check", "daoPRN = "+daoPRN);
 
@@ -140,7 +147,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         spinner2 = (Spinner) rootView.findViewById(R.id.spinner2);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
-//        tvHistory = (TextView) rootView.findViewById(R.id.tvHistory);
+        tvHistory = (TextView) rootView.findViewById(R.id.tvHistory);
 
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -189,7 +196,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         getOnClickSpinnerHelp();
         btnSave.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
-//        tvHistory.setOnClickListener(this);
+        tvHistory.setOnClickListener(this);
 
     }
 
@@ -213,6 +220,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private void updateDrugData(ListDrugCardDao drugCardDao){
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().updateDrugData(drugCardDao);
         call.enqueue(new SaveDrugDataCallback());
+    }
+
+    private void saveCachePatientDrug(ListDrugCardDao listDrugCardDao){
+        String json = new Gson().toJson(listDrugCardDao);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientdrug", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("patientdrug",json);
+        editor.apply();
     }
 
     private void getOnClickSpinnerDrugRoute(){
@@ -293,13 +308,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                    intent.putExtra("firstname", firstName);
                    intent.putExtra("lastname", lastName);
                    intent.putExtra("timeposition", timeposition);
-                   intent.putExtra("position", position);
+                   intent.putExtra("position", positionPrepare);
                    intent.putExtra("time", time);
+                   intent.putExtra("prn", prn);
                    getActivity().startActivity(intent);
-                }
-                else if(selectedItem.equals("เพิ่มยาที่ไม่บริหารก่อนหน้านี้")){
+               }
+               else if(selectedItem.equals("เพิ่มยาที่ไม่บริหารก่อนหน้านี้")){
                     Log.d("check", "เพิ่มยาที่ไม่บริหารก่อนหน้านี้");
-                }
+               }
             }
 
             @Override
@@ -309,12 +325,13 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         });
     }
 
+
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnSave){
             Boolean checkNull = true;
             for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
-                Log.d("check", "Complete = "+d.getComplete() + " /Note = "+d.getCheckNote());
+                Log.d("check", "Complete = "+d.getComplete() + " /Note = "+d.getCheckNote()+ " /Template = "+d.getDescriptionTemplate());
                 if(d.getComplete() == null & d.getCheckNote() == null){
                     d.setComplete("0");
                     d.setCheckNote("0");
@@ -332,8 +349,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 }
                 else if(d.getComplete().equals("0") & d.getCheckNote() == null) {
                     d.setComplete("0");
-                    if(d.getStrRadio() != null | d.getStrRadio() != null | d.getStrRadio() != null |
-                            d.getStrRadio() != null | d.getStrRadio() != null) {
+                    if(d.getStrRadio() != null) {
                         if (d.getStrRadio().equals("NPO") | d.getStrRadio().equals("ไม่มียา") | d.getStrRadio().equals("ห้องยาส่งยาผิด") |
                                 d.getStrRadio().equals("ยาตก/แตก") | d.getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
                             d.setCheckNote("1");
@@ -369,14 +385,31 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             }
         }
         else if(view.getId() == R.id.btnCancel){
-            Intent intent = new Intent(getContext(), PreparationActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            intent.putExtra("position", position);
-            intent.putExtra("time", time);
-            getActivity().startActivity(intent);
-            getActivity().finish();
+            if(prn.equals("prepare")) {
+                Intent intent = new Intent(getContext(), PreparationActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", position);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+            else {
+                Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("RFID", RFID);
+                intent.putExtra("firstname", firstName);
+                intent.putExtra("lastname", lastName);
+                intent.putExtra("timeposition", timeposition);
+                intent.putExtra("position", positionPrepare);
+                intent.putExtra("time", time);
+                intent.putExtra("prn", prn);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
         }
         else if(view.getId() == R.id.tvHistory){
             Intent intent = new Intent(getContext(), HistoryPrepareActivity.class);
@@ -394,24 +427,57 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         }
     }
 
-    private void saveCacheDrug(ListDrugCardDao listDrugCardDao){
-        String json = new Gson().toJson(listDrugCardDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("drug", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("drug",json);
-        editor.apply();
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    if(prn.equals("prepare")) {
+                        Intent intent = new Intent(getContext(), PreparationActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                        return true;
+                    }
+                    else {
+                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", positionPrepare);
+                        intent.putExtra("time", time);
+                        intent.putExtra("prn", prn);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
 
 
+
     class DrugLoadCallback implements Callback<ListDrugCardDao>{
-        private boolean checkNote = false;
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             if(daoPRN != null) {
                 if (dao.getListDrugCardDao().size() == 0 & daoPRN.getListDrugCardDao().size() != 0) {
-                    Log.d("check", "daoPRN DrugLoadCallback = " + daoPRN.getListDrugCardDao().size());
                     daoDrug = new ListDrugCardDao();
                     List<DrugCardDao> listDaoPRN = new ArrayList<>();
                     for (DrugCardDao d : daoPRN.getListDrugCardDao()) {
@@ -421,34 +487,12 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                             listDaoPRN.add(d);
                     }
                     daoDrug.setListDrugCardDao(listDaoPRN);
-//                    int i=0;
-//                    for (DrugCardDao d : daoDrug.getListDrugCardDao()) {
-//                        Log.d("check", i+" daoPRN id "+ d.getId());
-//                        Log.d("check", i+" getAdminTimeHour "+ d.getAdminTimeHour());
-//                        Log.d("check", i+" getDrugUseDate "+ d.getDrugUseDate());
-//                        Log.d("check", i+" getTradeName "+ d.getTradeName());
-//                        Log.d("check", i+" getMRN "+ d.getMRN());
-//                        Log.d("check", i+" getAdminType"+ d.getAdminType());
-//                        Log.d("check", i+" getAdminTime "+ d.getAdminTime());
-//                        Log.d("check", i+" getPrn "+ d.getPrn());
-//                        Log.d("check", i+" getStatus "+ d.getStatus());
-//                        Log.d("check", i+" getCheckType "+ d.getCheckType());
-//                        Log.d("check", i+" getCheckNote "+ d.getCheckNote());
-//                        Log.d("check", i+" getRFID "+ d.getRFID());
-//                        Log.d("check", i+" getFirstName "+ d.getFirstName());
-//                        Log.d("check", i+" getLastName "+ d.getLastName());
-//                        Log.d("check", i+" getActualAdmin "+ d.getActualAdmin());
-//                        Log.d("check", i+" getWardName "+ d.getWardName());
-//                        Log.d("check", i+" getActivityHour "+ d.getActivityHour());
-//                        i++;
-//                    }
-                    Log.d("check", "daoPRN = "+daoDrug.getListDrugCardDao().size());
                     buildDrugCardListManager.setDao(daoDrug);
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
+                    Log.d("check", "daoPRN = "+daoDrug.getListDrugCardDao().size());
                 }
 
                 else if (dao.getListDrugCardDao().size() != 0 & daoPRN.getListDrugCardDao().size() != 0) {
-                    Log.d("check", "dao = "+dao.getListDrugCardDao().size()+" /daoPRN = "+daoPRN.getListDrugCardDao().size());
                     daoDrug = new ListDrugCardDao();
                     List<String> checkDrugPrn = new ArrayList<>();
                     List<DrugCardDao> listDaoSum = new ArrayList<>();
@@ -474,9 +518,20 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         }
                     }
                     daoDrug.setListDrugCardDao(listDaoSum);
-                    Log.d("check", "daoDrug & PRN = "+daoDrug.getListDrugCardDao().size());
+                    for (DrugCardDao d : daoDrug.getListDrugCardDao()) {
+                        if (d.getDescriptionTemplate() != null) {
+                            String[] strRadio = d.getDescriptionTemplate().split(",");
+                            if (strRadio.length == 1) {
+                                d.setDescriptionTemplate(strRadio[0]);
+                            } else if (strRadio.length == 2) {
+                                d.setDescriptionTemplate(strRadio[0]);
+                                d.setStrRadio(strRadio[1]);
+                            }
+                        }
+                    }
                     buildDrugCardListManager.setDao(daoDrug);
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
+                    Log.d("check", "daoDrug & PRN = "+daoDrug.getListDrugCardDao().size());
                 }
             }
             else {
@@ -485,7 +540,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     daoDrug = new ListDrugCardDao();
                     List<DrugCardDao> listDaoNoPRN = new ArrayList<>();
                     for (DrugCardDao d : dao.getListDrugCardDao()) {
-                        Log.d("check", "PRN = "+d.getPrn()+" /Complete = "+d.getComplete()+" /Note = "+d.getCheckNote());
                         if(d.getPrn().equals("0")){
                             listDaoNoPRN.add(d);
                         }
@@ -512,7 +566,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         }
                     }
                     daoDrug.setListDrugCardDao(listDaoNoPRN);
-                    Log.d("check", "daoSum  = " + daoDrug.getListDrugCardDao().size());
                     buildDrugCardListManager.setDao(daoDrug);
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
                     if(checkNote){
@@ -523,6 +576,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         btnSave.setVisibility(getView().INVISIBLE);
                         btnCancel.setVisibility(getView().INVISIBLE);
                     }
+                    Log.d("check", "daoSum  = " + daoDrug.getListDrugCardDao().size());
                 }
             }
 
@@ -564,6 +618,11 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
 
     public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>>{
+        private String [] drugAdr = {"drugname1", "drugname2", "drugname3"};
+        private String [] sideEffect = {"side effect1", "side effect2", "side effect3"};
+        private String [] naranjo = {"naranjo1", "naranjo2", "naranjo3"};
+        private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
+        private ListView listViewAdr;
         @Override
         protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
@@ -576,22 +635,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
-//                tvDrugAdr.setText("การแพ้ยา:แตะสำหรับรายละเอียด");
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
-                listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
-                dialogView.setBackgroundResource(R.color.colorLemonChiffon);
-
-                builder.setView(dialogView);
-                builder.setTitle("ประวัติการแพ้ยา("+drugAdrDaos.size()+")");
-                builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
             }
             else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
@@ -602,10 +645,13 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
-                        dialogView.setBackgroundResource(R.color.colorLemonChiffon);
+
+                        buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
+                        buildListDrugAdrAdapter.setDao(drugAdr, sideEffect, naranjo);
+                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
 
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา()");
+                        builder.setTitle("ประวัติการแพ้ยา("+drugAdr.length+")");
                         builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -613,7 +659,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                             }
                         });
                         builder.create();
-                        builder.show().getWindow().setLayout(1200,550);
+                        builder.show().getWindow().setLayout(1200,600);
                     }
                 });
             }

@@ -94,7 +94,7 @@
         android:orientation="horizontal">
         <Button
             android:layout_weight="1"
-            android:id="@+id/btnCancle"
+            android:id="@+id/btnCancel"
             android:background="@color/colorPrimary"
             android:textColor="@color/colorBlack"
             android:text="ยกเลิก"

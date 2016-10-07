@@ -17,7 +17,7 @@ import th.ac.mahidol.rama.emam.activity.LoginUserAdministrationActivity;
 
 public class BuildLoginAdministrationFragment extends Fragment implements View.OnClickListener{
     private EditText edUsername, edPassword;
-    private Button btnLogin, btnCancle;
+    private Button btnLogin, btnCancel;
     private String sdlocID, wardName, time;
     private int timeposition;
 
@@ -67,10 +67,10 @@ public class BuildLoginAdministrationFragment extends Fragment implements View.O
         edUsername = (EditText) rootView.findViewById(R.id.edUsername);
         edPassword = (EditText) rootView.findViewById(R.id.edPassword);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
-        btnCancle = (Button) rootView.findViewById(R.id.btnCancle);
+        btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
 
         btnLogin.setOnClickListener(this);
-        btnCancle.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
     }
 
 
@@ -102,7 +102,7 @@ public class BuildLoginAdministrationFragment extends Fragment implements View.O
             else
                 Toast.makeText(getActivity(), "กรุณาใส่ Username และ Password ให้ถูกต้อง", Toast.LENGTH_LONG).show();
         }
-        else if(view.getId() == R.id.btnCancle){
+        else if(view.getId() == R.id.btnCancel){
             Intent intent = new Intent(getContext(), AdministrationActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);

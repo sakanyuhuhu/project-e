@@ -1,6 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -31,6 +32,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
@@ -40,11 +42,11 @@ import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
-public class BuildHistoryPrepareFragment extends Fragment{
+public class BuildHistoryPrepareFragment extends Fragment implements View.OnClickListener{
     private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName;
     private int position, timeposition;
     private ListView listView;
-    private TextView tvTime, tvDrugAdr;
+    private TextView tvTime, tvDrugAdr, tvPreparation;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
 
@@ -112,6 +114,8 @@ public class BuildHistoryPrepareFragment extends Fragment{
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
+        tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation) ;
+
         tvTime.setText("     "+time);
 
         Calendar c = Calendar.getInstance();
@@ -130,6 +134,7 @@ public class BuildHistoryPrepareFragment extends Fragment{
         }
 
         getDrugFromPraration();
+        tvPreparation.setOnClickListener(this);
 
     }
 
@@ -145,10 +150,6 @@ public class BuildHistoryPrepareFragment extends Fragment{
                         buildHistoryPrepareAdapter.setDao(getContext(), listDrugCardDao);
                         listView.setAdapter(buildHistoryPrepareAdapter);
                     }
-//                    else {
-//                        buildHistoryPrepareAdapter.setDao(getContext(), listDrugCardDao);
-//                        listView.setAdapter(buildHistoryPrepareAdapter);
-//                    }
                 }
             }
         }
@@ -163,6 +164,24 @@ public class BuildHistoryPrepareFragment extends Fragment{
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.tvPreparation){
+            Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            intent.putExtra("RFID", RFID);
+            intent.putExtra("firstname", firstName);
+            intent.putExtra("lastname", lastName);
+            intent.putExtra("timeposition", timeposition);
+            intent.putExtra("position", position);
+            intent.putExtra("time", time);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
     }
 
 

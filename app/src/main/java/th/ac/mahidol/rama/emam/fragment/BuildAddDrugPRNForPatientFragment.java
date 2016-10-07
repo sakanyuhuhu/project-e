@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddDrugPRNForPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
@@ -52,7 +54,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener, Serializable{
-    private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID, toDayDate;
+    private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID, toDayDate, prn;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr;
@@ -60,14 +62,14 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     private BuildAddDrugPRNForPatientAdapter buildAddDrugPRNForPatientAdapter;
     private ListDrugCardDao dao, listDrugCardDao;
     private Date datetoDay;
-    private Button btnAdd;
+    private Button btnAdd, btnCancel;
     private ListPatientDataDao listPatientDataDao;
 
     public BuildAddDrugPRNForPatientFragment() {
         super();
     }
 
-    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String prn) {
         BuildAddDrugPRNForPatientFragment fragment = new BuildAddDrugPRNForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -79,6 +81,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
+        args.putString("prn", prn);
         fragment.setArguments(args);
         return fragment;
     }
@@ -114,9 +117,10 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
+        prn = getArguments().getString("prn");
 
         Log.d("check", "BuildAddDrugPRNForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-               " /timeposition = "+timeposition+" /position = " + position+" /time = "+time);
+               " /timeposition = "+timeposition+" /position = " + position+" /time = "+time+" /prn = "+ prn);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -126,6 +130,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         btnAdd = (Button) rootView.findViewById(R.id.btnAdd);
+        btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
 
         datetoDay = new Date();
         SimpleDateFormat sdfFortvDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -166,6 +171,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         }
 
         btnAdd.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
     }
 
     @Override
@@ -246,20 +252,91 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 intent.putExtra("position", position);
                 intent.putExtra("time", time);
                 intent.putExtra("dao",listDrugCardDao);
+                intent.putExtra("prn", prn);
                 getActivity().startActivity(intent);
                 getActivity().finish();
             }
             else
                 Toast.makeText(getContext(), "กรุณาใส่เครื่องหมายถูกให้ยาที่จะเพิ่ม", Toast.LENGTH_LONG).show();
         }
+        else if(view.getId() == R.id.btnCancel){
+            if(prn.equals("prepare")){
+                Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("RFID", RFID);
+                intent.putExtra("firstname", firstName);
+                intent.putExtra("lastname", lastName);
+                intent.putExtra("timeposition", timeposition);
+                intent.putExtra("position", position);
+                intent.putExtra("time", time);
+                intent.putExtra("prn", prn);
+                getActivity().startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", position);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+        }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    if(prn.equals("prepare")) {
+                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        intent.putExtra("prn", prn);
+                        getActivity().startActivity(intent);
+                        return true;
+                    }
+                    else {
+                        Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+
+
+
 
 
     class DrugLoadCallback implements Callback<ListDrugCardDao>{
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
             buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao);
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);

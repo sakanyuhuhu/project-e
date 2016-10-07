@@ -6,21 +6,21 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal"
         android:background="@color/colorPrimary">
         <TextView
-            android:layout_weight="1"
             android:id="@+id/tvTimer"
             android:text="Time"
             android:textSize="18sp"
             android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:textColor="#ffffff" />
         <TextView
+            android:id="@+id/tvAdministration"
             android:layout_weight="1"
-            android:text="PREPARATION"
+            android:text="ADMINISTRATION"
             android:textSize="18sp"
             android:gravity="center"
             android:layout_width="match_parent"
@@ -34,14 +34,14 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"/>
+            android:textColor="@color/colorBlack"/>
 
         <Spinner
             android:id="@+id/spinner2"
             android:layout_weight="1"
             android:entries="@array/select_arrayshelpadmin"
             android:textColor="#ffffff"
-            android:layout_width="700dp"
+            android:layout_width="600dp"
             android:layout_height="match_parent" />
 
     </LinearLayout>
@@ -52,7 +52,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="30dp">
+        android:layout_height="35dp">
         <TextView
             android:id="@+id/tvDrugAdr"
             android:padding="5dp"
@@ -61,7 +61,7 @@
             android:text=" การแพ้ยา: "
             android:textSize="16sp"
             android:layout_width="wrap_content"
-            android:layout_height="20dp" />
+            android:layout_height="35dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -104,14 +104,16 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/background_floating_material_dark" />
+            android:background="@color/background_floating_material_dark"
+            android:visibility="visible"/>
         <Button
             android:id="@+id/btnSave"
             android:text="บันทึก"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/accent_material_light" />
+            android:background="@color/accent_material_light"
+            android:visibility="visible"/>
     </LinearLayout>
 
 </LinearLayout>

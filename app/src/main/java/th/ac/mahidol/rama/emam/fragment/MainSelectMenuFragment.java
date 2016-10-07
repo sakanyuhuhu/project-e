@@ -1,15 +1,19 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 
 
@@ -82,4 +86,32 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, final int keyCode, final KeyEvent event) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("EMAM");
+                builder.setMessage("คุณต้องการออกจากระบบใช่หรือไม่?");
+                builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            getActivity().startActivity(intent);
+                            getActivity().finish();
+                        }
+                    }
+                });
+                builder.setNegativeButton("ไม่ใช่",null);
+                builder.create();
+                builder.show();
+                return false;
+            }
+        });
+    }
 }

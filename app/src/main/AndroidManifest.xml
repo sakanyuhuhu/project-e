@@ -41,6 +41,8 @@
         <activity android:name=".activity.AdministrationActivity" />
         <activity android:name=".activity.AdministrationForPatientActivity" />
         <activity android:name=".activity.HistoryPrepareActivity"/>
+        <activity android:name=".activity.HistoryDoubleCheckActivity" />
+        <activity android:name=".activity.HistoryAdministrationActivity" />
         <activity android:name=".activity.AddPatientPRNActivity" />
         <activity android:name=".activity.CameraScanActivity" />
         <activity android:name=".activity.AddDrugPatientPRNActivity" />

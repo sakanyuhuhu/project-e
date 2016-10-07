@@ -33,14 +33,14 @@ public class CameraScanActivity extends AppCompatActivity implements ZXingScanne
         setContentView(mScannerView);
         mScannerView.setResultHandler(CameraScanActivity.this);
         mScannerView.startCamera();
-//        mScannerView.setFlash(true);
+        mScannerView.setFlash(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mScannerView.stopCamera();
-//        mScannerView.setFlash(false);
+        mScannerView.setFlash(false);
     }
 
     @Override

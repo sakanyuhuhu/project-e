@@ -21,6 +21,7 @@ public class PreparationActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
     private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null;
     private int position;
+    private String prn = "prepare";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +38,10 @@ public class PreparationActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /namePrepare = "+namePrepare);
+        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /namePrepare = "+namePrepare+" /prn = "+prn);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, namePrepare)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, namePrepare, prn)).commit();
         }
 
 
@@ -72,7 +73,7 @@ public class PreparationActivity extends AppCompatActivity {
 //            if(checkRegisterNFC == true){
                 nfcUID = nfcTagID;
 //                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time,namePrepare)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time,namePrepare, prn)).commit();
 
 //            }
 //            else{

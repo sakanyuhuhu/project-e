@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
+import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildTimelineAdapter;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
@@ -179,6 +181,28 @@ public class BuildTimelineFragment extends Fragment {
         call.enqueue(new TimelineInLoadCallback());
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
     class TimelineExcLoadCallback implements Callback<TimelineDao>{
         @Override

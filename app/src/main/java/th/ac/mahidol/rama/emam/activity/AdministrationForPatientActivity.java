@@ -9,12 +9,13 @@ import th.ac.mahidol.rama.emam.fragment.BuildAdministrationForPatientFragment;
 
 public class AdministrationForPatientActivity extends AppCompatActivity {
 
-    private String sdlocID, wardName, time, firstName, lastName, RFID;
+    private String nfcUID, sdlocID, wardName, time, firstName, lastName, RFID;
     private int position, timeposition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administration_for_patient);
+        nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         RFID = getIntent().getExtras().getString("RFID");
@@ -26,7 +27,7 @@ public class AdministrationForPatientActivity extends AppCompatActivity {
         Log.d("check", "AdministrationForPatientActivity sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationForPatientFragment.newInstance(sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time)).commit();
         }
     }
 

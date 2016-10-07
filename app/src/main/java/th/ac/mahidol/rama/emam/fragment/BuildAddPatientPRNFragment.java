@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
+import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientPRNAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
@@ -27,7 +29,7 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddPatientPRNFragment extends Fragment{
-    private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName;
+    private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName, prn;
     private int timeposition;
     private ListView listView;
     private BuildAddPatientPRNAdapter buildPatientPRNAdapter;
@@ -36,7 +38,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
         super();
     }
 
-    public static BuildAddPatientPRNFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time) {
+    public static BuildAddPatientPRNFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time, String prn) {
         BuildAddPatientPRNFragment fragment = new BuildAddPatientPRNFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -44,6 +46,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
         args.putString("time", time);
+        args.putString("prn", prn);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +79,8 @@ public class BuildAddPatientPRNFragment extends Fragment{
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
-        Log.d("check", "BuildAddPatientPRNFragment nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time);
+        prn = getArguments().getString("prn");
+        Log.d("check", "BuildAddPatientPRNFragment nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /prn = "+prn);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientPRNAdapter = new BuildAddPatientPRNAdapter();
@@ -128,8 +132,27 @@ public class BuildAddPatientPRNFragment extends Fragment{
         editor.apply();
     }
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), TimelineActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
     class PatientPRNLoadCallback implements Callback<MrnTimelineDao> {
 
@@ -169,7 +192,9 @@ public class BuildAddPatientPRNFragment extends Fragment{
                         intent.putExtra("timeposition", timeposition);
                         intent.putExtra("position", position);
                         intent.putExtra("time", time);
+                        intent.putExtra("prn", prn);
                         getActivity().startActivity(intent);
+                        getActivity().finish();
                     }
                 });
             }

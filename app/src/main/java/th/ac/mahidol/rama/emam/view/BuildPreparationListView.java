@@ -14,8 +14,8 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class BuildPreparationListView extends BaseCustomViewGroup {
 
-    private TextView tvPatient, tvBedNo, tvMrn;
-    private ImageView point;
+    private TextView tvPatient, tvBedNo, tvMrn, tvComplete;
+    private ImageView point, imgvNote;
 
     public BuildPreparationListView(Context context) {
         super(context);
@@ -54,7 +54,9 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
         tvPatient = (TextView) findViewById(R.id.tvPatient);
         tvBedNo = (TextView) findViewById(R.id.tvBedNo);
         tvMrn = (TextView) findViewById(R.id.tvMrn);
+        tvComplete = (TextView) findViewById(R.id.tvComplete);
         point = (ImageView) findViewById(R.id.point);
+        imgvNote = (ImageView) findViewById(R.id.imgvNote);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -97,6 +99,31 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
         tvPatient.setText(textPatient);
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
         tvMrn.setText("HN: " + textMrn);
+
+
+//        if(complete == null){
+//            tvPatient.setText(textPatient);
+//            tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
+//            tvMrn.setText("HN: " + textMrn);
+//            point.setImageResource(R.drawable.white));
+//            tvComplete.setVisibility(INVISIBLE);
+//            imgvNote.setVisibility(INVISIBLE);
+//        }else if(complete.equals("1")){
+//            tvPatient.setText(textPatient);
+//            tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
+//            tvMrn.setText("HN: " + textMrn);
+//            point.setImageResource(R.drawable.green));
+//            tvComplete.setVisibility(VISIBLE);
+//            imgvNote.setVisibility(INVISIBLE);
+//        }
+//        else {
+//            tvPatient.setText(textPatient);
+//            tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
+//            tvMrn.setText("HN: " + textMrn);
+//            point.setImageResource(R.drawable.red));
+//            tvComplete.setVisibility(VISIBLE);
+//            imgvNote.setVisibility(VISIBLE);
+//        }
     }
 
 }

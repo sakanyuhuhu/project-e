@@ -1,6 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -40,6 +41,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
+import th.ac.mahidol.rama.emam.activity.HistoryDoubleCheckActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildDoubleCheckForPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
@@ -52,10 +55,10 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildDoubleCheckForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID;
     private int position, timeposition;
     private ListView listView;
-    private TextView tvDate, tvTime, tvDrugAdr;
+    private TextView tvDate, tvTime, tvDrugAdr, tvHistory;
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildDoubleCheckForPatientAdapter buildDoubleCheckForPatientAdapter;
@@ -63,14 +66,16 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     private Spinner spinner1;
     private ListDrugCardDao dao;
     private Date datetoDay;
+    private boolean checkNote = false;
 
     public BuildDoubleCheckForPatientFragment() {
         super();
     }
 
-    public static BuildDoubleCheckForPatientFragment newInstance(String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
         BuildDoubleCheckForPatientFragment fragment = new BuildDoubleCheckForPatientFragment();
         Bundle args = new Bundle();
+        args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putString("RFID", RFID);
@@ -106,6 +111,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
+        nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         RFID = getArguments().getString("RFID");
@@ -125,6 +131,8 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
+        tvHistory = (TextView) rootView.findViewById(R.id.tvHistory);
+        btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
 
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -169,6 +177,8 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         }
         getOnClickSpinner();
         btnSave.setOnClickListener(this);
+        tvHistory.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
     }
 
 
@@ -294,6 +304,29 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             else {
                 Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
             }
+        }
+        else if(view.getId() == R.id.tvHistory){
+            Intent intent = new Intent(getContext(), HistoryDoubleCheckActivity.class);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            intent.putExtra("RFID", RFID);
+            intent.putExtra("firstname", firstName);
+            intent.putExtra("lastname", lastName);
+            intent.putExtra("timeposition", timeposition);
+            intent.putExtra("position", position);
+            intent.putExtra("time", time);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
+        else if (view.getId() == R.id.btnCancel){
+            Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            intent.putExtra("position", timeposition);
+            intent.putExtra("time", time);
+            getActivity().startActivity(intent);
+            getActivity().finish();
         }
 
     }
@@ -430,9 +463,24 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                         }
                     }
                 }
+                if(d.getComplete() == null){
+                    checkNote = true;
+                }else if(d.getComplete() != null){
+                    if(d.getComplete().equals("0")){
+                        checkNote = true;
+                    }
+                }
             }
             buildDrugCardListManager.setDao(dao);
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+            if(checkNote){
+                btnSave.setVisibility(getView().VISIBLE);
+                btnCancel.setVisibility(getView().VISIBLE);
+            }
+            else{
+                btnSave.setVisibility(getView().INVISIBLE);
+                btnCancel.setVisibility(getView().INVISIBLE);
+            }
         }
 
         @Override

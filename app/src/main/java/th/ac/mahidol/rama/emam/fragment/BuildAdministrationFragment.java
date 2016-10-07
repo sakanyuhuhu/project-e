@@ -269,6 +269,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if (view.getId() == R.id.tvPreparation){
             Intent intent = new Intent(getContext(), PreparationActivity.class);
@@ -277,6 +278,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if (view.getId() == R.id.btnLogin){
             Intent intent = new Intent(getContext(), LoginAdministrationActivity.class);

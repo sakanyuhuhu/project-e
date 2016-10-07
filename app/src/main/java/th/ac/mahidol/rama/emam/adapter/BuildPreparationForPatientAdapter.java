@@ -84,7 +84,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
             }
         });
 
-
         return buildPreparationForPatientListView;
     }
 

@@ -223,6 +223,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if(view.getId() == R.id.tvAdministration){
             Intent intent = new Intent(getContext(), AdministrationActivity.class);
@@ -231,6 +232,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if(view.getId() == R.id.btnLogin){
             Intent intent = new Intent(getContext(), LoginDoubleCheckActivity.class);

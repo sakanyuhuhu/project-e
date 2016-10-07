@@ -154,8 +154,8 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
     }
 
     public void setChangeNote(){
-        Log.d("check", "setChangeNote");
         imgvNote.setImageResource(R.drawable.notechange);
+        Log.d("check", "setChangeNote");
 
     }
 

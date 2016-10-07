@@ -7,9 +7,6 @@ import android.util.Log;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.fragment.BuildHistoryPrepareFragment;
 
-/**
- * Created by mac-mini-1 on 9/14/2016 AD.
- */
 public class HistoryPrepareActivity extends AppCompatActivity {
     private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID;
     private int position, timeposition;

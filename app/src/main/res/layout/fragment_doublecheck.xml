@@ -13,11 +13,10 @@
         android:background="@color/colorPrimary">
         <TextView
             android:id="@+id/tvTime"
-            android:layout_weight="1"
             android:text="Time"
             android:textSize="18sp"
             android:gravity="center"
-            android:layout_width="match_parent"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:textColor="#ffffff" />
         <TextView
@@ -47,15 +46,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#ffffff"/>
-        <TextView
-            android:id="@+id/tvAddPRN"
-            android:layout_weight="1"
-            android:text="เพิ่มยา PRN"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"/>
+        <!--<TextView-->
+            <!--android:id="@+id/tvAddPRN"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="เพิ่มยา PRN"-->
+            <!--android:textSize="18sp"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#000000"/>-->
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

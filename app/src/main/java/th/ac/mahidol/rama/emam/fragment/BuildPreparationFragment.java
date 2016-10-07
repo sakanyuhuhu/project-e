@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +30,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.AdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.LoginPreparationActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
+import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
@@ -41,10 +42,10 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment implements View.OnClickListener{
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, namePrepare;
+    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, namePrepare, prn;
     private int timeposition;
     private ListView listView;
-    private TextView tvUserName, tvTime, tvDoublecheck, tvAdministration, tvAddPRN;
+    private TextView tvUserName, tvTime, tvDoublecheck, tvAdministration;
     private BuildPreparationAdapter buildPreparationAdapter;
     private Button btnLogin;
     private Date datetoDay;
@@ -56,7 +57,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
 
 
-    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time, String namePrepare) {
+    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time, String namePrepare, String prn) {
         BuildPreparationFragment fragment = new BuildPreparationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
@@ -65,6 +66,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         args.putInt("position", timeposition);
         args.putString("time", time);
         args.putString("namePrepare", namePrepare);
+        args.putString("prn", prn);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,20 +94,19 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
         namePrepare = getArguments().getString("namePrepare");
-        Log.d("check", "BuildPreparationFragment nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /namePrepare = "+namePrepare);
+        prn = getArguments().getString("prn");
+        Log.d("check", "BuildPreparationFragment nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /namePrepare = "+namePrepare+" /prn = "+prn);
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
-        tvAddPRN = (TextView) rootView.findViewById(R.id.tvAddPRN);
 
         tvTime.setText(time);
         btnLogin.setOnClickListener(this);
         tvDoublecheck.setOnClickListener(this);
         tvAdministration.setOnClickListener(this);
-        tvAddPRN.setOnClickListener(this);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPreparationAdapter = new BuildPreparationAdapter();
@@ -170,6 +171,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     intent.putExtra("position", position);
                     intent.putExtra("time", time);
                     intent.putExtra("namePrepare", namePrepare);
+                    intent.putExtra("prn", prn);
                     getActivity().startActivity(intent);
                 }
             });
@@ -212,6 +214,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if(view.getId() == R.id.tvAdministration){
             Intent intent = new Intent(getContext(), AdministrationActivity.class);
@@ -220,6 +223,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
         else if(view.getId() == R.id.btnLogin){
             Intent intent = new Intent(getContext(), LoginPreparationActivity.class);
@@ -230,16 +234,29 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().startActivity(intent);
             getActivity().finish();
         }
-        else if(view.getId() == R.id.tvAddPRN){
-            Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            intent.putExtra("position", timeposition);
-            intent.putExtra("time", time);
-            getActivity().startActivity(intent);
-        }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), TimelineActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
     class PatientLoadCallback implements Callback<ListPatientDataDao>{
         @Override

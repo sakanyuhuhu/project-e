@@ -24,6 +24,7 @@ public class AddPatientPRNActivity extends AppCompatActivity {
     private ListView listView;
     private String nfcUID, sdlocID, wardName, time;
     private int timeposition;
+    private String prn ="addprn";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +36,10 @@ public class AddPatientPRNActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "AddPatientPRNActivity nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time);
+        Log.d("check", "AddPatientPRNActivity nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /prn = "+prn);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, prn)).commit();
         }
 
         initInstance();
