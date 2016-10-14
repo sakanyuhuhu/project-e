@@ -54,7 +54,13 @@
         <activity android:name=".activity.LoginUserDoubleCheckActivity" />
         <activity android:name=".activity.LoginAdministrationActivity" />
         <activity android:name=".activity.LoginUserAdministrationActivity" />
-
+        <activity android:name=".activity.AddDrugNotPrepareActivity" />
+        <!--History-->
+        <activity android:name=".activity.history.PatientAllActivity" />
+        <activity android:name=".activity.history.CurrentMedActivity" />
+        <!--Add Medication-->
+        <activity android:name=".activity.addmedication.AddMedicationPatientAllActivity" />
+        <activity android:name=".activity.addmedication.AddMedicationForPatientActivity" />
     </application>
 
 </manifest>

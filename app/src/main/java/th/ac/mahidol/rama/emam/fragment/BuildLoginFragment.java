@@ -15,7 +15,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.LoginUserActivity;
 
 public class BuildLoginFragment extends Fragment{
-    private EditText edUsername, edPassword;
+    private EditText edtUsername, edtPassword;
     private Button btnLogin;
     private String sdlocID, wardName;
 
@@ -58,17 +58,17 @@ public class BuildLoginFragment extends Fragment{
     private void initInstances(View rootView, Bundle savedInstanceState) {
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
-        edUsername = (EditText) rootView.findViewById(R.id.edUsername);
-        edPassword = (EditText) rootView.findViewById(R.id.edPassword);
+        edtUsername = (EditText) rootView.findViewById(R.id.edtUsername);
+        edtPassword = (EditText) rootView.findViewById(R.id.edtPassword);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!(edUsername.getText().toString().equals("") | edPassword.getText().toString().equals(""))){
+                if(!(edtUsername.getText().toString().equals("") | edtPassword.getText().toString().equals(""))){
                     Intent intent = new Intent(getContext(), LoginUserActivity.class);
-                    intent.putExtra("username", edUsername.getText().toString());
-                    intent.putExtra("password", edPassword.getText().toString());
+                    intent.putExtra("username", edtUsername.getText().toString());
+                    intent.putExtra("password", edtPassword.getText().toString());
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);

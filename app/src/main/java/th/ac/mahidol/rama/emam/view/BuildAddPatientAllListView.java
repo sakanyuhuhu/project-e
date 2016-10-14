@@ -5,32 +5,30 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
-public class BuildAddPatientPRNListView extends BaseCustomViewGroup {
+public class BuildAddPatientAllListView extends BaseCustomViewGroup {
 
     private TextView tvPatient, tvBedNo, tvMrn;
-    private ImageView point;
 
-    public BuildAddPatientPRNListView(Context context) {
+    public BuildAddPatientAllListView(Context context) {
         super(context);
         initInflate();
         initInstances();
     }
 
-    public BuildAddPatientPRNListView(Context context, AttributeSet attrs) {
+    public BuildAddPatientAllListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initInflate();
         initInstances();
         initWithAttrs(attrs, 0, 0);
     }
 
-    public BuildAddPatientPRNListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BuildAddPatientAllListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initInflate();
         initInstances();
@@ -38,7 +36,7 @@ public class BuildAddPatientPRNListView extends BaseCustomViewGroup {
     }
 
     @TargetApi(21)
-    public BuildAddPatientPRNListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BuildAddPatientAllListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initInflate();
         initInstances();
@@ -46,30 +44,17 @@ public class BuildAddPatientPRNListView extends BaseCustomViewGroup {
     }
 
     private void initInflate() {
-        inflate(getContext(), R.layout.view_list_patient_add_prn, this);
+        inflate(getContext(), R.layout.view_list_patient_all, this);
     }
 
     private void initInstances() {
-        // findViewById here
         tvPatient = (TextView) findViewById(R.id.tvPatient);
         tvBedNo = (TextView) findViewById(R.id.tvBedNo);
         tvMrn = (TextView) findViewById(R.id.tvMrn);
-        point = (ImageView) findViewById(R.id.point);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        /*
-        TypedArray a = getContext().getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.StyleableName,
-                defStyleAttr, defStyleRes);
 
-        try {
-
-        } finally {
-            a.recycle();
-        }
-        */
     }
 
     @Override

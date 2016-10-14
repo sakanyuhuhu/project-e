@@ -59,7 +59,7 @@ public class PreparationForPatientActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,userName,listDrugCardDao, prn), "PREPARATION");
-        adapter.addFragment(new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time), "HISTORY");
+        adapter.addFragment(new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, prn), "HISTORY");
         viewPager.setAdapter(adapter);
     }
 

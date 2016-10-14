@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvTime"
+            android:text="เพิ่มรายการยา"
+            android:textSize="20sp"
+            android:textColor="@color/colorWhite"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+    </LinearLayout>
+    <th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView
+        android:id="@+id/headerPatientAdapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="650dp"
+        android:orientation="vertical"
+        android:padding="30dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Drug :"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="70dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtDrugName"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Drug ID :"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="110dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtDrugID"
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="50dp" />
+            <TextView
+                android:text="Route :"
+                android:textSize="20sp"
+                android:paddingLeft="10dp"
+                android:layout_gravity="center"
+                android:layout_width="80dp"
+                android:layout_height="30dp" />
+            <Spinner
+                android:id="@+id/spinnerRoute"
+                android:entries="@array/select_arraysroute"
+                android:layout_gravity="center"
+                android:layout_width="150dp"
+                android:layout_height="50dp">
+            </Spinner>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Dosage :"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="110dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtDosage"
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="50dp" />
+            <TextView
+                android:text="Unit :"
+                android:textSize="20sp"
+                android:paddingLeft="10dp"
+                android:layout_gravity="center"
+                android:layout_width="80dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtUnit"
+                android:layout_gravity="center"
+                android:layout_width="150dp"
+                android:layout_height="50dp">
+            </EditText>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Frequency :"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="110dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtFrequency"
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="50dp" />
+            <TextView
+                android:text="Route :"
+                android:textSize="20sp"
+                android:paddingLeft="10dp"
+                android:layout_gravity="center"
+                android:layout_width="80dp"
+                android:layout_height="30dp" />
+            <EditText
+                android:id="@+id/edtMedthod"
+                android:layout_gravity="center"
+                android:layout_width="150dp"
+                android:layout_height="50dp">
+            </EditText>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Admin Time :"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chk0"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="0:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk1"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="1:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk2"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="2:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk3"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="3:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk4"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="4:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk5"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="5:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/chk6"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="6:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk7"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="7:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk8"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="8:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk9"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="9:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk10"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="10:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk11"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="11:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chk12"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="12:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk13"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="13:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk14"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="14:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk15"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="15:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk16"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="16:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk17"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="17:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/chk18"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="18:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk19"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="19:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk20"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="20:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk21"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="21:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk22"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="22:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+            <CheckBox
+                android:id="@+id/chk23"
+                android:layout_width="35dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:layout_weight="1"
+                android:text="23:00"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_width="25dp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btnCancel"
+            android:background="@color/colorBlack"
+            android:layout_gravity="center"
+            android:text="ยกเลิก"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btnAdd"
+            android:background="@color/colorPrimary"
+            android:layout_gravity="center"
+            android:text="เพิ่ม"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>

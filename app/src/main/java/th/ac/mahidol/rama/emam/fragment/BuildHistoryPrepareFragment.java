@@ -43,7 +43,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildHistoryPrepareFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName, prn;
     private int position, timeposition;
     private ListView listView;
     private TextView tvTime, tvDrugAdr, tvPreparation;
@@ -54,7 +54,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         super();
     }
 
-    public static BuildHistoryPrepareFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public static BuildHistoryPrepareFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String prn) {
         BuildHistoryPrepareFragment fragment = new BuildHistoryPrepareFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -66,6 +66,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
+        args.putString("prn", prn);
 //        args.putString("userName", userName);
         fragment.setArguments(args);
         return fragment;
@@ -103,10 +104,11 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
+        prn = getArguments().getString("prn");
 //        userName = getArguments().getString("userName");
 
         Log.d("check", "BuildHistoryPrepareFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName);
+                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName+" /prn = "+prn);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -116,7 +118,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation) ;
 
-        tvTime.setText("     "+time);
+        tvTime.setText(time);
 
         Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
@@ -179,6 +181,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
             intent.putExtra("timeposition", timeposition);
             intent.putExtra("position", position);
             intent.putExtra("time", time);
+            intent.putExtra("prn", prn);
             getActivity().startActivity(intent);
             getActivity().finish();
         }

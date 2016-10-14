@@ -22,7 +22,7 @@ public class BuildTimelineDateTomorrowListView extends BaseCustomViewGroup {
     private TextView tvTime, tvPatienTime;
     private LinearLayout bgfocus;
     private String dateTomorrow[], year[];
-    private TextView tvDateToday, tvPatienPRNTime;
+    private TextView tvDate, tvPatienPRNTime;
     private Date date;
 
     public BuildTimelineDateTomorrowListView(Context context) {
@@ -61,8 +61,8 @@ public class BuildTimelineDateTomorrowListView extends BaseCustomViewGroup {
         bgfocus = (LinearLayout) findViewById(R.id.bgfocus);
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvPatienTime = (TextView) findViewById(R.id.tvPatienTime);
-        tvDateToday = (TextView) findViewById(R.id.tvDateToday);
         tvPatienPRNTime = (TextView) findViewById(R.id.tvPatienPRNTime);
+        tvDate = (TextView) findViewById(R.id.tvDate);
 
         date = new Date();
         Calendar c = Calendar.getInstance();
@@ -95,7 +95,7 @@ public class BuildTimelineDateTomorrowListView extends BaseCustomViewGroup {
     }
 
     public void setTime(String textTime, int patientTime, String focustimer, int patientTime2){
-        tvDateToday.setText(dateTomorrow[0]+","+year[0]+","+year[1]);
+        tvDate.setText(dateTomorrow[0]+","+year[0]+","+year[1]);
         String test[] = textTime.split(":");
         if(focustimer.equals(test[0])){
             bgfocus.setBackgroundColor(getResources().getColor(R.color.colorPrimaryWhite));

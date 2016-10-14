@@ -27,4 +27,55 @@
         <item>เลือกยาทั้งหมด</item>
         <item>เพิ่มบันทึกข้อความ NPO</item>
     </string-array>
+
+    <string-array name="select_arrayscurrentmed">
+        <item>All</item>
+        <item>Active</item>
+        <item>Discontinue</item>
+    </string-array>
+
+    <string-array name="select_arraysroute">
+        <item>PO</item>
+        <item>IV</item>
+        <item>IV drip</item>
+        <item>IV dr</item>
+        <item>TF</item>
+        <item>SC</item>
+        <item>IM</item>
+        <item>PR</item>
+        <item>SL</item>
+        <item>OP</item>
+        <item>B</item>
+        <item>DT</item>
+        <item>GTT</item>
+        <item>GU</item>
+        <item>IC</item>
+        <item>ID</item>
+        <item>IH</item>
+        <item>IN</item>
+        <item>NG</item>
+        <item>NS</item>
+        <item>AP</item>
+        <item>OT</item>
+        <item>TD</item>
+        <item>TL</item>
+        <item>TP</item>
+        <item>UR</item>
+        <item>VG</item>
+        <item>WC</item>
+        <item>ED</item>
+        <item>UD</item>
+        <item>NB</item>
+        <item>NT</item>
+        <item>IA</item>
+        <item>IP</item>
+        <item>IO</item>
+        <item>IL</item>
+        <item>IE</item>
+        <item>II</item>
+        <item>IR</item>
+        <item>GARGLE</item>
+        <item>IS</item>
+        <item>IT</item>
+    </string-array>
 </resources>

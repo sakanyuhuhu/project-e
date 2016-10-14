@@ -15,10 +15,12 @@ import android.widget.ImageButton;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
+import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
+import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 
 
 public class MainSelectMenuFragment extends Fragment implements View.OnClickListener{
-    private ImageButton imgBMedication;
+    private ImageButton imgBMedication, imgBHistory, imgBAddMedication;
     private String sdlocID, nfcUID, wardName;
     public MainSelectMenuFragment() {
         super();
@@ -60,7 +62,12 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         imgBMedication = (ImageButton) rootView.findViewById(R.id.imgBMedication);
+        imgBHistory = (ImageButton) rootView.findViewById(R.id.imgBHistory);
+        imgBAddMedication = (ImageButton) rootView.findViewById(R.id.imgBAddMedication);
+
         imgBMedication.setOnClickListener(this);
+        imgBHistory.setOnClickListener(this);
+        imgBAddMedication.setOnClickListener(this);
 
     }
 
@@ -79,6 +86,20 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         if(view.getId() == R.id.imgBMedication) {
             Intent intent = new Intent(getContext(), TimelineActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
+        }
+        else if (view.getId() == R.id.imgBHistory){
+            Intent intent = new Intent(getContext(), PatientAllActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
+        }
+        else if(view.getId() == R.id.imgBAddMedication){
+            Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
             intent.putExtra("nfcUId", nfcUID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);

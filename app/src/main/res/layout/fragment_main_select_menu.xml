@@ -4,6 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:background="@color/colorPrimary">-->
+        <!--<ImageView-->
+            <!--android:src="@drawable/ramamahidol_hos"-->
+            <!--android:gravity="right"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp" />-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:layout_weight="1"
@@ -18,14 +30,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@android:drawable/ic_menu_agenda" />
-
         <ImageButton
             android:layout_weight="1"
             android:id="@+id/imgBHistory"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@android:drawable/ic_input_get" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -35,11 +45,10 @@
         android:layout_height="0dp">
         <ImageButton
             android:layout_weight="1"
-            android:id="@+id/imgBSetting"
+            android:id="@+id/imgBAddMedication"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@android:drawable/ic_menu_rotate" />
-
         <ImageButton
             android:layout_weight="1"
             android:id="@+id/imgBLogout"

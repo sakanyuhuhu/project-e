@@ -23,9 +23,7 @@ import th.ac.mahidol.rama.emam.dao.buildCheckLoginDAO.CheckLoginDao;
 import th.ac.mahidol.rama.emam.manager.SearchLoginManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 
-/**
- * Created by mac-mini-1 on 9/13/2016 AD.
- */
+
 public class LoginUserActivity extends AppCompatActivity {
     private String username, password, name, sdlocID, wardName;
 

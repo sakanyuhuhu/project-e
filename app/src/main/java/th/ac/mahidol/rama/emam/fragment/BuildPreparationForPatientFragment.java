@@ -43,6 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.AddDrugNotPrepareActivity;
 import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.HistoryPrepareActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
@@ -50,6 +51,7 @@ import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationForPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
@@ -59,8 +61,9 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName, prn;
-    private int position, timeposition, positionPrepare;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName, prn, mrn,tomorrowDate;
+    private int position, timeposition, positionPrepare, currentTime, adminTime, sumTime;
+    private String[] admintime;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory;
     private Button btnCancel, btnSave;
@@ -158,9 +161,14 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         dateFortvDate = sdfFortvDate.format(datetoDay);
         dateActualAdmin = sdfForActualAdmin.format(datetoDay);
         Calendar c = Calendar.getInstance();
+        currentTime =  c.get(Calendar.HOUR_OF_DAY);
         c.setTime(datetoDay);
         c.add(Calendar.DATE,1);
-        String tomorrowDate = sdfForDrugUseDate.format(c.getTime());
+        tomorrowDate = sdfForDrugUseDate.format(c.getTime());
+        admintime = time.split(":");
+        adminTime = Integer.parseInt(admintime[0]);
+        sumTime = currentTime - adminTime;
+        Log.d("check", "currentTime = "+currentTime +" / adminTime = "+adminTime+" /sumTime = "+sumTime);
 
         tvTime.setText(time);
         tvDate.setText(dateFortvDate );
@@ -169,7 +177,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         String data = prefs.getString("patientintdata",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
+            mrn = listPatientDataDao.getPatientDao().get(position).getMRN();
+            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position+" mrn = "+mrn);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
 
             if(timeposition <= 23) {
@@ -315,6 +324,38 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                }
                else if(selectedItem.equals("เพิ่มยาที่ไม่บริหารก่อนหน้านี้")){
                     Log.d("check", "เพิ่มยาที่ไม่บริหารก่อนหน้านี้");
+                   if(timeposition <= 23) {
+                       Intent intent = new Intent(getContext(), AddDrugNotPrepareActivity.class);
+                       intent.putExtra("nfcUId", nfcUID);
+                       intent.putExtra("sdlocId", sdlocID);
+                       intent.putExtra("wardname", wardName);
+                       intent.putExtra("RFID", RFID);
+                       intent.putExtra("firstname", firstName);
+                       intent.putExtra("lastname", lastName);
+                       intent.putExtra("position", positionPrepare);
+                       intent.putExtra("time", time);
+                       intent.putExtra("prn", prn);
+                       intent.putExtra("mrn", mrn);
+                       intent.putExtra("checkType", "First Check");
+                       intent.putExtra("date", toDayDate);
+                       getActivity().startActivity(intent);
+
+                   }else{
+                       Intent intent = new Intent(getContext(), AddDrugNotPrepareActivity.class);
+                       intent.putExtra("nfcUId", nfcUID);
+                       intent.putExtra("sdlocId", sdlocID);
+                       intent.putExtra("wardname", wardName);
+                       intent.putExtra("RFID", RFID);
+                       intent.putExtra("firstname", firstName);
+                       intent.putExtra("lastname", lastName);
+                       intent.putExtra("position", positionPrepare);
+                       intent.putExtra("time", time);
+                       intent.putExtra("prn", prn);
+                       intent.putExtra("mrn", mrn);
+                       intent.putExtra("checkType", "First Check");
+                       intent.putExtra("date", tomorrowDate);
+                       getActivity().startActivity(intent);
+                   }
                }
             }
 
@@ -376,8 +417,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     d.setActualAdmin(dateActualAdmin);
                     d.setActivityHour(time);
                 }
-
                 updateDrugData(buildDrugCardListManager.getDaoAll());
+                prn = "prepare";
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
             }
             else {
@@ -422,6 +463,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             intent.putExtra("timeposition", timeposition);
             intent.putExtra("position", position);
             intent.putExtra("time", time);
+            intent.putExtra("prn", prn);
             getActivity().startActivity(intent);
             getActivity().finish();
         }
@@ -624,9 +666,11 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
         private ListView listViewAdr;
         @Override
-        protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
+        protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
             Log.d("check", "*****DrugAdrDao onPostExecute = " +  drugAdrDaos.size());
+            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
             if(drugAdrDaos.size() != 0){
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
@@ -635,6 +679,33 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
+//                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
+//                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+//
+//                        for(DrugAdrDao d : drugAdrDaos){
+//                            drugAdrDaoList.add(d);
+//                        }
+//                        listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
+//                        buildListDrugAdrAdapter.setDao(listDrugAdrDao);
+//                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
+//
+//                        builder.setView(dialogView);
+//                        builder.setTitle("ประวัติการแพ้ยา("+drugAdr.length+")");
+//                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        });
+//                        builder.create();
+//                        builder.show().getWindow().setLayout(1200,600);
+//                    }
+//                });
             }
             else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");

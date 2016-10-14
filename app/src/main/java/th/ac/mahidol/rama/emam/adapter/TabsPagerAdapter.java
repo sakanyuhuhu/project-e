@@ -8,9 +8,6 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.fragment.BuildHistoryPrepareFragment;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 
-/**
- * Created by mac-mini-1 on 9/15/2016 AD.
- */
 public class TabsPagerAdapter extends FragmentPagerAdapter {
     private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID, userName, prn;
     private int position, timeposition;
@@ -36,7 +33,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, userName, listDrugCardDao, prn);
             case 1:
-                return new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time);
+                return new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, prn);
         }
         return null;
     }

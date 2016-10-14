@@ -20,7 +20,7 @@ public class BuildTimelineDateTodayListView extends BaseCustomViewGroup {
     private TextView tvTime, tvPatienTime, tvPatienPRNTime;
     private LinearLayout bgfocus;
     private String dateToday[], year[];
-    private TextView tvDateToday;
+    private TextView tvDate;
 
     public BuildTimelineDateTodayListView(Context context) {
         super(context);
@@ -59,7 +59,7 @@ public class BuildTimelineDateTodayListView extends BaseCustomViewGroup {
         tvTime = (TextView) findViewById(R.id.tvTime);
         tvPatienTime = (TextView) findViewById(R.id.tvPatienTime);
         tvPatienPRNTime = (TextView) findViewById(R.id.tvPatienPRNTime);
-        tvDateToday = (TextView) findViewById(R.id.tvDateToday);
+        tvDate = (TextView) findViewById(R.id.tvDate);
 
         dateToday = DateFormat.getDateInstance(0).format(new Date()).split("ที่");
         year = dateToday[1].split("ค.ศ.");
@@ -84,15 +84,15 @@ public class BuildTimelineDateTodayListView extends BaseCustomViewGroup {
         Bundle bundle = ss.getBundle();
     }
 
-    public void setTime(String textTime, int patientTime, String focustimer, int patientTime2){
-        tvDateToday.setText(dateToday[0]+","+year[0]+","+year[1]);
+    public void setTime(String textTime, int patientExc, String focustimer, int patientInc){
+        tvDate.setText(dateToday[0]+","+year[0]+","+year[1]);
         String test[] = textTime.split(":");
         if(focustimer.equals(test[0])){
             bgfocus.setBackgroundColor(getResources().getColor(R.color.colorPrimaryWhite));
         }
         tvTime.setText(textTime);
-        tvPatienTime.setText(String.valueOf(patientTime));
-        tvPatienPRNTime.setText("("+patientTime2+")");
+        tvPatienTime.setText(String.valueOf(patientExc));
+        tvPatienPRNTime.setText("("+patientInc+")");
     }
 
 

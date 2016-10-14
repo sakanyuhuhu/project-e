@@ -4,7 +4,6 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,10 +123,10 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                 }
             }
         });
-        Log.d("check", "Status = "+dao.getListDrugCardDao().get(position).getStatus());
-        Log.d("check", "strRadio = "+dao.getListDrugCardDao().get(position).getStrRadio());
-        Log.d("check", "getDescription = "+dao.getListDrugCardDao().get(position).getDescription());
-        Log.d("check", "BP = "+dao.getListDrugCardDao().get(position).getStrBP()+" Heart Rate = "+dao.getListDrugCardDao().get(position).getStrHR()+" CBG = "+dao.getListDrugCardDao().get(position).getStrCBG());
+//        Log.d("check", "Status = "+dao.getListDrugCardDao().get(position).getStatus());
+//        Log.d("check", "strRadio = "+dao.getListDrugCardDao().get(position).getStrRadio());
+//        Log.d("check", "getDescription = "+dao.getListDrugCardDao().get(position).getDescription());
+//        Log.d("check", "BP = "+dao.getListDrugCardDao().get(position).getStrBP()+" Heart Rate = "+dao.getListDrugCardDao().get(position).getStrHR()+" CBG = "+dao.getListDrugCardDao().get(position).getStrCBG());
         if(dao.getListDrugCardDao().get(position).getStatus() != null){
             if(dao.getListDrugCardDao().get(position).getStatus().equals("hold")) {
                 chkHold.setChecked(true);

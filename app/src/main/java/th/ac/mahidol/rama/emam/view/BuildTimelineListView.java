@@ -93,14 +93,14 @@ public class BuildTimelineListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setTime(String textTime, int patientTime, String focustimer, int patientTime2){
+    public void setTime(String textTime, int patientExc, String focustimer, int patientInc){
         String test[] = textTime.split(":");
         if(focustimer.equals(test[0])){
             bgfocus.setBackgroundColor(getResources().getColor(R.color.colorPrimaryWhite));
         }
         tvTime.setText(textTime);
-        tvPatienTime.setText(String.valueOf(patientTime));
-        tvPatienPRNTime.setText("("+patientTime2+")");
+        tvPatienTime.setText(String.valueOf(patientExc));
+        tvPatienPRNTime.setText("("+patientInc+")");
     }
 
 

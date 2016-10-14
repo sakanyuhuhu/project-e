@@ -22,7 +22,7 @@ import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddDrugPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
-import th.ac.mahidol.rama.emam.adapter.BuildAddPatientPRNAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
@@ -32,7 +32,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
     private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName, prn;
     private int timeposition;
     private ListView listView;
-    private BuildAddPatientPRNAdapter buildPatientPRNAdapter;
+    private BuildAddPatientAllAdapter buildPatientAllAdapter;
 
     public BuildAddPatientPRNFragment() {
         super();
@@ -83,7 +83,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
         Log.d("check", "BuildAddPatientPRNFragment nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /prn = "+prn);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
-        buildPatientPRNAdapter = new BuildAddPatientPRNAdapter();
+        buildPatientAllAdapter = new BuildAddPatientAllAdapter();
 
         loadPersonWard(nfcUID, sdlocID);
         loadPatientPRN(sdlocID);
@@ -177,8 +177,8 @@ public class BuildAddPatientPRNFragment extends Fragment{
             final ListPatientDataDao dao = response.body();
             saveCachePatientData(dao);
             if(dao.getPatientDao().size() != 0) {
-                buildPatientPRNAdapter.setDao(dao);
-                listView.setAdapter(buildPatientPRNAdapter);
+                buildPatientAllAdapter.setDao(dao);
+                listView.setAdapter(buildPatientAllAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -222,7 +222,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
+            Log.d("check", "PatientAll PersonWardLoadCallback Failure " + t);
         }
     }
 }

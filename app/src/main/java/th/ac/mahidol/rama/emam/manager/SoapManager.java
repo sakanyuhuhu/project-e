@@ -101,4 +101,29 @@ public class SoapManager {
         return String.valueOf(resultString);
     }
 
+    public String getDrugIPD(String methodName, String hn){
+
+        SOAP_ACTION = "http://tempuri.org/patientservice/action/patientservice."+ methodName;
+
+        try {
+
+            SoapObject request = new SoapObject(NAME_SPACE, methodName);
+            request.addProperty("hn", hn);
+
+            SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            soapEnvelope.setOutputSoapObject(request);
+
+            HttpTransportSE transport = new HttpTransportSE(URL);
+            transport.call(SOAP_ACTION, soapEnvelope);
+
+            resultString = (SoapPrimitive) soapEnvelope.getResponse();
+//            Log.d("check", "resultString = "+ resultString);
+
+
+        } catch (Exception ex) {
+            Log.e("check", "Error: " + ex.getMessage());
+        }
+        return String.valueOf(resultString);
+    }
+
 }
