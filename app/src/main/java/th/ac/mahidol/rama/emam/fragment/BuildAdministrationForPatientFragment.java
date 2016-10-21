@@ -18,12 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -36,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -59,7 +62,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildAdministrationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime, useTime;
     private int position, timeposition, currentTime, adminTime, sumTime;
     private String[] admintime;
     private ListView listView;
@@ -75,6 +78,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     private ListDrugCardDao dao;
     private Date datetoDay;
     private boolean checkNote = false;
+    long startMillis = 0;
+    long endMillis = 0;
 
     public BuildAdministrationForPatientFragment() {
         super();
@@ -159,7 +164,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         tomorrowDate = sdfForDrugUseDate.format(c.getTime());
         admintime = time.split(":");
         adminTime = Integer.parseInt(admintime[0]);
-        sumTime = (currentTime+1) - adminTime;
+        sumTime = (currentTime+2) - adminTime;
         Log.d("check", "currentTime = "+currentTime +" / adminTime = "+adminTime+" /sumTime = "+sumTime+" ***** tvcurrentTime = "+tvcurrentTime);
 
         tvTime.setText(time);
@@ -305,24 +310,57 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         txtStatus = (EditText) dialogView.findViewById(R.id.txtStatus);
 
         tvCurrentTime.setText(tvcurrentTime);
-        tvCurrentTime.setOnClickListener(new View.OnClickListener() {
+        useTime = tvcurrentTime;
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builderClock = new AlertDialog.Builder(getContext());
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View dialogView = inflater.inflate(R.layout.custom_dialog_set_clock, null);
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                radioButton = (RadioButton) dialogView.findViewById(selectedId);
+                if(radioButton.getText().equals("บริหารยา ณ เวลานี้")){
+                    useTime = tvcurrentTime;
+                }
+                else if(radioButton.getText().equals("ระบุเวลาในการบริหารยา")){
+                    final View dialogViewClock = View.inflate(getActivity(), R.layout.custom_dialog_set_clock, null);
+                    final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 
-                builderClock.setView(dialogView);
-                builderClock.setTitle("กรุณาระบุเวลา");
-                builderClock.setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("check", "Watch = "+tvCurrentTime.getText().toString());
-                    }
-                });
-                builderClock.setNegativeButton("ยกเลิก",null);
-                builderClock.create();
-                builderClock.show().getWindow().setLayout(700,600);
+                    dialogViewClock.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DatePicker datePicker = (DatePicker) dialogViewClock.findViewById(R.id.date_picker);
+                            TimePicker timePicker = (TimePicker) dialogViewClock.findViewById(R.id.time_picker);
+
+                            int pickYear, pickMonth, pickDay, pickHour = 0, pickMinute = 0;
+                            Calendar calendar = null;
+                            if (android.os.Build.VERSION.SDK_INT >= 23) {
+                                calendar = new GregorianCalendar(
+                                        pickYear = datePicker.getYear(),
+                                        pickMonth = datePicker.getMonth(),
+                                        pickDay = datePicker.getDayOfMonth(),
+                                        pickHour = timePicker.getHour(),
+                                        pickMinute = timePicker.getMinute());
+                                useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute);//used lpad
+                                tvCurrentTime.setText(useTime);
+                            } else {
+                                calendar = new GregorianCalendar(
+                                        pickYear = datePicker.getYear(),
+                                        pickMonth = datePicker.getMonth(),
+                                        pickDay = datePicker.getDayOfMonth(),
+                                        pickHour = timePicker.getCurrentHour(),
+                                        pickMinute = timePicker.getCurrentMinute());
+                                useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute);//used lpad
+                                tvCurrentTime.setText(useTime);
+                            }
+
+                            Calendar timePick = Calendar.getInstance();
+                            timePick.set(pickYear, pickMonth, pickDay, pickHour, pickMinute);
+                            startMillis = timePick.getTimeInMillis();
+                            endMillis = startMillis + 60 * 60 * 1000;
+                            alertDialog.dismiss();
+                        }
+                    });
+                    alertDialog.setView(dialogViewClock);
+                    alertDialog.show();
+                }
             }
         });
 
@@ -331,11 +369,24 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         builder.setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                radioButton = (RadioButton)dialogView.findViewById(selectedId);
-                Log.d("check", "radioGroup = "+radioButton.getText());
                 Log.d("check", "txtStatus = "+txtStatus.getText().toString());
                 Log.d("check", "tvCurrentTime = "+tvCurrentTime.getText().toString());
+                if(txtStatus.getText().toString().equals("")){
+                    final AlertDialog.Builder builderStatus = new AlertDialog.Builder(getContext());
+                    builderStatus.setTitle("กรุณาระบุเหตุผล");
+                    builderStatus.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getTimeDialog();
+                        }
+                    });
+                    builderStatus.create();
+                    builderStatus.show().getWindow().setLayout(1000,250);
+                }
+                else{
+                    Log.d("check", "txtStatus = "+txtStatus.getText().toString());
+                    Log.d("check", "tvCurrentTime = "+useTime);
+                }
             }
         });
         builder.setNegativeButton("ยกเลิก",null);
@@ -346,7 +397,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnSave) {
-            if (sumTime == 1 || sumTime == -1) {
+            if (sumTime == 1 || sumTime == -1) {// || sumTime == 0
                 Boolean checkNull = true;
                 for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
 //                    Log.d("check", "Complete = " + d.getComplete() + " /Note = " + d.getCheckNote());

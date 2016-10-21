@@ -18,7 +18,16 @@ public class PatientDataDao {
     @SerializedName("sdloc_id")private String sdlocId;
     private String age;
     private String time;
+    private String date;
     private String complete;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getComplete() {
         return complete;

@@ -54,7 +54,10 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListStatusPreparationDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.StatusPreparationDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
+import th.ac.mahidol.rama.emam.manager.BuildStatusPraparationManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
@@ -74,6 +77,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private ListDrugCardDao dao, daoPRN, daoDrug;
     private Date datetoDay;
     private boolean checkNote = false;
+    private ListStatusPreparationDao listStatusPreparationDao;
+    private BuildStatusPraparationManager buildStatusPraparationManager = new BuildStatusPraparationManager();
 
     public BuildPreparationForPatientFragment() {
         super();
@@ -366,7 +371,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         });
     }
 
-
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnSave){
@@ -409,6 +413,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     checkNull = false;
             }
             if(checkNull) {
+                String statustcomplete = "1";
                 for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
                     d.setRFID(RFID);
                     d.setFirstName(firstName);
@@ -416,10 +421,38 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     d.setWardName(wardName);
                     d.setActualAdmin(dateActualAdmin);
                     d.setActivityHour(time);
+                    if(d.getComplete().equals("0")){
+                        statustcomplete = "0";
+                    }
                 }
                 updateDrugData(buildDrugCardListManager.getDaoAll());
                 prn = "prepare";
+
+                listStatusPreparationDao = new ListStatusPreparationDao();
+                List<StatusPreparationDao> addDao = new ArrayList<>();
+                StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
+                statusPreparationDao.setHn(mrn);
+                statusPreparationDao.setTime(time);
+                if(timeposition <= 23){
+                    statusPreparationDao.setDate(toDayDate);
+                }else{
+                    statusPreparationDao.setDate(tomorrowDate);
+                }
+                statusPreparationDao.setComplete(statustcomplete);
+                addDao.add(statusPreparationDao);
+                listStatusPreparationDao.setStatusPreparationDaoList(addDao);
+                buildStatusPraparationManager.appendDao(listStatusPreparationDao);
+
+
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), PreparationActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", timeposition);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+                getActivity().finish();
             }
             else {
                 Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
@@ -431,7 +464,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 intent.putExtra("nfcUId", nfcUID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
-                intent.putExtra("position", position);
+                intent.putExtra("position", timeposition);
                 intent.putExtra("time", time);
                 getActivity().startActivity(intent);
                 getActivity().finish();
@@ -483,7 +516,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         intent.putExtra("nfcUId", nfcUID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
-                        intent.putExtra("position", position);
+                        intent.putExtra("position", timeposition);
                         intent.putExtra("time", time);
                         getActivity().startActivity(intent);
                         getActivity().finish();
@@ -679,6 +712,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
+
+//      wait data in service
 //                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {

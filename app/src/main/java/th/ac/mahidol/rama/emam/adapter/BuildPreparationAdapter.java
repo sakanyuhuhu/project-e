@@ -13,7 +13,6 @@ public class BuildPreparationAdapter extends BaseAdapter {
 
     public void setDao(ListPatientDataDao dao){
         this.dao = dao;
-
     }
 
     @Override
@@ -40,8 +39,7 @@ public class BuildPreparationAdapter extends BaseAdapter {
 
         BuildPreparationListView patientListView;
         patientListView = new BuildPreparationListView(viewGroup.getContext());
-        patientListView.setPatient(dao.getPatientDao().get(position).getBedID(), dao.getPatientDao().get(position).getInitialName()+
-                dao.getPatientDao().get(position).getFirstName()+" "+dao.getPatientDao().get(position).getLastName(), dao.getPatientDao().get(position).getMRN());
+        patientListView.setPatient(dao.getPatientDao().get(position));
 
         return patientListView;
     }

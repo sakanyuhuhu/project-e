@@ -24,9 +24,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
 import th.ac.mahidol.rama.emam.manager.SearchLoginManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 
-/**
- * Created by mac-mini-1 on 9/13/2016 AD.
- */
+
 public class LoginUserPrepareActivity extends AppCompatActivity {
     private String username, password, sdlocID, wardName, time, nfcUID = null;
     private int timeposition;

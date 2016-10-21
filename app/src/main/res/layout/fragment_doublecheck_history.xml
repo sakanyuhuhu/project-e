@@ -4,21 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="30dp"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:background="@color/colorPrimary">-->
-        <!--<TextView-->
-            <!--android:layout_weight="1"-->
-            <!--android:id="@+id/tvTimer"-->
-            <!--android:text="Time"-->
-            <!--android:textSize="18sp"-->
-            <!--android:gravity="left"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColor="#ffffff" />-->
-    <!--</LinearLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
@@ -27,6 +12,7 @@
         <TextView
             android:id="@+id/tvTimer"
             android:text="Time"
+            android:paddingLeft="10dp"
             android:textSize="18sp"
             android:gravity="center"
             android:layout_width="70dp"
@@ -58,7 +44,7 @@
             android:layout_height="wrap_content"
             android:textColor="#ffffff"/>
     </LinearLayout>
-    <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView
+    <th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView
         android:id="@+id/headerPatientAdapter"
         android:background="@color/colorBlue"
         android:layout_width="match_parent"
@@ -70,33 +56,51 @@
         android:layout_height="35dp">
         <TextView
             android:id="@+id/tvDrugAdr"
-            android:padding="5dp"
+            android:paddingLeft="10dp"
             android:gravity="center_vertical"
             android:layout_weight="1"
-            android:text=" การแพ้ยา: "
+            android:text="การแพ้ยา: "
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="35dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="5dp"
+        android:background="@color/colorPrimaryWhite"
+        android:orientation="vertical">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:orientation="horizontal"
-        android:background="@color/colorPrimary">
+        android:gravity="center"
+        android:background="@color/colorPrimaryWhite">
         <TextView
-            android:layout_weight="1"
-            android:padding="5dp"
             android:id="@+id/tvDate"
-            android:textSize="22sp"
+            android:padding="5dp"
+            android:textSize="20sp"
             android:gravity="center"
-            android:text="Calendar"
-            android:textColor="#ffffff"
-            android:layout_width="match_parent"
+            android:text="00/00/0000"
+            android:textColor="@color/colorBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"/>
+        <ImageView
+            android:id="@+id/imgCalendar"
+            android:layout_gravity="center|center_horizontal"
+            android:src="@drawable/calendar"
+            android:layout_width="50dp"
             android:layout_height="match_parent" />
-
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/colorPrimaryWhite"
+        android:orientation="vertical">
     </LinearLayout>
     <ListView
-        android:id="@+id/lvPrepareForPatientAdapter"
+        android:id="@+id/lvHistoryAdapter"
         android:padding="5dp"
         android:layout_weight="100"
         android:textSize="50sp"

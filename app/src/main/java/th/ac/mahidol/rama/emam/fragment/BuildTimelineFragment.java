@@ -112,7 +112,7 @@ public class BuildTimelineFragment extends Fragment {
 
         if(patientexclude != null & patientinclude != null) {
             TimelineDao exc = new Gson().fromJson(patientexclude, TimelineDao.class);
-            TimelineDao in = new Gson().fromJson(patientinclude, TimelineDao.class);
+            final TimelineDao in = new Gson().fromJson(patientinclude, TimelineDao.class);
 
             buildTimelineAdapter.setDao(listTimeline, exc, focustimer, in);
             listView.setAdapter(buildTimelineAdapter);

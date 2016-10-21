@@ -19,9 +19,8 @@ public class PreparationActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null;
+    private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null, prn = "prepare";
     private int position;
-    private String prn = "prepare";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

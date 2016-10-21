@@ -20,7 +20,7 @@ import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 
 
 public class MainSelectMenuFragment extends Fragment implements View.OnClickListener{
-    private ImageButton imgBMedication, imgBHistory, imgBAddMedication;
+    private ImageButton imgBMedication, imgBHistory, imgBAddMedication, imgBLogout;
     private String sdlocID, nfcUID, wardName;
     public MainSelectMenuFragment() {
         super();
@@ -64,10 +64,12 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         imgBMedication = (ImageButton) rootView.findViewById(R.id.imgBMedication);
         imgBHistory = (ImageButton) rootView.findViewById(R.id.imgBHistory);
         imgBAddMedication = (ImageButton) rootView.findViewById(R.id.imgBAddMedication);
+        imgBLogout = (ImageButton) rootView.findViewById(R.id.imgBLogout);
 
         imgBMedication.setOnClickListener(this);
         imgBHistory.setOnClickListener(this);
         imgBAddMedication.setOnClickListener(this);
+        imgBLogout.setOnClickListener(this);
 
     }
 
@@ -104,6 +106,9 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);
+        }
+        else if(view.getId() == R.id.imgBLogout){
+
         }
     }
 

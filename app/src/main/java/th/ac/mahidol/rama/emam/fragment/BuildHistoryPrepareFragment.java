@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -15,8 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.gson.Gson;
 
@@ -24,8 +28,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -35,20 +42,22 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
-import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
-import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
 public class BuildHistoryPrepareFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName, prn;
+    private String  nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName, RFID, userName, prn, dateSelect;
     private int position, timeposition;
     private ListView listView;
-    private TextView tvTime, tvDrugAdr, tvPreparation;
-    private BuildHeaderPatientDataView buildHeaderPatientDataView;
+    private TextView tvTime, tvDrugAdr, tvPreparation, tvDate;
+    private ImageView imgCalendar;
+    private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
+    private Date datetoDay;
+    long startMillis = 0;
+    long endMillis = 0;
 
     public BuildHistoryPrepareFragment() {
         super();
@@ -110,51 +119,53 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         Log.d("check", "BuildHistoryPrepareFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName+" /prn = "+prn);
 
-        listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
-        buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
+        listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
+        buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryPrepareAdapter = new BuildHistoryPrepareAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
-        tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation) ;
+        tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
+        tvDate = (TextView) rootView.findViewById(R.id.tvDate);
+        imgCalendar = (ImageView) rootView.findViewById(R.id.imgCalendar);
 
+        datetoDay = new Date();
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("dd/MM/yyyy");
+        toDayDate = sdfForDrugUseDate.format(datetoDay);
+        dateSelect = toDayDate;
+        tvDate.setText(dateSelect);
         tvTime.setText(time);
-
-        Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
-
 
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
             Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
-            buildHeaderPatientDataView.setData(listPatientDataDao, position);
+            buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
 
         }
 
         getDrugFromPraration();
         tvPreparation.setOnClickListener(this);
+        imgCalendar.setOnClickListener(this);
 
     }
 
     private void getDrugFromPraration(){
-        SharedPreferences prefs = getContext().getSharedPreferences("drugdataperson", Context.MODE_PRIVATE);
-        String data = prefs.getString("drugdataperson", null);
-
-        if(data != null){
-            ListDrugCardDao listDrugCardDao = new Gson().fromJson(data,ListDrugCardDao.class);
-            for(DrugCardDao d : listDrugCardDao.getListDrugCardDao()) {
-                if(d.getCheckType() != null) {
-                    if (d.getCheckType().equals("First Check")) {
-                        buildHistoryPrepareAdapter.setDao(getContext(), listDrugCardDao);
-                        listView.setAdapter(buildHistoryPrepareAdapter);
-                    }
-                }
-            }
-        }
+//        SharedPreferences prefs = getContext().getSharedPreferences("drugdataperson", Context.MODE_PRIVATE);
+//        String data = prefs.getString("drugdataperson", null);
+//
+//        if(data != null){
+//            ListDrugCardDao listDrugCardDao = new Gson().fromJson(data,ListDrugCardDao.class);
+//            for(DrugCardDao d : listDrugCardDao.getListDrugCardDao()) {
+//                if(d.getCheckType() != null) {
+//                    if (d.getCheckType().equals("First Check")) {
+//                        buildHistoryPrepareAdapter.setDao(getContext(), listDrugCardDao);
+//                        listView.setAdapter(buildHistoryPrepareAdapter);
+//                    }
+//                }
+//            }
+//        }
     }
 
 
@@ -184,6 +195,48 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
             intent.putExtra("prn", prn);
             getActivity().startActivity(intent);
             getActivity().finish();
+        }
+        else if(view.getId() == R.id.imgCalendar){
+            final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
+            final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+            dialogViewDate.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatePicker datePicker = (DatePicker) dialogViewDate.findViewById(R.id.date_picker);
+                    TimePicker timePicker = (TimePicker) dialogViewDate.findViewById(R.id.time_picker);
+
+                    int pickYear, pickMonth, pickDay, pickHour = 0, pickMinute = 0;
+                    Calendar calendar = null;
+                    if (android.os.Build.VERSION.SDK_INT >= 23) {
+                        calendar = new GregorianCalendar(
+                                pickYear = datePicker.getYear(),
+                                pickMonth = datePicker.getMonth(),
+                                pickDay = datePicker.getDayOfMonth(),
+                                pickHour = timePicker.getHour(),
+                                pickMinute = timePicker.getMinute());
+                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        tvDate.setText(dateSelect);
+                    } else {
+                        calendar = new GregorianCalendar(
+                                pickYear = datePicker.getYear(),
+                                pickMonth = datePicker.getMonth(),
+                                pickDay = datePicker.getDayOfMonth(),
+                                pickHour = timePicker.getCurrentHour(),
+                                pickMinute = timePicker.getCurrentMinute());
+                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        tvDate.setText(dateSelect);
+                    }
+
+                    Calendar timePick = Calendar.getInstance();
+                    timePick.set(pickYear, pickMonth, pickDay, pickHour, pickMinute);
+                    startMillis = timePick.getTimeInMillis();
+                    endMillis = startMillis + 60 * 60 * 1000;
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.setView(dialogViewDate);
+            alertDialog.show();
         }
     }
 

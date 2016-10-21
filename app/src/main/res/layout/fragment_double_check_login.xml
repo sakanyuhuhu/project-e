@@ -95,8 +95,8 @@
         <Button
             android:layout_weight="1"
             android:id="@+id/btnCancel"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorBlack"
+            android:background="@color/colorBlack"
+            android:textColor="@color/colorWhite"
             android:text="ยกเลิก"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -104,7 +104,7 @@
             android:layout_weight="1"
             android:id="@+id/btnLogin"
             android:background="@color/colorPrimary"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorWhite"
             android:text="ตกลง"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

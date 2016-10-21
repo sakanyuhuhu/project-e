@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
@@ -95,35 +96,34 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setPatient(String textBedNo, String textPatient, String textMrn){
-        tvPatient.setText(textPatient);
-        tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
-        tvMrn.setText("HN: " + textMrn);
+    public void setPatient(PatientDataDao dao){
+//        tvPatient.setText(textPatient);
+//        tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
+//        tvMrn.setText("HN: " + textMrn);
 
-
-//        if(complete == null){
-//            tvPatient.setText(textPatient);
-//            tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
-//            tvMrn.setText("HN: " + textMrn);
-//            point.setImageResource(R.drawable.white));
-//            tvComplete.setVisibility(INVISIBLE);
-//            imgvNote.setVisibility(INVISIBLE);
-//        }else if(complete.equals("1")){
-//            tvPatient.setText(textPatient);
-//            tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
-//            tvMrn.setText("HN: " + textMrn);
-//            point.setImageResource(R.drawable.green));
-//            tvComplete.setVisibility(VISIBLE);
-//            imgvNote.setVisibility(INVISIBLE);
-//        }
-//        else {
-//            tvPatient.setText(textPatient);
-//            tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
-//            tvMrn.setText("HN: " + textMrn);
-//            point.setImageResource(R.drawable.red));
-//            tvComplete.setVisibility(VISIBLE);
-//            imgvNote.setVisibility(VISIBLE);
-//        }
+        if(dao.getComplete() == null){
+            tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
+            tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+            tvMrn.setText("HN: " + dao.getMRN());
+            point.setVisibility(INVISIBLE);
+            tvComplete.setVisibility(INVISIBLE);
+            imgvNote.setVisibility(INVISIBLE);
+        }
+        else if(dao.getComplete().equals("0")){
+            tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
+            tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+            tvMrn.setText("HN: " + dao.getMRN());
+            point.setImageResource(R.drawable.red);
+            tvComplete.setVisibility(VISIBLE);
+            imgvNote.setVisibility(VISIBLE);
+        }else if(dao.getComplete().equals("1")){
+            tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
+            tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+            tvMrn.setText("HN: " + dao.getMRN());
+            point.setImageResource(R.drawable.green);
+            tvComplete.setVisibility(VISIBLE);
+            imgvNote.setVisibility(INVISIBLE);
+        }
     }
 
 }

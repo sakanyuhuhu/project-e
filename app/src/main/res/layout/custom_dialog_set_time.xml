@@ -43,7 +43,7 @@
                 <RadioButton
                     android:id="@+id/rdb2"
                     android:text="ระบุเวลาในการบริหารยา"
-                    android:layout_width="200dp"
+                    android:layout_width="220dp"
                     android:layout_height="match_parent" />
             </RadioGroup>
         </LinearLayout>

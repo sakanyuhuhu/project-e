@@ -26,13 +26,16 @@ import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
+import th.ac.mahidol.rama.emam.manager.BuildAddPRNPatientManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddPatientPRNFragment extends Fragment{
     private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName, prn;
     private int timeposition;
     private ListView listView;
+    private ListPatientDataDao dao;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
+    private BuildAddPRNPatientManager buildAddPRNPatientManager = new BuildAddPRNPatientManager();
 
     public BuildAddPatientPRNFragment() {
         super();
@@ -166,7 +169,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         @Override
         public void onFailure(Call<MrnTimelineDao> call, Throwable t) {
-
+            Log.d("check", "PatientPRNLoadCallback onFailure = " + t);
         }
     }
 
@@ -174,8 +177,10 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
-            final ListPatientDataDao dao = response.body();
-            saveCachePatientData(dao);
+             dao = response.body();
+//            saveCachePatientData(dao);
+            buildAddPRNPatientManager.appendPatientDao(dao);
+
             if(dao.getPatientDao().size() != 0) {
                 buildPatientAllAdapter.setDao(dao);
                 listView.setAdapter(buildPatientAllAdapter);
@@ -204,7 +209,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-
+            Log.d("check", "PatientPRNDataLoadCallback onFailure = " + t);
         }
     }
 

@@ -98,7 +98,6 @@ public class BuildDrugCardListManager {
         editor.apply();
 
 //        Log.d("check", "DrugLoadCallback = "+json);
-
     }
 
     private void loadCache(){

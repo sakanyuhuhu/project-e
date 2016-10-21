@@ -48,6 +48,7 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
+import th.ac.mahidol.rama.emam.manager.BuildAddPRNPatientManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
@@ -64,6 +65,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     private Date datetoDay;
     private Button btnAdd, btnCancel;
     private ListPatientDataDao listPatientDataDao;
+    private BuildAddPRNPatientManager buildAddPRNPatientManager = new BuildAddPRNPatientManager();
 
     public BuildAddDrugPRNForPatientFragment() {
         super();
@@ -146,10 +148,11 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
         SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
         String data = prefs.getString("patientintdata",null);
+        Log.d("check", "listPatientDataDao = "+listPatientDataDao);
         if(data != null){
             listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildHeaderPatientDataView.setData(listPatientDataDao, position);
-//            loadDrugPRNData(listPatientDataDao.getPatientDao().get(position).getMRN());
+            Log.d("check", "MRN = "+listPatientDataDao.getPatientDao().get(position).getMRN());
             if(timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
@@ -225,7 +228,10 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 patientDataDao.setTime(time);
                 patientDataDaoList.add(patientDataDao);
                 listPatientDataDao.setPatientDao(patientDataDaoList);
+
                 saveCachePatientData(listPatientDataDao);
+
+//                buildAddPRNPatientManager.appendPatientDao(listPatientDataDao);
 
                 listDrugCardDao = new ListDrugCardDao();
                 List<DrugCardDao> listDaoPRN = new ArrayList<>();
