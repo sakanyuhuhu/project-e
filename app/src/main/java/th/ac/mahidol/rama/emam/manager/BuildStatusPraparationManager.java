@@ -71,7 +71,7 @@ public class BuildStatusPraparationManager {
         dao = new Gson().fromJson(data,ListStatusPreparationDao.class);
         if(dao.getStatusPreparationDaoList() != null) {
             for (StatusPreparationDao s : dao.getStatusPreparationDaoList()) {
-                Log.d("check", "loadCache HN = " + s.getHn() + " time = " + s.getTime() + "  complete = " + s.getComplete() + " Date = " + s.getDate());
+//                Log.d("check", "loadCache HN = " + s.getHn() + " time = " + s.getTime() + "  complete = " + s.getComplete() + " Date = " + s.getDate());
             }
         }
     }
@@ -87,14 +87,14 @@ public class BuildStatusPraparationManager {
         tomorrowDateCheck = sdfForCheckDate.format(c.getTime());
 
         ListStatusPreparationDao listStatusDao = new ListStatusPreparationDao();
-        if (statusDao.getDate().equals(toDayDateCheck) || statusDao.getDate().equals(tomorrowDateCheck)) {
+        if (statusDao.getDate().equals(toDayDateCheck) | statusDao.getDate().equals(tomorrowDateCheck)) {
             SharedPreferences prefsLoad = mContext.getSharedPreferences("statuspreparation", Context.MODE_PRIVATE);
             String data = prefsLoad.getString("statuspreparation", null);
             if(data != null){
                 dao = new Gson().fromJson(data,ListStatusPreparationDao.class);
                 List<StatusPreparationDao> statusPreparationDaosDao = new ArrayList<>();
                 for(StatusPreparationDao s : dao.getStatusPreparationDaoList()){
-                    if(s.getDate().equals(toDayDateCheck) || s.getDate().equals(tomorrowDateCheck)){
+                    if(s.getDate().equals(toDayDateCheck) | s.getDate().equals(tomorrowDateCheck)){
                         statusPreparationDaosDao.add(s);
                     }
                 }
@@ -105,7 +105,7 @@ public class BuildStatusPraparationManager {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putString("statuspreparation", json);
                 editor.apply();
-                Log.d("check", "json = " + json);
+//                Log.d("check", "json = " + json);
             }
         }
     }

@@ -28,7 +28,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 public class LoginUserPrepareActivity extends AppCompatActivity {
     private String username, password, sdlocID, wardName, time, nfcUID = null;
     private int timeposition;
-    private String prn = "prepare";
+    private String prn = "prepare", tricker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
             super.onPostExecute(checkLoginDaos);
             Log.d("check", "*****getResultForLogin onPostExecute = " +  checkLoginDaos.get(0).getName());
             if(checkLoginDaos.get(0).getRole().equals("G")){ // N
-                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName(), prn)).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName(), prn, tricker)).commit();
             }
             else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();

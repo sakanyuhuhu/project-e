@@ -31,8 +31,11 @@ public class BuildAddPRNPatientManager {
     }
 
     public void appendPatientDao(ListPatientDataDao newDao) {
+        Log.d("check", "Dao = "+dao.getPatientDao().size() + "  new = "+newDao.getPatientDao().size());
+
         if(dao == null)
             dao = new ListPatientDataDao();
+
         if(dao.getPatientDao() == null)
             dao.setPatientDao(new ArrayList<PatientDataDao>());
 
@@ -40,6 +43,7 @@ public class BuildAddPRNPatientManager {
 
         saveCache();
     }
+
 
     public Bundle onSaveInstanceState() {
         Bundle bundle = new Bundle();
@@ -56,28 +60,28 @@ public class BuildAddPRNPatientManager {
         if(dao != null & dao.getPatientDao() != null)
             cacheDao.setPatientDao(dao.getPatientDao());
         String json = new Gson().toJson(cacheDao);
-        SharedPreferences prefs = mContext.getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+        SharedPreferences prefs = mContext.getSharedPreferences("patientprn", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientintdata", json);
+        editor.putString("patientprn", json);
         editor.apply();
 
     }
 
     private void loadCache(){
-        SharedPreferences prefs = mContext.getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientintdata", null);
+        SharedPreferences prefs = mContext.getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+        String data = prefs.getString("patientprn", null);
         if(data == null)
             return;
         dao = new Gson().fromJson(data,ListPatientDataDao.class);
         if(dao.getPatientDao() != null) {
             for (PatientDataDao p : dao.getPatientDao()) {
-                Log.d("check", "loadCache HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
+                Log.d("check", "Ward SIZE = "+dao.getPatientDao().size()+" / loadCache PRN HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
             }
         }
     }
 
-    public void checkPRNPatientinDate(PatientDataDao patientDataDao){
-        Log.d("check", "checkPRNPatientinDate = "+ patientDataDao.getDate());
+    public void checkPatientinData(PatientDataDao patientDataDao){
+        Log.d("check", "checkPatientinData manager = "+ patientDataDao.getDate() + " time = "+patientDataDao.getTime());
         datetoDay = new Date();
         SimpleDateFormat sdfForCheckDate = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
@@ -87,26 +91,31 @@ public class BuildAddPRNPatientManager {
         tomorrowDateCheck = sdfForCheckDate.format(c.getTime());
 
         ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
-        if(patientDataDao.getDate().equals(toDayDateCheck) || patientDataDao.getDate().equals(tomorrowDateCheck)){
-            SharedPreferences prefs = mContext.getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientintdata", null);
+        if(patientDataDao.getDate().equals(toDayDateCheck) | patientDataDao.getDate().equals(tomorrowDateCheck)){
+            SharedPreferences prefs = mContext.getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientprn", null);
             if(data != null){
                 dao = new Gson().fromJson(data,ListPatientDataDao.class);
-                List<PatientDataDao> patientlist = new ArrayList<>();
+                List<PatientDataDao> patientDataDaos = new ArrayList<>();
                 for(PatientDataDao p : dao.getPatientDao()){
-                    if(p.getDate().equals(toDayDateCheck) || p.getDate().equals(tomorrowDateCheck)){
-                        patientlist.add(p);
+                    if(p.getDate() != null) {
+                        if (p.getDate().equals(toDayDateCheck) | p.getDate().equals(tomorrowDateCheck) ) {
+                            Log.d("check", "checkPatientinData PRN HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
+                            if(p.getTime() != null) {
+                                patientDataDaos.add(p);
+                            }
+                        }
                     }
                 }
-                listPatientDataDao.setPatientDao(patientlist);
+                listPatientDataDao.setPatientDao(patientDataDaos);
 
                 String json = new Gson().toJson(listPatientDataDao);
-                SharedPreferences prefsPatient = mContext.getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+                SharedPreferences prefsPatient = mContext.getSharedPreferences("patientprn", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefsPatient.edit();
-                editor.putString("patientintdata", json);
+                editor.putString("patientprn", json);
                 editor.apply();
-                Log.d("check", "json = " + json);
             }
         }
     }
+
 }

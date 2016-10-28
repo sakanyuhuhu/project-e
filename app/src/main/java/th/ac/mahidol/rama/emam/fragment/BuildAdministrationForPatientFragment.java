@@ -60,6 +60,7 @@ import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
 
 public class BuildAdministrationForPatientFragment extends Fragment implements View.OnClickListener{
     private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime, useTime;
@@ -72,6 +73,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     private RadioButton radioButton;
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
+    private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
     private BuildAdministrationForPatientAdapter buildAdministrationForPatientAdapter;
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
     private Spinner spinner1, spinner2;
@@ -135,7 +137,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
 
 
         listView = (ListView) rootView.findViewById(R.id.lvAdminForPatientAdapter);
-        buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD) rootView.findViewById(R.id.headerPatientAdapter);
         buildAdministrationForPatientAdapter = new BuildAdministrationForPatientAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
@@ -173,7 +175,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         String data = prefs.getString("patientadministration",null);
         if(data != null){
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            buildHeaderPatientDataView.setData(listPatientDataDao, position);
+            buildHeaderPatientDataViewOLD.setData(listPatientDataDao, position);
 
             if(timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();

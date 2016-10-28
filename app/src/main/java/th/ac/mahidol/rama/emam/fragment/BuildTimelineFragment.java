@@ -209,7 +209,7 @@ public class BuildTimelineFragment extends Fragment {
         public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
             TimelineDao dao = response.body();
 //            String json = new Gson().toJson(dao);
-//            Log.d("check", "getListCountPatientExcPRN = "+json);
+//            Log.d("check", "TimelineExcLoadCallback = "+json);
             saveCachePatientExclude(dao);
         }
 

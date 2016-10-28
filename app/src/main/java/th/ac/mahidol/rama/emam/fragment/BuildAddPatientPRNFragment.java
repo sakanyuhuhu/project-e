@@ -16,6 +16,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,16 +30,15 @@ import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
-import th.ac.mahidol.rama.emam.manager.BuildAddPRNPatientManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddPatientPRNFragment extends Fragment{
-    private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName, prn;
+    private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName, prn, toDayDateCheck, tomorrowDateCheck;
     private int timeposition;
     private ListView listView;
+    private Date datetoDay;
     private ListPatientDataDao dao;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
-    private BuildAddPRNPatientManager buildAddPRNPatientManager = new BuildAddPRNPatientManager();
 
     public BuildAddPatientPRNFragment() {
         super();
@@ -88,6 +91,26 @@ public class BuildAddPatientPRNFragment extends Fragment{
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
 
+        datetoDay = new Date();
+        SimpleDateFormat sdfForCheckDate = new SimpleDateFormat("yyyy-MM-dd");
+        toDayDateCheck = sdfForCheckDate.format(datetoDay);
+        Calendar c = Calendar.getInstance();
+        c.setTime(datetoDay);
+        c.add(Calendar.DATE,1);
+        tomorrowDateCheck = sdfForCheckDate.format(c.getTime());
+
+//        if (timeposition <= 23) {
+//            PatientDataDao patientDataDao = new PatientDataDao();
+//            patientDataDao.setTime(time);
+//            patientDataDao.setDate(toDayDateCheck);
+//            buildAddPRNPatientManager.checkPatientinData(patientDataDao);
+//        }
+//        else {
+//            PatientDataDao patientDataDao = new PatientDataDao();
+//            patientDataDao.setTime(time);
+//            patientDataDao.setDate(tomorrowDateCheck);
+//            buildAddPRNPatientManager.checkPatientinData(patientDataDao);
+//        }
         loadPersonWard(nfcUID, sdlocID);
         loadPatientPRN(sdlocID);
     }
@@ -121,9 +144,9 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
     private void saveCachePatientData(ListPatientDataDao patientDataDao){
         String json = new Gson().toJson(patientDataDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientprnAll", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientintdata",json);
+        editor.putString("patientprnAll",json);
         editor.apply();
     }
 
@@ -178,8 +201,8 @@ public class BuildAddPatientPRNFragment extends Fragment{
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
              dao = response.body();
-//            saveCachePatientData(dao);
-            buildAddPRNPatientManager.appendPatientDao(dao);
+            Log.d("check", "dao size ward = "+dao.getPatientDao().size());
+            saveCachePatientData(dao);
 
             if(dao.getPatientDao().size() != 0) {
                 buildPatientAllAdapter.setDao(dao);
@@ -197,6 +220,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
                         intent.putExtra("timeposition", timeposition);
                         intent.putExtra("position", position);
                         intent.putExtra("time", time);
+                        intent.putExtra("patientPRN", dao.getPatientDao().get(position));
                         intent.putExtra("prn", prn);
                         getActivity().startActivity(intent);
                         getActivity().finish();

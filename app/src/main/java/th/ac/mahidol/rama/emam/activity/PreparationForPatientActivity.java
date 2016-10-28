@@ -9,6 +9,7 @@ import android.util.Log;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.adapter.ViewPagerAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.fragment.BuildHistoryPrepareFragment;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 
@@ -19,6 +20,8 @@ public class PreparationForPatientActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ListDrugCardDao listDrugCardDao;
+    private PatientDataDao patientDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +38,12 @@ public class PreparationForPatientActivity extends AppCompatActivity {
         time = getIntent().getExtras().getString("time");
         userName = getIntent().getExtras().getString("namePrepare");
         listDrugCardDao = getIntent().getParcelableExtra("dao");
+        patientDao = getIntent().getParcelableExtra("patientDao");
         prn = getIntent().getExtras().getString("prn");
         Log.d("check", "PreparationForPatientActivity nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName+" /prn = "+prn);
 //        Log.d("check", "listDrug = "+ listDrugCardDao.getListDrugCardDao().size());
+//        Log.d("check", "listPatient = "+ patientDao.getMRN());
         initInstance(savedInstanceState);
 
 //        viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -52,13 +57,13 @@ public class PreparationForPatientActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,userName,listDrugCardDao, prn)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,userName,listDrugCardDao, patientDao, prn)).commit();
         }
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,userName,listDrugCardDao, prn), "PREPARATION");
+        adapter.addFragment(new BuildPreparationForPatientFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,userName,listDrugCardDao, patientDao, prn), "PREPARATION");
         adapter.addFragment(new BuildHistoryPrepareFragment().newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, prn), "HISTORY");
         viewPager.setAdapter(adapter);
     }

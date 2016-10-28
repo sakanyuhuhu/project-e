@@ -19,7 +19,7 @@ public class PreparationActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null, prn = "prepare";
+    private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null, prn = "prepare", tricker;
     private int position;
 
     @Override
@@ -37,10 +37,11 @@ public class PreparationActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
+        tricker = getIntent().getExtras().getString("save");
         Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /namePrepare = "+namePrepare+" /prn = "+prn);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, namePrepare, prn)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, namePrepare, prn, tricker)).commit();
         }
 
 
@@ -72,7 +73,7 @@ public class PreparationActivity extends AppCompatActivity {
 //            if(checkRegisterNFC == true){
                 nfcUID = nfcTagID;
 //                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time,namePrepare, prn)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time,namePrepare, prn, tricker)).commit();
 
 //            }
 //            else{
