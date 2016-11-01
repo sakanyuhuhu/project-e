@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -31,7 +30,7 @@ public class BuildAddPRNPatientManager {
     }
 
     public void appendPatientDao(ListPatientDataDao newDao) {
-        Log.d("check", "Dao = "+dao.getPatientDao().size() + "  new = "+newDao.getPatientDao().size());
+//        Log.d("check", "Dao = "+dao.getPatientDao().size() + "  new = "+newDao.getPatientDao().size());
 
         if(dao == null)
             dao = new ListPatientDataDao();
@@ -75,13 +74,13 @@ public class BuildAddPRNPatientManager {
         dao = new Gson().fromJson(data,ListPatientDataDao.class);
         if(dao.getPatientDao() != null) {
             for (PatientDataDao p : dao.getPatientDao()) {
-                Log.d("check", "Ward SIZE = "+dao.getPatientDao().size()+" / loadCache PRN HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
+//                Log.d("check", "Ward SIZE = "+dao.getPatientDao().size()+" / loadCache PRN HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
             }
         }
     }
 
     public void checkPatientinData(PatientDataDao patientDataDao){
-        Log.d("check", "checkPatientinData manager = "+ patientDataDao.getDate() + " time = "+patientDataDao.getTime());
+//        Log.d("check", "checkPatientinData manager = "+ patientDataDao.getDate() + " time = "+patientDataDao.getTime());
         datetoDay = new Date();
         SimpleDateFormat sdfForCheckDate = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
@@ -99,9 +98,9 @@ public class BuildAddPRNPatientManager {
                 List<PatientDataDao> patientDataDaos = new ArrayList<>();
                 for(PatientDataDao p : dao.getPatientDao()){
                     if(p.getDate() != null) {
-                        if (p.getDate().equals(toDayDateCheck) | p.getDate().equals(tomorrowDateCheck) ) {
-                            Log.d("check", "checkPatientinData PRN HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
-                            if(p.getTime() != null) {
+                        if (p.getDate().equals(toDayDateCheck) | p.getDate().equals(tomorrowDateCheck)) {
+//                            Log.d("check", "checkPatientinData PRN HN = " + p.getMRN()+ "  time = "+p.getTime()+ " Date = "+p.getDate());
+                            if(p.getTime() != null & (p.getDate().equals(toDayDateCheck) | p.getDate().equals(tomorrowDateCheck))) {
                                 patientDataDaos.add(p);
                             }
                         }
@@ -114,6 +113,14 @@ public class BuildAddPRNPatientManager {
                 SharedPreferences.Editor editor = prefsPatient.edit();
                 editor.putString("patientprn", json);
                 editor.apply();
+
+//                check size in new patientprn
+                SharedPreferences pr = mContext.getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+                String da = pr.getString("patientprn", null);
+                if(da != null) {
+                    dao = new Gson().fromJson(da, ListPatientDataDao.class);
+//                    Log.d("check", "SIZE PRN = " + dao.getPatientDao().size());
+                }
             }
         }
     }

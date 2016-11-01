@@ -132,27 +132,54 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
         checkType = "First Check";
 
-        if (nfcUID != null) {
-            Log.d("check", "nfcUID != null");
+        if (nfcUID != null & tricker == null) {
+            Log.d("check", "******************* IF");
             loadPersonWard(nfcUID, sdlocID);
             loadCacheDao();
         } else {
+            Log.d("check", "******************* ELSE");
             if (namePrepare != null & tricker == null) {
-                Log.d("check", "namePrepare != null & tricker == null");
+                Log.d("check", "******************* IF");
                 loadCacheDao();
                 tvUserName.setText("จัดเตรียมยาโดย  " + namePrepare);
                 tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
             }
             else if(namePrepare != null & tricker != null){
-                Log.d("check", "namePrepare != null & tricker != null");
-                if (timeposition <= 23) {
-                    loadPatientData(sdlocID, time, checkType, toDayDate);
-                } else {
-                    loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                if(tricker.equals("save")) {
+                    if (timeposition <= 23) {
+                        loadPatientData(sdlocID, time, checkType, toDayDate);
+                        StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
+                        statusPreparationDao.setDate(toDayDateCheck);
+                        buildStatusPraparationManager.checkPatientinDate(statusPreparationDao);
+                    } else {
+                        loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                        StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
+                        statusPreparationDao.setDate(tomorrowDateCheck);
+                        buildStatusPraparationManager.checkPatientinDate(statusPreparationDao);
+                    }
+                }
+            }
+            else if(nfcUID != null & tricker != null){
+                Log.d("check", "******************* ELSE IF");
+                if(tricker.equals("save")) {
+                    Log.d("check", "******************* IF save");
+                    loadPersonWard(nfcUID, sdlocID);
+                    if (timeposition <= 23) {
+                        loadPatientData(sdlocID, time, checkType, toDayDate);
+                        StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
+                        statusPreparationDao.setDate(toDayDateCheck);
+                        buildStatusPraparationManager.checkPatientinDate(statusPreparationDao);
+                    } else {
+                        loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                        StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
+                        statusPreparationDao.setDate(tomorrowDateCheck);
+                        buildStatusPraparationManager.checkPatientinDate(statusPreparationDao);
+                    }
+                    loadCacheDao();
                 }
             }
             else {
-                Log.d("check", "else");
+                Log.d("check", "******************* else");
                 if (timeposition <= 23) {
                     loadPatientData(sdlocID, time, checkType, toDayDate);
                     StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
@@ -183,7 +210,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientindata", null);
         if(data != null){
             ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "*************************************************timeposition = "+timeposition);
+            Log.d("check", "************************************************* timeposition = "+timeposition + " ********* dao = "+dao.getPatientDao().size());
             listPatientDataDao = new ListPatientDataDao();
             listPatientDataDao = loadCacheStatusCheckDao(dao);
 
@@ -225,8 +252,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             if(daoStatus.getStatusPreparationDaoList() != null) {
                 for (PatientDataDao p : dao.getPatientDao()) {
                     for (StatusPreparationDao s : daoStatus.getStatusPreparationDaoList()) {
-//                        Log.d("check", s.getHn()+" CHECK *********** "+s.getDate()+" ***** time "+s.getTime() +" ***** Complete = "+p.getComplete()+"     AdminTime = "+time);
-                        if (p.getMRN().equals(s.getHn()) & time.equals(s.getTime()) & (toDayDateCheck.equals(s.getDate()) || tomorrowDateCheck.equals(s.getDate()))) {
+                        if (p.getMRN().equals(s.getHn()) & time.equals(s.getTime()) & (toDayDateCheck.equals(s.getDate()) | tomorrowDateCheck.equals(s.getDate()))) {
                             p.setComplete(s.getComplete());
                             patientDataDao = p;
                             patientDataDaoList.add(patientDataDao);
@@ -236,15 +262,14 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             }
             listPatientDataDao.setPatientDao(patientDataDaoList);
 
-            Log.d("check", "listPatientDataDao in load = "+listPatientDataDao.getPatientDao().size());
             List<String> checkUniqeHN = new ArrayList<>();
             List<PatientDataDao> patientDaoHN = new ArrayList<>();
-            for (PatientDataDao p : listPatientDataDao.getPatientDao()) {
+            for (PatientDataDao p : dao.getPatientDao()) {
                 checkUniqeHN.add(p.getMRN());
                 patientDaoHN.add(p);
             }
 
-            for (PatientDataDao p : dao.getPatientDao()) {
+            for (PatientDataDao p : listPatientDataDao.getPatientDao()) {
                 if (!checkUniqeHN.contains(p.getMRN())) {
                         checkUniqeHN.add(p.getMRN());
                         patientDaoHN.add(p);
@@ -263,6 +288,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             });
 
             dao.setPatientDao(patientDaoHN);
+
 //            Log.d("check", "dao in load = "+dao.getPatientDao().size());
 //            for(PatientDataDao p : dao.getPatientDao()){
 //                Log.d("check", "loadCacheStatusCheckDao ***** "+p.getMRN()+" ***** Complete = "+p.getComplete());
@@ -355,153 +381,98 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             dao = response.body();
-            Log.d("check", "dao patient = "+dao.getPatientDao().size());
 
             SharedPreferences prefsPRNData = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
             String dataPRNData = prefsPRNData.getString("patientprn",null);
 
+
+            
             if(dao.getPatientDao().size() != 0){
+                Log.d("check", "dao = "+dao.getPatientDao().size());
                 if(dataPRNData != null){
                     daoPrn = new Gson().fromJson(dataPRNData,ListPatientDataDao.class);
-                    Log.d("check", "daoPrn SIZE = "+daoPrn.getPatientDao().size());
-                    if(daoPrn.getPatientDao().size() != 0) {
-                        for(PatientDataDao patient : daoPrn.getPatientDao()){
-                            Log.d("check", "TIME = "+patient.getTime()+" DATE = "+patient.getDate());
-                            if(patient.getTime() != null & (patient.getDate() != null | patient.getDate() != null)) {
-                                if (patient.getTime().equals(time) & (patient.getDate().equals(toDayDateCheck) | patient.getDate().equals(tomorrowDateCheck))) {
-                                    List<String> checkUniqe = new ArrayList<>();
-                                    List<PatientDataDao> patientDao = new ArrayList<>();
-                                    for (PatientDataDao p : dao.getPatientDao()) {
+                    if(daoPrn.getPatientDao().size() != 0){
+                        Log.d("check", "dao prn = "+daoPrn.getPatientDao().size());
+                        List<String> checkUniqe = new ArrayList<>();
+                        List<PatientDataDao> patientDao = new ArrayList<>();
+                        for (PatientDataDao p : dao.getPatientDao()) {
+                            checkUniqe.add(p.getMRN());
+                            patientDao.add(p);
+                        }
+                        for (PatientDataDao p : daoPrn.getPatientDao()) {
+//                            Log.d("check", "PRN MRN = "+p.getMRN()+" *** TIME = "+p.getTime()+" *** Date = "+p.getDate());
+                            if(p.getTime() != null & p.getDate() != null) {
+                                if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck)) | (p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))) {
+                                    if (!checkUniqe.contains(p.getMRN())) {
                                         checkUniqe.add(p.getMRN());
                                         patientDao.add(p);
                                     }
-
-                                    for (PatientDataDao p : daoPrn.getPatientDao()) {
-                                        if(p.getTime() != null) {
-                                            if (p.getTime().equals(time)) {
-                                                if (!checkUniqe.contains(p.getMRN())) {
-                                                    checkUniqe.add(p.getMRN());
-                                                    patientDao.add(p);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    Collections.sort(patientDao, new Comparator<PatientDataDao>() {
-                                        @Override
-                                        public int compare(PatientDataDao object1, PatientDataDao object2) {
-                                            return object1.getBedID().compareTo(object2.getBedID());
-                                        }
-
-                                        @Override
-                                        public boolean equals(Object object) {
-                                            return false;
-                                        }
-                                    });
-
-                                    dao.setPatientDao(patientDao);
-//      check status complete in patientData
-                                    ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
-                                    listPatientDataDao = loadCacheStatusCheckDao(dao);
-                                    Log.d("check", "listPatientDataDao.size = " + listPatientDataDao.getPatientDao().size());
-                                    saveCachePatientData(listPatientDataDao);
-                                    buildPreparationAdapter.setDao(listPatientDataDao);
-                                    listView.setAdapter(buildPreparationAdapter);
                                 }
-                            }
-                            else{//dao patient != 0 & daoPrn SIZE != 0 ,but added to dao
-                                List<PatientDataDao> patientDao = new ArrayList<>();
-                                for (PatientDataDao p : dao.getPatientDao()) {
-                                    patientDao.add(p);
-                                }
-                                dao.setPatientDao(patientDao);
-//      check status complete in patientData
-                                ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
-                                listPatientDataDao = loadCacheStatusCheckDao(dao);
-                                Log.d("check",  "listPatientDataDao.size = "+listPatientDataDao.getPatientDao().size());
-                                saveCachePatientData(listPatientDataDao);
-                                buildPreparationAdapter.setDao(listPatientDataDao);
-                                listView.setAdapter(buildPreparationAdapter);
                             }
                         }
-//      check status complete in patientData
+                        Collections.sort(patientDao, new Comparator<PatientDataDao>() {
+                            @Override
+                            public int compare(PatientDataDao object1, PatientDataDao object2) {
+                                return object1.getBedID().compareTo(object2.getBedID());
+                            }
+
+                            @Override
+                            public boolean equals(Object object) {
+                                return false;
+                            }
+                        });
+
+                        dao.setPatientDao(patientDao);
+                    //      check status complete in patientData
                         ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
                         listPatientDataDao = loadCacheStatusCheckDao(dao);
-                        Log.d("check",  "listPatientDataDao.size = "+listPatientDataDao.getPatientDao().size());
+                        Log.d("check",  "IF ***** listPatientDataDao.size = "+listPatientDataDao.getPatientDao().size());
                         saveCachePatientData(listPatientDataDao);
                         buildPreparationAdapter.setDao(listPatientDataDao);
                         listView.setAdapter(buildPreparationAdapter);
                     }
-                    else{
+                }
+            }
+            else  if(dao.getPatientDao().size() == 0){
+                Log.d("check", "dao = "+dao.getPatientDao().size());
+                if(dataPRNData != null){
+                    daoPrn = new Gson().fromJson(dataPRNData,ListPatientDataDao.class);
+                    if(daoPrn.getPatientDao().size() != 0){
+                        Log.d("check", "dao prn = "+daoPrn.getPatientDao().size());
+                        List<String> listMrnPrn = new ArrayList<>();
                         List<PatientDataDao> patientDao = new ArrayList<>();
-                        for (PatientDataDao p : dao.getPatientDao()) {
-                            if(p.getTime() != null) {
-                                if (p.getTime().equals(time)) {
+                        for (PatientDataDao p : daoPrn.getPatientDao()) {
+                            if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck)) | (p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))) {
+                                if(!listMrnPrn.contains(p.getMRN())){
+                                    listMrnPrn.add(p.getMRN());
                                     patientDao.add(p);
                                 }
-                            }
-                            else {
-                                patientDao.add(p);
                             }
                         }
                         dao.setPatientDao(patientDao);
-//      check status complete in patientData
+                    //      check status complete in patientData
                         ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
                         listPatientDataDao = loadCacheStatusCheckDao(dao);
-                        Log.d("check",  "listPatientDataDao.size = "+listPatientDataDao.getPatientDao().size());
+                        Log.d("check",  "ELSE IF dao=0 ***** listPatientDataDao.size = "+listPatientDataDao.getPatientDao().size());
                         saveCachePatientData(listPatientDataDao);
                         buildPreparationAdapter.setDao(listPatientDataDao);
                         listView.setAdapter(buildPreparationAdapter);
                     }
                 }
-                else{
-                    List<PatientDataDao> patientDao = new ArrayList<>();
-                    for (PatientDataDao p : dao.getPatientDao()) {
-                        patientDao.add(p);
-                    }
-                    dao.setPatientDao(patientDao);
-//      check status complete in patientData
-                    ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
-                    listPatientDataDao = loadCacheStatusCheckDao(dao);
-                    Log.d("check",  "listPatientDataDao.size = "+listPatientDataDao.getPatientDao().size());
-                    saveCachePatientData(listPatientDataDao);
-                    buildPreparationAdapter.setDao(listPatientDataDao);
-                    listView.setAdapter(buildPreparationAdapter);
-                }
             }
             else if(dao.getPatientDao().size() == 0){
-                if(dataPRNData != null){
-                    daoPrn = new Gson().fromJson(dataPRNData,ListPatientDataDao.class);
-                    if(daoPrn.getPatientDao().size() != 0) {
-                        for(PatientDataDao patient : daoPrn.getPatientDao()) {
-                            Log.d("check", "PRN HN = " + patient.getMRN() + "  time = " + patient.getTime() + " Date = " + patient.getDate());
-                            if(patient.getTime() != null & (patient.getDate() != null | patient.getDate() != null)){
-                                if (patient.getTime().equals(time) & (patient.getDate().equals(toDayDateCheck) | patient.getDate().equals(tomorrowDateCheck))) {
-                                    List<PatientDataDao> patientDao = new ArrayList<>();
-                                    for (PatientDataDao p : daoPrn.getPatientDao()) {
-                                        if (p.getTime() != null) {
-                                            if (p.getTime().equals(time)) {
-                                                patientDao.add(p);
-                                            }
-                                        }
-                                    }
-                                    dao.setPatientDao(patientDao);
-    //      check status complete in patientData
-                                    ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
-                                    listPatientDataDao = loadCacheStatusCheckDao(dao);
-                                    Log.d("check", "listPatientDataDao.size = " + listPatientDataDao.getPatientDao().size());
-                                    saveCachePatientData(listPatientDataDao);
-                                    buildPreparationAdapter.setDao(listPatientDataDao);
-                                    listView.setAdapter(buildPreparationAdapter);
-                                }
-                            }
-                        }
+                Log.d("check", "dao = "+dao.getPatientDao().size());
+                if(dataPRNData != null) {
+                    daoPrn = new Gson().fromJson(dataPRNData, ListPatientDataDao.class);
+                    if (daoPrn.getPatientDao().size() == 0) {
+                        Log.d("check", "dao prn = "+daoPrn.getPatientDao().size());
+                        Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
                     }
-
                 }
             }
-            else
+            else{
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
-
+            }
 //            before edit
 //            saveCachePatientData(dao);
 //            if(dao.getPatientDao().size() != 0) {
