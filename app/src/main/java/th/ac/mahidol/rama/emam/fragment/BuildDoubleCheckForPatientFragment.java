@@ -12,6 +12,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -304,6 +305,14 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 }
                 updateDrugData(buildDrugCardListManager.getDaoAll());
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", timeposition);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+                getActivity().finish();
             }
             else {
                 Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
@@ -334,6 +343,32 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         }
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("position", timeposition);
+                    intent.putExtra("time", time);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+
+                }
+                return false;
+            }
+        });
+    }
+
 
 
 

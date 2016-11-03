@@ -137,7 +137,7 @@ public class BuildTimelineFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
-                            intent.putExtra("nfcUId", nfcUID);
+//                            intent.putExtra("nfcUId", nfcUID);
                             intent.putExtra("sdlocId", sdlocID);
                             intent.putExtra("wardname", wardName);
                             intent.putExtra("position", position);

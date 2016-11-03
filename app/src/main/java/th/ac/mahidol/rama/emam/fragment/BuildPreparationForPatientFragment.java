@@ -3,7 +3,6 @@ package th.ac.mahidol.rama.emam.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,8 +22,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -241,8 +238,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
     }
 
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -261,14 +256,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private void updateDrugData(ListDrugCardDao drugCardDao){
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().updateDrugData(drugCardDao);
         call.enqueue(new SaveDrugDataCallback());
-    }
-
-    private void saveCachePatientDrug(ListDrugCardDao listDrugCardDao){
-        String json = new Gson().toJson(listDrugCardDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientdrug", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientdrug",json);
-        editor.apply();
     }
 
     private void getOnClickSpinnerDrugRoute(){

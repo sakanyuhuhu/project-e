@@ -385,8 +385,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             SharedPreferences prefsPRNData = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
             String dataPRNData = prefsPRNData.getString("patientprn",null);
 
-
-            
             if(dao.getPatientDao().size() != 0){
                 Log.d("check", "dao = "+dao.getPatientDao().size());
                 if(dataPRNData != null){
@@ -400,12 +398,27 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                             patientDao.add(p);
                         }
                         for (PatientDataDao p : daoPrn.getPatientDao()) {
-//                            Log.d("check", "PRN MRN = "+p.getMRN()+" *** TIME = "+p.getTime()+" *** Date = "+p.getDate());
                             if(p.getTime() != null & p.getDate() != null) {
-                                if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck)) | (p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))) {
-                                    if (!checkUniqe.contains(p.getMRN())) {
-                                        checkUniqe.add(p.getMRN());
-                                        patientDao.add(p);
+//                                if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck)) | (p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))) {
+//                                    if (!checkUniqe.contains(p.getMRN())) {
+//                                        checkUniqe.add(p.getMRN());
+//                                        patientDao.add(p);
+//                                    }
+//                                }
+
+                                if(timeposition <= 23){
+                                    if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck))) {
+                                        if (!checkUniqe.contains(p.getMRN())) {
+                                            checkUniqe.add(p.getMRN());
+                                            patientDao.add(p);
+                                        }
+                                    }
+                                }else{
+                                    if((p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))){
+                                        if (!checkUniqe.contains(p.getMRN())) {
+                                            checkUniqe.add(p.getMRN());
+                                            patientDao.add(p);
+                                        }
                                     }
                                 }
                             }
@@ -432,6 +445,17 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                         listView.setAdapter(buildPreparationAdapter);
                     }
                 }
+                else if(dao.getPatientDao().size() != 0){
+                    if(dataPRNData == null) {
+                    //      check status complete in patientData
+                        ListPatientDataDao listPatientDataDao = new ListPatientDataDao();
+                        listPatientDataDao = loadCacheStatusCheckDao(dao);
+                        Log.d("check", "ELSE IF daoPrn = null ***** listPatientDataDao.size = " + listPatientDataDao.getPatientDao().size());
+                        saveCachePatientData(listPatientDataDao);
+                        buildPreparationAdapter.setDao(listPatientDataDao);
+                        listView.setAdapter(buildPreparationAdapter);
+                    }
+                }
             }
             else  if(dao.getPatientDao().size() == 0){
                 Log.d("check", "dao = "+dao.getPatientDao().size());
@@ -443,9 +467,25 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                         List<PatientDataDao> patientDao = new ArrayList<>();
                         for (PatientDataDao p : daoPrn.getPatientDao()) {
                             if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck)) | (p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))) {
-                                if(!listMrnPrn.contains(p.getMRN())){
-                                    listMrnPrn.add(p.getMRN());
-                                    patientDao.add(p);
+//                                if(!listMrnPrn.contains(p.getMRN())){
+//                                    listMrnPrn.add(p.getMRN());
+//                                    patientDao.add(p);
+//                                }
+
+                                if(timeposition <= 23){
+                                    if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck))) {
+                                        if(!listMrnPrn.contains(p.getMRN())){
+                                            listMrnPrn.add(p.getMRN());
+                                            patientDao.add(p);
+                                        }
+                                    }
+                                }else{
+                                    if((p.getTime().equals(time) & p.getDate().equals(tomorrowDateCheck))){
+                                        if(!listMrnPrn.contains(p.getMRN())){
+                                            listMrnPrn.add(p.getMRN());
+                                            patientDao.add(p);
+                                        }
+                                    }
                                 }
                             }
                         }

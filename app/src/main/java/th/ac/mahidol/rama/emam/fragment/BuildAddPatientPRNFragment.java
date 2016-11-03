@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -36,6 +37,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
     private String sdlocID, nfcUID, wardName, time, RFID, firstName, lastName, prn, toDayDateCheck, tomorrowDateCheck;
     private int timeposition;
     private ListView listView;
+    private TextView tvUserName;
     private Date datetoDay;
     private ListPatientDataDao dao;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
@@ -88,6 +90,7 @@ public class BuildAddPatientPRNFragment extends Fragment{
         prn = getArguments().getString("prn");
         Log.d("check", "BuildAddPatientPRNFragment nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /prn = "+prn);
 
+        tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
 
@@ -99,20 +102,15 @@ public class BuildAddPatientPRNFragment extends Fragment{
         c.add(Calendar.DATE,1);
         tomorrowDateCheck = sdfForCheckDate.format(c.getTime());
 
-//        if (timeposition <= 23) {
-//            PatientDataDao patientDataDao = new PatientDataDao();
-//            patientDataDao.setTime(time);
-//            patientDataDao.setDate(toDayDateCheck);
-//            buildAddPRNPatientManager.checkPatientinData(patientDataDao);
-//        }
-//        else {
-//            PatientDataDao patientDataDao = new PatientDataDao();
-//            patientDataDao.setTime(time);
-//            patientDataDao.setDate(tomorrowDateCheck);
-//            buildAddPRNPatientManager.checkPatientinData(patientDataDao);
-//        }
-        loadPersonWard(nfcUID, sdlocID);
-        loadPatientPRN(sdlocID);
+        if(nfcUID != null){
+            loadPersonWard(nfcUID, sdlocID);
+            loadCacheDao();
+        }
+        else{
+            loadPatientPRN(sdlocID);
+        }
+//        loadPersonWard(nfcUID, sdlocID);
+//        loadPatientPRN(sdlocID);
     }
 
     @Override
@@ -123,6 +121,38 @@ public class BuildAddPatientPRNFragment extends Fragment{
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
 
+    }
+
+    private void loadCacheDao(){
+        SharedPreferences prefs = getContext().getSharedPreferences("patientprnAll", Context.MODE_PRIVATE);
+        String data = prefs.getString("patientprnAll", null);
+        if(data != null) {
+            final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
+            if (dao.getPatientDao().size() != 0) {
+                buildPatientAllAdapter.setDao(dao);
+                listView.setAdapter(buildPatientAllAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        intent.putExtra("patientPRN", dao.getPatientDao().get(position));
+                        intent.putExtra("prn", prn);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+            } else
+                Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void loadPatientData(MrnTimelineDao mrnTimelineDao){
@@ -207,25 +237,25 @@ public class BuildAddPatientPRNFragment extends Fragment{
             if(dao.getPatientDao().size() != 0) {
                 buildPatientAllAdapter.setDao(dao);
                 listView.setAdapter(buildPatientAllAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("RFID", RFID);
-                        intent.putExtra("firstname", firstName);
-                        intent.putExtra("lastname", lastName);
-                        intent.putExtra("timeposition", timeposition);
-                        intent.putExtra("position", position);
-                        intent.putExtra("time", time);
-                        intent.putExtra("patientPRN", dao.getPatientDao().get(position));
-                        intent.putExtra("prn", prn);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-                    }
-                });
+//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+//                        intent.putExtra("nfcUId", nfcUID);
+//                        intent.putExtra("sdlocId", sdlocID);
+//                        intent.putExtra("wardname", wardName);
+//                        intent.putExtra("RFID", RFID);
+//                        intent.putExtra("firstname", firstName);
+//                        intent.putExtra("lastname", lastName);
+//                        intent.putExtra("timeposition", timeposition);
+//                        intent.putExtra("position", position);
+//                        intent.putExtra("time", time);
+//                        intent.putExtra("patientPRN", dao.getPatientDao().get(position));
+//                        intent.putExtra("prn", prn);
+//                        getActivity().startActivity(intent);
+//                        getActivity().finish();
+//                    }
+//                });
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
@@ -247,6 +277,9 @@ public class BuildAddPatientPRNFragment extends Fragment{
             RFID = dao.getRFID();
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
+            tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
+            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+            Toast.makeText(getActivity(), ""+firstName+" "+lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override
