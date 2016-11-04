@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:background="@color/colorPrimary">
         <TextView
-            android:text="EMAM"
+            android:text="ADD MEDICATION"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             android:paddingLeft="16dp"

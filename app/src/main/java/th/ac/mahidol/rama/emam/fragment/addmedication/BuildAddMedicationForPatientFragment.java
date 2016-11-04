@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -165,6 +166,10 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         else if(view.getId() == R.id.btnAdd){
             Log.d("check", "spinnerRoute = "+selectedItem);
             Log.d("check", "Drug name = "+edtDrugName.getText().toString());
+            if(edtDrugName.getText().toString().equals("")){
+                Toast.makeText(getActivity(), "กรุณาใส่ชื่อยา", Toast.LENGTH_LONG).show();
+            }
+
         }
         else if(view.getId() == R.id.imgCalendar){
             final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);

@@ -133,7 +133,7 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
                         }
                     }
                 });
-                builder.setNegativeButton("ไม่ใช่",null);
+                builder.setNegativeButton("ไม่ใช่", null);
                 builder.create();
                 builder.show();
                 return false;
