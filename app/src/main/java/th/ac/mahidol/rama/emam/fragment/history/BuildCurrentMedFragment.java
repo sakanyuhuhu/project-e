@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -29,6 +30,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.history.History_AdministrationActivity;
+import th.ac.mahidol.rama.emam.activity.history.History_DoubleCheckActivity;
+import th.ac.mahidol.rama.emam.activity.history.History_PrepareActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.adapter.history.BuildCurrentMedAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CurrentMedDao;
@@ -38,11 +42,12 @@ import th.ac.mahidol.rama.emam.manager.SearchCurrentMedManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
-public class BuildCurrentMedFragment extends Fragment{
+public class BuildCurrentMedFragment extends Fragment implements View.OnClickListener{
     private String nfcUID, sdlocID, wardName, mrn;
     private int position;
     private ListView listView;
     private Spinner spinner1;
+    private TextView tvPreparation, tvDoublecheck, tvAdministration;
     private BuildCurrentMedAdapter buildCurrentMedAdapter;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
 
@@ -92,7 +97,11 @@ public class BuildCurrentMedFragment extends Fragment{
         Log.d("check", "BuildCurrentMedFragment nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName+" /position = "+position);
 
         spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
+//        tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
+//        tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
+//        tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
         listView = (ListView) rootView.findViewById(R.id.lvCurrentMed);
+
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildCurrentMedAdapter = new BuildCurrentMedAdapter();
 
@@ -106,6 +115,9 @@ public class BuildCurrentMedFragment extends Fragment{
         }
 
         getOnClickSpinner();
+//        tvPreparation.setOnClickListener(this);
+//        tvDoublecheck.setOnClickListener(this);
+//        tvAdministration.setOnClickListener(this);
     }
 
     private void getOnClickSpinner(){
@@ -173,6 +185,33 @@ public class BuildCurrentMedFragment extends Fragment{
 
     }
 
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.tvPreparation){
+            Intent intent = new Intent(getContext(), History_PrepareActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
+        else if(view.getId() == R.id.tvDoublecheck){
+            Intent intent = new Intent(getContext(), History_DoubleCheckActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
+        else if(view.getId() == R.id.tvAdministration){
+            Intent intent = new Intent(getContext(), History_AdministrationActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+        }
+    }
 
 
     public class getDrugIPD extends AsyncTask<Void, Void, List<CurrentMedDao>>{

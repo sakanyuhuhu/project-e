@@ -57,30 +57,61 @@
 
     <th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView
         android:id="@+id/headerPatientAdapter"
+        android:background="@color/colorBlue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <LinearLayout
+        android:background="@color/colorBlue"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:background="@color/colorPrimary">
+        android:layout_height="35dp">
         <TextView
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:textSize="22sp"
+            android:id="@+id/tvDrugAdr"
+            android:paddingLeft="10dp"
             android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_weight="2"
-            android:entries="@array/select_arrayscurrentmed"
+            android:layout_weight="1"
+            android:text="การแพ้ยา: "
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/colorPrimaryWhite"
+        android:orientation="vertical">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/colorPrimaryWhite">
+        <TextView
+            android:id="@+id/tvDate"
+            android:padding="5dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="00/00/0000"
             android:textColor="@color/colorBlack"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"/>
+        <ImageView
+            android:id="@+id/imgCalendar"
+            android:layout_gravity="center|center_horizontal"
+            android:src="@drawable/calendar"
+            android:layout_width="50dp"
             android:layout_height="match_parent" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/colorPrimaryWhite"
+        android:orientation="vertical">
+    </LinearLayout>
     <ListView
-        android:id="@+id/lvCurrentMed"
+        android:id="@+id/lvHistoryAdapter"
         android:padding="5dp"
         android:layout_weight="100"
         android:textSize="50sp"

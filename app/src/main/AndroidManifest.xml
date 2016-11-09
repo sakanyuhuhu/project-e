@@ -60,6 +60,9 @@
         <!--History-->
         <activity android:name=".activity.history.PatientAllActivity" />
         <activity android:name=".activity.history.CurrentMedActivity" />
+        <activity android:name=".activity.history.History_PrepareActivity" />
+        <activity android:name=".activity.history.History_DoubleCheckActivity" />
+        <activity android:name=".activity.history.History_AdministrationActivity" />
         <!--Add Medication-->
         <activity android:name=".activity.addmedication.AddMedicationPatientAllActivity" />
         <activity android:name=".activity.addmedication.AddMedicationForPatientActivity" />

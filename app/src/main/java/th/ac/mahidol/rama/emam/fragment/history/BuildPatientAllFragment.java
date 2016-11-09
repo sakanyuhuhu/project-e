@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.history.CurrentMedActivity;
+import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
+import th.ac.mahidol.rama.emam.activity.history.History_PrepareActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllAdapter;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
@@ -57,8 +59,7 @@ public class BuildPatientAllFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_patientall, container, false);
         initInstances(rootView, savedInstanceState);
         return rootView;
@@ -94,6 +95,28 @@ public class BuildPatientAllFragment extends Fragment{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -150,7 +173,7 @@ public class BuildPatientAllFragment extends Fragment{
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getContext(), CurrentMedActivity.class);
+                        Intent intent = new Intent(getContext(), History_PrepareActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);

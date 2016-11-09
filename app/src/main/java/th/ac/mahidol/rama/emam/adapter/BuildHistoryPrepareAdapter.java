@@ -5,11 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.view.BuildHistoryPrepareListView;
@@ -17,11 +12,6 @@ import th.ac.mahidol.rama.emam.view.BuildHistoryPrepareListView;
 public class BuildHistoryPrepareAdapter extends BaseAdapter {
     private Context context;
     private ListDrugCardDao dao;
-    private EditText txtStatus, txtStatusHold;
-    private RadioGroup radioGroup;
-    private RadioButton radioButton;
-    private CheckBox chkHold;
-    private TextView tvDrugName;
     private BuildHistoryPrepareListView buildHistoryPrepareListView;
 
 

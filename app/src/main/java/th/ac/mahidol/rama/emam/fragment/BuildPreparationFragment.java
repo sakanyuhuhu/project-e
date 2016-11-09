@@ -405,7 +405,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 //                                        patientDao.add(p);
 //                                    }
 //                                }
-
                                 if(timeposition <= 23){
                                     if ((p.getTime().equals(time) & p.getDate().equals(toDayDateCheck))) {
                                         if (!checkUniqe.contains(p.getMRN())) {

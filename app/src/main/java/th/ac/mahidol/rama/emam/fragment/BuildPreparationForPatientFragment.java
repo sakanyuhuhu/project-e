@@ -512,6 +512,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             intent.putExtra("timeposition", timeposition);
             intent.putExtra("position", position);
             intent.putExtra("time", time);
+            intent.putExtra("patientDao", patientDao);
             intent.putExtra("prn", prn);
             getActivity().startActivity(intent);
             getActivity().finish();
