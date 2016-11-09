@@ -126,11 +126,13 @@ public class BuildSelectWardFragment extends Fragment {
         @Override
         public void onResponse(Call<WardCollectionDao> call, Response<WardCollectionDao> response) {
             dao = response.body();
-            wardName = new ArrayList<String>();
-            for(WardDao wardDao : dao.getListwardBean()){
-                wardName.add(wardDao.getWardName());
+            if(dao != null) {
+                wardName = new ArrayList<String>();
+                for (WardDao wardDao : dao.getListwardBean()) {
+                    wardName.add(wardDao.getWardName());
+                }
+                setListWardName(wardName);
             }
-            setListWardName(wardName);
 
         }
 

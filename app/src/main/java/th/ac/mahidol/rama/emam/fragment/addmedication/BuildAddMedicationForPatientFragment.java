@@ -32,9 +32,10 @@ import java.util.GregorianCalendar;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.manager.AdminTimeSelectionSpinner;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
-public class BuildAddMedicationForPatientFragment extends Fragment implements View.OnClickListener{
+public class BuildAddMedicationForPatientFragment extends Fragment implements View.OnClickListener {
     private String nfcUID, sdlocID, wardName, mrn, selectedItem, dateSelect, toDayDate;
     private int position;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
@@ -46,6 +47,9 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
     private Date datetoDay;
     long startMillis = 0;
     long endMillis = 0;
+    String[] timeArrays = {"0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
+    private AdminTimeSelectionSpinner adminTimeSelectionSpinner;
+    private String[] timearrays;
 
     public BuildAddMedicationForPatientFragment() {
         super();
@@ -93,7 +97,14 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         imgCalendar = (ImageView) rootView.findViewById(R.id.imgCalendar) ;
 
+        adminTimeSelectionSpinner = (AdminTimeSelectionSpinner) rootView.findViewById(R.id.adminTimeSpinner);
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
+
+        adminTimeSelectionSpinner.set_items(timeArrays);
+        for(int i=0; i<timearrays.length;i++) {
+            Log.d("check", "timearrays = " + timearrays[i]);
+        }
+
 
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -115,28 +126,6 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         btnAdd.setOnClickListener(this);
         imgCalendar.setOnClickListener(this);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
-                    Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
     private void getSpinnerRoute() {
@@ -164,11 +153,22 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
             getActivity().finish();
         }
         else if(view.getId() == R.id.btnAdd){
+            if(edtDrugName.getText().toString().equals(""))
+                Toast.makeText(getActivity(), "กรุณาใส่ชื่อยา", Toast.LENGTH_LONG).show();
+
+            if(edtDosage.getText().toString().equals(""))
+                Toast.makeText(getActivity(), "กรุณาใส่ Dosage", Toast.LENGTH_LONG).show();
+
+            if(edtUnit.getText().toString().equals(""))
+                Toast.makeText(getActivity(), "กรุณาใส่ Unit", Toast.LENGTH_LONG).show();
+//            if(adminTimeSelectionSpinner)
+//                Toast.makeText(getActivity(), "กรุณาใส่ Admin Time", Toast.LENGTH_LONG).show();
+
             Log.d("check", "spinnerRoute = "+selectedItem);
             Log.d("check", "Drug name = "+edtDrugName.getText().toString());
-            if(edtDrugName.getText().toString().equals("")){
-                Toast.makeText(getActivity(), "กรุณาใส่ชื่อยา", Toast.LENGTH_LONG).show();
-            }
+            Log.d("check", "Dosage = "+edtDosage.getText().toString());
+            Log.d("check", "Unit = "+edtUnit.getText().toString());
+            Log.d("check", "Date = "+tvDate.getText().toString());
 
         }
         else if(view.getId() == R.id.imgCalendar){
@@ -213,5 +213,30 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
             alertDialog.setView(dialogViewDate);
             alertDialog.show();
         }
+        else if(view.getId() == R.id.adminTimeSpinner){
+            Log.d("check", "adminTimeSelectionSpinner = "+adminTimeSelectionSpinner.getId());
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 }

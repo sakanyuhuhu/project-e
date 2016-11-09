@@ -52,19 +52,22 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
 
         Log.d("check", "MainSelectMenuActivity nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardname = "+wardName);
-        initInstance();
-
-        if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainSelectMenuFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
-        }
+        initInstance(savedInstanceState);
     }
 
-    private void initInstance() {
+    private void initInstance(Bundle savedInstanceState) {
         mListView = (ListView) findViewById(R.id.lvMenu);
         tvName = (TextView) findViewById(R.id.tvName);
         tvRFID = (TextView) findViewById(R.id.tvRFID);
         tvWard = (TextView) findViewById(R.id.tvWard);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
+
+        loadPersonWard(nfcUID, sdlocID);
+
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainSelectMenuFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
+        }
+
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(MainSelectMenuActivity.this,drawerLayout,R.string.open_drawer,R.string.close_drawer);
@@ -72,8 +75,6 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        loadPersonWard(nfcUID, sdlocID);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mDrawerTitle);
 
@@ -183,14 +184,16 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            saveCachePersonWard(dao);
-            RFID = dao.getRFID();
-            firstName = dao.getFirstName();
-            lastName = dao.getLastName();
+            if(dao != null) {
+                saveCachePersonWard(dao);
+                RFID = dao.getRFID();
+                firstName = dao.getFirstName();
+                lastName = dao.getLastName();
 
-            tvName.setText(firstName+" " + lastName);
-            tvRFID.setText("RFID : " + RFID);
-            tvWard.setText("Ward : " + wardName);
+                tvName.setText(firstName + " " + lastName);
+                tvRFID.setText("RFID : " + RFID);
+                tvWard.setText("Ward : " + wardName);
+            }
         }
 
         @Override

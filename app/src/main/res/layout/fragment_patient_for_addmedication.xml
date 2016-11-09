@@ -43,6 +43,7 @@
                 android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edtDrugName"
+                android:hint="จำเป็น"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />
@@ -59,6 +60,7 @@
                 android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edtDrugID"
+                android:hint="ไม่จำเป็น"
                 android:layout_gravity="center"
                 android:layout_width="200dp"
                 android:layout_height="50dp" />
@@ -89,6 +91,7 @@
                 android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edtDosage"
+                android:hint="จำเป็น"
                 android:layout_gravity="center"
                 android:layout_width="200dp"
                 android:layout_height="50dp" />
@@ -101,6 +104,7 @@
                 android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edtUnit"
+                android:hint="จำเป็น"
                 android:layout_gravity="center"
                 android:layout_width="150dp"
                 android:layout_height="50dp">
@@ -118,6 +122,7 @@
                 android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edtFrequency"
+                android:hint="ไม่จำเป็น"
                 android:layout_gravity="center"
                 android:layout_width="200dp"
                 android:layout_height="50dp" />
@@ -130,6 +135,7 @@
                 android:layout_height="30dp" />
             <EditText
                 android:id="@+id/edtMedthod"
+                android:hint="ไม่จำเป็น"
                 android:layout_gravity="center"
                 android:layout_width="150dp"
                 android:layout_height="50dp">
@@ -143,301 +149,20 @@
                 android:text="Admin Time :"
                 android:textSize="20sp"
                 android:layout_gravity="center"
-                android:layout_width="200dp"
+                android:layout_width="150dp"
                 android:layout_height="30dp" />
+            <th.ac.mahidol.rama.emam.manager.AdminTimeSelectionSpinner
+                android:id="@+id/adminTimeSpinner"
+                android:layout_gravity="center"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:background="@color/colorGray">
+            </th.ac.mahidol.rama.emam.manager.AdminTimeSelectionSpinner>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:orientation="horizontal">
-            <CheckBox
-                android:id="@+id/chk0"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="00:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk1"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="01:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk2"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="02:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk3"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="03:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk4"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="04:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk5"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="05:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/chk6"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="06:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk7"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="07:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk8"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="08:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk9"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="09:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk10"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="10:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk11"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="11:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
-            <CheckBox
-                android:id="@+id/chk12"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="12:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk13"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="13:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk14"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="14:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk15"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="15:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk16"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="16:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk17"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="17:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
-            <CheckBox
-                android:id="@+id/chk18"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="18:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk19"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="19:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk20"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="20:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk21"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="21:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk22"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="22:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-            <CheckBox
-                android:id="@+id/chk23"
-                android:layout_width="35dp"
-                android:layout_height="match_parent" />
-            <TextView
-                android:layout_weight="1"
-                android:text="23:00"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_width="25dp"
-                android:layout_height="30dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
             android:orientation="horizontal">
             <TextView
                 android:text="End date : "
