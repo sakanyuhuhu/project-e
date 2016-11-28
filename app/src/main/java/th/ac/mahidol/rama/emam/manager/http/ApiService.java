@@ -39,7 +39,7 @@ public interface ApiService {
     Call<ListDrugCardDao> updateDrugData(@Body ListDrugCardDao drugCardDao);
 
     @FormUrlEncoded
-    @POST("PatientData")
+    @POST("PatientDataStatus")
     Call<ListPatientDataDao> getPatientInfo(@Field("sdlocId") String sdlocId, @Field("adminTime") String adminTime, @Field("checkType") String checkType, @Field("date") String date);
 
     @FormUrlEncoded

@@ -22,7 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
-import th.ac.mahidol.rama.emam.activity.history.History_PrepareActivity;
+import th.ac.mahidol.rama.emam.activity.history.HistoryActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllAdapter;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
@@ -173,7 +173,7 @@ public class BuildPatientAllFragment extends Fragment{
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getContext(), History_PrepareActivity.class);
+                        Intent intent = new Intent(getContext(), HistoryActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);

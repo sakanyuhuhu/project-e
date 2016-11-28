@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,8 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.gson.Gson;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -42,19 +38,20 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
 
 public class BuildHistoryDoubleCheckFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName, RFID, userName, dateSelect;
+    private String  nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName, RFID, userName, dateSelect, mrn;
     private int position, timeposition;
     private ListView listView;
     private TextView tvTime, tvDrugAdr, tvDoublecheck, tvDate;
     private ImageView imgCalendar;
-    private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
+    private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
     private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
+    private PatientDataDao patientDouble;
     private Date datetoDay;
     long startMillis = 0;
     long endMillis = 0;
@@ -63,7 +60,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         super();
     }
 
-    public static BuildHistoryDoubleCheckFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public static BuildHistoryDoubleCheckFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
         BuildHistoryDoubleCheckFragment fragment = new BuildHistoryDoubleCheckFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -74,6 +71,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         args.putString("lastname", lastName);
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
+        args.putParcelable("patientDouble", patientDouble);
         args.putString("time", time);
 //        args.putString("userName", userName);
         fragment.setArguments(args);
@@ -111,14 +109,17 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         lastName = getArguments().getString("lastname");
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
+        patientDouble = getArguments().getParcelable("patientDouble");
         time = getArguments().getString("time");
 //        userName = getArguments().getString("userName");
 
         Log.d("check", "BuildHistoryDoubleCheckFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName);
 
+        Log.d("check", "patientDouble mrn = "+patientDouble.getMRN());
+
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
-        buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD) rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryPrepareAdapter = new BuildHistoryPrepareAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
@@ -134,13 +135,8 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         tvDate.setText(dateSelect);
         tvTime.setText(time);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientintdata",null);
-        if(data != null){
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
-            buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
-
+        if(patientDouble != null){
+            buildHeaderPatientDataViewOLD.setData(patientDouble);
         }
 
         getDrugFromPraration();
@@ -175,6 +171,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
             intent.putExtra("lastname", lastName);
             intent.putExtra("timeposition", timeposition);
             intent.putExtra("position", position);
+            intent.putExtra("patientDouble", patientDouble);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
             getActivity().finish();
@@ -250,13 +247,11 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         protected List<DrugAdrDao> doInBackground(Void... params) {
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
-
-            SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientintdata",null);
-            if(data != null){
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
+            patientDouble = getArguments().getParcelable("patientDouble");
+            if(patientDouble != null){
+                mrn = patientDouble.getMRN();
+                Log.d("check", "MRN doInBackground = "+mrn);
+                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;

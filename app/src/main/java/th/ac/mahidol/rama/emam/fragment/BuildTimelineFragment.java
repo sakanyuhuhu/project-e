@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ public class BuildTimelineFragment extends Fragment {
     private ListView listView;
     private BuildTimelineAdapter buildTimelineAdapter;
     private String currentTime[];
+    private ProgressDialog progressDialog;
 
     public BuildTimelineFragment() {
         super();
@@ -78,6 +80,8 @@ public class BuildTimelineFragment extends Fragment {
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
 
+        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
+
         listView = (ListView) rootView.findViewById(R.id.lvTimelineAdapter);
         buildTimelineAdapter = new BuildTimelineAdapter();
         currentTime = DateFormat.getTimeInstance().format(new Date()).split(":");
@@ -90,6 +94,9 @@ public class BuildTimelineFragment extends Fragment {
 
         loadTimelineExclude();
         loadTimelineInclude();
+
+        progressDialog.dismiss();
+
         loadTimeline();
     }
 

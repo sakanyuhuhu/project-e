@@ -167,9 +167,9 @@ public class MainSelectMenuActivity extends AppCompatActivity {
 
     private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
         String json = new Gson().toJson(checkPersonWardDao);
-        SharedPreferences prefs = this.getSharedPreferences("checkperson", Context.MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences("checkpersonlogin", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("checkperson",json);
+        editor.putString("checkpersonlogin",json);
         editor.apply();
     }
 

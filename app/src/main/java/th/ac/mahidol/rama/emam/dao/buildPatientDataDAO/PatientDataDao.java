@@ -28,8 +28,12 @@ public class PatientDataDao implements Parcelable {
     private String time;
     private String date;
     private String complete;
+    private String status;
+    private String RFID;
 
-    public PatientDataDao() {
+
+    public PatientDataDao(){
+
     }
 
     protected PatientDataDao(Parcel in) {
@@ -48,6 +52,34 @@ public class PatientDataDao implements Parcelable {
         time = in.readString();
         date = in.readString();
         complete = in.readString();
+        status = in.readString();
+        RFID = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(MRN);
+        dest.writeString(bedID);
+        dest.writeString(initialName);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(idCardNo);
+        dest.writeString(maritalstatus);
+        dest.writeString(dob);
+        dest.writeString(gender);
+        dest.writeString(wardName);
+        dest.writeString(sdlocId);
+        dest.writeString(age);
+        dest.writeString(time);
+        dest.writeString(date);
+        dest.writeString(complete);
+        dest.writeString(status);
+        dest.writeString(RFID);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<PatientDataDao> CREATOR = new Creator<PatientDataDao>() {
@@ -182,27 +214,19 @@ public class PatientDataDao implements Parcelable {
         this.complete = complete;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getStatus() {
+        return status;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(MRN);
-        dest.writeString(bedID);
-        dest.writeString(initialName);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
-        dest.writeString(idCardNo);
-        dest.writeString(maritalstatus);
-        dest.writeString(dob);
-        dest.writeString(gender);
-        dest.writeString(wardName);
-        dest.writeString(sdlocId);
-        dest.writeString(age);
-        dest.writeString(time);
-        dest.writeString(date);
-        dest.writeString(complete);
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRFID() {
+        return RFID;
+    }
+
+    public void setRFID(String RFID) {
+        this.RFID = RFID;
     }
 }

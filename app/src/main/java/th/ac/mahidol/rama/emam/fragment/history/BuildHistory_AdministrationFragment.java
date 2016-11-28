@@ -40,8 +40,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.history.History_DoubleCheckActivity;
-import th.ac.mahidol.rama.emam.activity.history.History_PrepareActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
@@ -50,11 +48,11 @@ import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
-public class BuildHistory_AdministrationFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateSelect;
+public class BuildHistory_AdministrationFragment extends Fragment implements View.OnClickListener {
+    private String nfcUID, sdlocID, wardName, toDayDate, dateSelect;
     private int position;
     private ListView listView;
-    private TextView tvDrugAdr, tvDate,tvPreparation, tvDoublecheck, tvCurrentMed;
+    private TextView tvDrugAdr, tvDate;
     private ImageView imgCalendar;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
@@ -66,7 +64,7 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
         super();
     }
 
-    public static BuildHistory_AdministrationFragment newInstance(String nfcUID, String sdlocID, String wardName, int position){
+    public static BuildHistory_AdministrationFragment newInstance(String nfcUID, String sdlocID, String wardName, int position) {
         BuildHistory_AdministrationFragment fragment = new BuildHistory_AdministrationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -105,16 +103,13 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
 
-        Log.d("check", "BuildHistory_AdministrationFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = "+ position);
+        Log.d("check", "BuildHistory_AdministrationFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = " + position);
 
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
-        buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
+        buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryPrepareAdapter = new BuildHistoryPrepareAdapter();
 
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
-//        tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
-//        tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
-//        tvCurrentMed = (TextView) rootView.findViewById(R.id.tvCurrentMed);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         imgCalendar = (ImageView) rootView.findViewById(R.id.imgCalendar);
 
@@ -125,23 +120,20 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
         tvDate.setText(dateSelect);
 
         SharedPreferences prefs = getContext().getSharedPreferences("patientalldata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientalldata",null);
-        if(data != null){
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
+        String data = prefs.getString("patientalldata", null);
+        if (data != null) {
+            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
+            Log.d("check", "data size = " + listPatientDataDao.getPatientDao().size() + " position = " + position);
             buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
 
         }
 
         getDrugFromPraration();
-//        tvDoublecheck.setOnClickListener(this);
-//        tvPreparation.setOnClickListener(this);
-//        tvCurrentMed.setOnClickListener(this);
         imgCalendar.setOnClickListener(this);
 
     }
 
-    private void getDrugFromPraration(){
+    private void getDrugFromPraration() {
 
     }
 
@@ -158,31 +150,7 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.tvDoublecheck){
-            Intent intent = new Intent(getContext(), History_DoubleCheckActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-        else if(view.getId() == R.id.tvPreparation){
-            Intent intent = new Intent(getContext(), History_PrepareActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-//        else if(view.getId() == R.id.tvCurrentMed){
-//            Intent intent = new Intent(getContext(), CurrentMedActivity.class);
-//            intent.putExtra("nfcUId", nfcUID);
-//            intent.putExtra("sdlocId", sdlocID);
-//            intent.putExtra("wardname", wardName);
-//            getActivity().startActivity(intent);
-//            getActivity().finish();
-//        }
-        else if(view.getId() == R.id.imgCalendar){
+        if (view.getId() == R.id.imgCalendar) {
             final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
             final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 
@@ -201,7 +169,7 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
                                 pickDay = datePicker.getDayOfMonth(),
                                 pickHour = timePicker.getHour(),
                                 pickMinute = timePicker.getMinute());
-                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        dateSelect = pickDay + "/" + (pickMonth + 1) + "/" + pickYear;
                         tvDate.setText(dateSelect);
                     } else {
                         calendar = new GregorianCalendar(
@@ -210,7 +178,7 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
                                 pickDay = datePicker.getDayOfMonth(),
                                 pickHour = timePicker.getCurrentHour(),
                                 pickMinute = timePicker.getCurrentMinute());
-                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        dateSelect = pickDay + "/" + (pickMonth + 1) + "/" + pickYear;
                         tvDate.setText(dateSelect);
                     }
 
@@ -234,7 +202,7 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), PatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
@@ -253,9 +221,9 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
         @Override
         protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " +  drugAdrDaos.size());
+            Log.d("check", "*****DrugAdrDao onPostExecute = " + drugAdrDaos.size());
 
-            if(drugAdrDaos.size() != 0){
+            if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
                 spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
@@ -264,8 +232,7 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
 //                tvDrugAdr.setText("การแพ้ยา:แตะสำหรับรายละเอียด");
-            }
-            else {
+            } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
         }
@@ -276,17 +243,17 @@ public class BuildHistory_AdministrationFragment extends Fragment implements Vie
             SoapManager soapManager = new SoapManager();
 
             SharedPreferences prefs = getContext().getSharedPreferences("patientalldata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientalldata",null);
-            if(data != null){
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
+            String data = prefs.getString("patientalldata", null);
+            if (data != null) {
+                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
                 Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
             }
-            Log.d("check", "itemsList doInBackground = "+ itemsList);
+            Log.d("check", "itemsList doInBackground = " + itemsList);
             return itemsList;
         }
 
-        private   ArrayList<DrugAdrDao>  parseXML(String soap) {
+        private ArrayList<DrugAdrDao> parseXML(String soap) {
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             try {
 

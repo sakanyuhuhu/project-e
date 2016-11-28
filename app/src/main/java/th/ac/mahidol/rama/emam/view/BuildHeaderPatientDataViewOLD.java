@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class BuildHeaderPatientDataViewOLD extends BaseCustomViewGroup {
@@ -43,7 +43,7 @@ public class BuildHeaderPatientDataViewOLD extends BaseCustomViewGroup {
     }
 
     private void initInflate() {
-        inflate(getContext(), R.layout.view_header_patient_data, this);
+        inflate(getContext(), R.layout.view_history_header_patient_data_management, this);
     }
 
     private void initInstances() {
@@ -77,15 +77,15 @@ public class BuildHeaderPatientDataViewOLD extends BaseCustomViewGroup {
 
     }
 
-    public void setData(ListPatientDataDao listPatientDataDao, int position){
-        tvBedNo.setText("เลขที่เตียง/ห้อง: " + listPatientDataDao.getPatientDao().get(position).getBedID());
-        tvPatientName.setText(listPatientDataDao.getPatientDao().get(position).getInitialName()+ listPatientDataDao.getPatientDao().get(position).getFirstName()+" "+listPatientDataDao.getPatientDao().get(position).getLastName());
-        tvPatientID.setText(listPatientDataDao.getPatientDao().get(position).getIdCardNo());
-        tvHN.setText("HN:" + listPatientDataDao.getPatientDao().get(position).getMRN());
-        tvSex.setText("เพศ:"+ listPatientDataDao.getPatientDao().get(position).getGender());
-        tvBirth.setText("วันเกิด:"+ listPatientDataDao.getPatientDao().get(position).getDob());
-        tvAge.setText("อายุ:"+ listPatientDataDao.getPatientDao().get(position).getAge());
-        tvStatus.setText("สถานะภาพ:"+ listPatientDataDao.getPatientDao().get(position).getMaritalstatus());
+    public void setData(PatientDataDao patientDao){
+        tvBedNo.setText("เลขที่เตียง/ห้อง: " + patientDao.getBedID());
+        tvPatientName.setText(patientDao.getInitialName()+ patientDao.getFirstName()+" "+patientDao.getLastName());
+        tvPatientID.setText(patientDao.getIdCardNo());
+        tvHN.setText("HN:" + patientDao.getMRN());
+        tvSex.setText("เพศ:"+ patientDao.getGender());
+        tvBirth.setText("วันเกิด:"+ patientDao.getDob());
+        tvAge.setText("อายุ:"+ patientDao.getAge());
+        tvStatus.setText("สถานะภาพ:"+ patientDao.getMaritalstatus());
     }
 
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,27 +33,33 @@ import th.ac.mahidol.rama.emam.activity.AdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.LoginDoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
+import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildDoubleCheckAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildDoubleCheckFragment extends Fragment implements View.OnClickListener{
 
-    private String nfcUID, sdlocID, wardName, time, RFID, firstName, lastName, toDayDate, checkType, tomorrowDate, nameDouble;
+    private String nfcUID, sdlocID, wardName, time, RFIDouble, RFIDPrepare, firstName, lastName, toDayDate, checkType, tomorrowDate, nameDouble, tricker, todayDateDrug, tomorrowDateDrug;
     private ListView listView;
     private TextView tvPreparation, tvAdministration, tvUserName, tvTime;
     private BuildDoubleCheckAdapter buildDoubleCheckAdapter;
-    private int timeposition;
+    private int timeposition, positionPatient;
     private Button btnLogin;
     private Date datetoDay;
+    private ListPatientDataDao dao;
+    private ListDrugCardDao listDrugCardDao;
 
 
     public BuildDoubleCheckFragment() {
         super();
     }
 
-    public static BuildDoubleCheckFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time, String nameDouble) {
+    public static BuildDoubleCheckFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time, String nameDouble, String tricker) {
         BuildDoubleCheckFragment fragment = new BuildDoubleCheckFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -59,6 +68,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         args.putInt("position", timeposition);
         args.putString("time", time);
         args.putString("nameDouble", nameDouble);
+        args.putString("save", tricker);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,7 +101,10 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
         nameDouble = getArguments().getString("nameDouble");
+        tricker = getArguments().getString("save");
 
+        Log.d("check", "BuildDoubleCheckFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = " + timeposition + " /time = " +
+                time + " /namePrepare = " + nameDouble +" /tricker = "+tricker);
 
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
@@ -108,44 +121,97 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         buildDoubleCheckAdapter = new BuildDoubleCheckAdapter();
 
         datetoDay = new Date();
-        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
-        toDayDate = sdfForDrugUseDate.format(datetoDay);
+        SimpleDateFormat sdfForPatientUseDate = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd");
+        toDayDate = sdfForPatientUseDate.format(datetoDay);
+        todayDateDrug = sdfForDrugUseDate.format(datetoDay);
         Calendar c = Calendar.getInstance();
         c.setTime(datetoDay);
         c.add(Calendar.DATE,1);
-        tomorrowDate = sdfForDrugUseDate.format(c.getTime());
+        tomorrowDate = sdfForPatientUseDate.format(c.getTime());
+        tomorrowDateDrug = sdfForDrugUseDate.format(c.getTime());
 
         checkType = "Second Check";
 
-        if(nfcUID != null) {
-            SharedPreferences prefs = getContext().getSharedPreferences("checkperson", Context.MODE_PRIVATE);
-            String data = prefs.getString("checkperson",null);
-            if(data != null){
-                CheckPersonWardDao dao = new Gson().fromJson(data,CheckPersonWardDao.class);
-                if(dao.getNfcUId().equals(nfcUID)){
-                    Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
-                    loadCheckPersonBynfcUID();
-                }
-                else{
-                    loadPersonWard(nfcUID, sdlocID);
-                    loadCacheDao();
-                }
-            }
-        }
-        else {
-            if(nameDouble != null){
+        if (nfcUID != null & tricker == null) {
+            loadPersonWard(nfcUID, sdlocID);
+            loadCacheDao();
+
+//            SharedPreferences prefs = getContext().getSharedPreferences("checkperson", Context.MODE_PRIVATE);
+//            String data = prefs.getString("checkperson",null);
+//            if(data != null){
+//                CheckPersonWardDao dao = new Gson().fromJson(data,CheckPersonWardDao.class);
+//                if(dao.getNfcUId().equals(nfcUID)){
+//                    Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
+//                    loadCheckPersonBynfcUID();
+//                }
+//                else{
+//                    loadPersonWard(nfcUID, sdlocID);
+//                    loadCacheDao();
+//                }
+//            }
+        } else {
+            if (nameDouble != null & tricker == null) {
                 tvUserName.setText("ตรวจสอบยาโดย  " + nameDouble);
                 tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
                 loadCacheDao();
             }
+            else if(nameDouble != null & tricker != null){
+                if(tricker.equals("save")) {
+                    if (timeposition <= 23)
+                        loadPatientData(sdlocID, time, checkType, toDayDate);
+                    else
+                        loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                }
+            }
+            else if(nfcUID != null & tricker != null){
+                if(tricker.equals("save")) {
+                    loadPersonWard(nfcUID, sdlocID);
+                    if (timeposition <= 23)
+                        loadPatientData(sdlocID, time, checkType, toDayDate);
+                    else
+                        loadPatientData(sdlocID, time, checkType, tomorrowDate);
+
+                    loadCacheDao();
+                }
+            }
             else {
                 if (timeposition <= 23)
                     loadPatientData(sdlocID, time, checkType, toDayDate);
-                else {
+                else
                     loadPatientData(sdlocID, time, checkType, tomorrowDate);
-                }
             }
         }
+
+//        if(nfcUID != null) {
+//            SharedPreferences prefs = getContext().getSharedPreferences("checkperson", Context.MODE_PRIVATE);
+//            String data = prefs.getString("checkperson",null);
+//            if(data != null){
+//                CheckPersonWardDao dao = new Gson().fromJson(data,CheckPersonWardDao.class);
+//                if(dao.getNfcUId().equals(nfcUID)){
+//                    Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
+//                    loadCheckPersonBynfcUID();
+//                }
+//                else{
+//                    loadPersonWard(nfcUID, sdlocID);
+//                    loadCacheDao();
+//                }
+//            }
+//        }
+//        else {
+//            if(nameDouble != null){
+//                tvUserName.setText("ตรวจสอบยาโดย  " + nameDouble);
+//                tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+//                loadCacheDao();
+//            }
+//            else {
+//                if (timeposition <= 23)
+//                    loadPatientData(sdlocID, time, checkType, toDayDate);
+//                else {
+//                    loadPatientData(sdlocID, time, checkType, tomorrowDate);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -173,23 +239,50 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientdoublecheck",null);
 
         if(data != null){
-            ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
+            final ListPatientDataDao dao = new Gson().fromJson(data,ListPatientDataDao.class);
             buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("RFID", RFID);
-                    intent.putExtra("firstname", firstName);
-                    intent.putExtra("lastname", lastName);
-                    intent.putExtra("timeposition", timeposition);
-                    intent.putExtra("position", position);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
+//                    if(timeposition <= 23) {
+//                        DrugCardDao drugCardDao = new DrugCardDao();
+//                        drugCardDao.setAdminTimeHour(time);
+//                        drugCardDao.setDrugUseDate(todayDateDrug);
+//                        drugCardDao.setMRN(dao.getPatientDao().get(position).getMRN());
+//                        drugCardDao.setCheckType("First Check");
+//                        positionPatient = position;
+//                        loadMedicalData(drugCardDao);
+//                    }
+//                    else{
+//                        DrugCardDao drugCardDao = new DrugCardDao();
+//                        drugCardDao.setAdminTimeHour(time);
+//                        drugCardDao.setDrugUseDate(tomorrowDateDrug);
+//                        drugCardDao.setMRN(dao.getPatientDao().get(position).getMRN());
+//                        drugCardDao.setCheckType("First Check");
+//                        positionPatient = position;
+//                        loadMedicalData(drugCardDao);
+//                    }
+
+//                    get RFID pass PatientDataDao. Please delete code above this coded.
+                    if(!dao.getPatientDao().get(position).getRFID().equals(RFIDouble)){
+                        Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFIDouble);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", positionPatient);
+                        intent.putExtra("patientDouble", dao.getPatientDao().get(position));
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
+                        loadCheckPersonBynfcUID();
+                    }
                 }
             });
         }
@@ -204,6 +297,11 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
+    }
+
+    private void loadMedicalData(DrugCardDao drugCardDao){
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
+        call.enqueue(new DrugLoadCallback());
     }
 
     private void saveCacheDoubleCheckData(ListPatientDataDao patientDataDao){
@@ -245,13 +343,46 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                    Intent intent = new Intent(getContext(), TimelineActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
 
 
     class PatientLoadCallback implements Callback<ListPatientDataDao>{
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
-            ListPatientDataDao dao = response.body();
+            dao = response.body();
+            List<String> listMrn = new ArrayList<>();
+            List<PatientDataDao> patientDao = new ArrayList<>();
+            if(dao.getPatientDao().size() != 0) {
+                for (PatientDataDao p : dao.getPatientDao()) {
+                    if (!listMrn.contains(p.getMRN())) {
+                        Log.d("check", "RFID2 = "+p.getRFID());
+                        listMrn.add(p.getMRN());
+                        patientDao.add(p);
+                    }
+                }
+            }
+            dao.setPatientDao(patientDao);
             saveCacheDoubleCheckData(dao);
             buildDoubleCheckAdapter.setDao(dao);
             listView.setAdapter(buildDoubleCheckAdapter);
@@ -269,7 +400,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            RFID = dao.getRFID();
+            RFIDouble = dao.getRFID();
             firstName = dao.getFirstName();
             lastName = dao.getLastName();
             tvUserName.setText("ตรวจสอบยาโดย  " + firstName + " " + lastName);
@@ -280,6 +411,43 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
             Log.d("check", "Double PersonWardLoadCallback Failure " + t);
+        }
+    }
+
+
+
+    class DrugLoadCallback implements Callback<ListDrugCardDao> {
+
+        @Override
+        public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
+            listDrugCardDao = response.body();
+            for(DrugCardDao d: listDrugCardDao.getListDrugCardDao()){
+                RFIDPrepare = d.getRFID();
+                break;
+            }
+
+            if(!RFIDPrepare.equals(RFIDouble)){
+                Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("RFID", RFIDouble);
+                intent.putExtra("firstname", firstName);
+                intent.putExtra("lastname", lastName);
+                intent.putExtra("timeposition", timeposition);
+                intent.putExtra("position", positionPatient);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+            }
+            else{
+                Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
+                loadCheckPersonBynfcUID();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
+            Log.d("check", "DrugLoadCallback Failure " + t);
         }
     }
 }

@@ -40,8 +40,11 @@ public class BuildAdministrationAdapter extends BaseAdapter {
 
         BuildAdministrationListView patientListView;
         patientListView = new BuildAdministrationListView(viewGroup.getContext());
-        patientListView.setPatient(dao.getPatientDao().get(position).getBedID(), dao.getPatientDao().get(position).getInitialName()+
-                dao.getPatientDao().get(position).getFirstName()+" "+dao.getPatientDao().get(position).getLastName(), dao.getPatientDao().get(position).getMRN());
+        patientListView.setPatient(dao.getPatientDao().get(position));
+
+
+//        patientListView.setPatient(dao.getPatientDao().get(position).getBedID(), dao.getPatientDao().get(position).getInitialName()+
+//                dao.getPatientDao().get(position).getFirstName()+" "+dao.getPatientDao().get(position).getLastName(), dao.getPatientDao().get(position).getMRN());
 
         return patientListView;
     }

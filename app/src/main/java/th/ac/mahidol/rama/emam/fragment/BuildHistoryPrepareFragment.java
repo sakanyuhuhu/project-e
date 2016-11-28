@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,8 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.gson.Gson;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -42,19 +38,18 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
 
 public class BuildHistoryPrepareFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName, RFID, userName, prn, dateSelect;
+    private String  nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName, RFID, userName, prn, dateSelect, mrn;
     private int position, timeposition;
     private ListView listView;
     private TextView tvTime, tvDrugAdr, tvPreparation, tvDate;
     private ImageView imgCalendar;
-    private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
+    private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
     private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
     private PatientDataDao patientDao;
     private Date datetoDay;
@@ -124,7 +119,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName+" /prn = "+prn);
 
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
-        buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD) rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryPrepareAdapter = new BuildHistoryPrepareAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
@@ -140,13 +135,8 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         tvDate.setText(dateSelect);
         tvTime.setText(time);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientintdata",null);
-        if(data != null){
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
-            buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
-
+        if(patientDao != null){
+            buildHeaderPatientDataViewOLD.setData(patientDao);
         }
 
         getDrugFromPraration();
@@ -272,13 +262,11 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         protected List<DrugAdrDao> doInBackground(Void... params) {
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
-
-            SharedPreferences prefs = getContext().getSharedPreferences("patientintdata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientintdata",null);
-            if(data != null){
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
+            patientDao = getArguments().getParcelable("patientDao");
+            if(patientDao != null){
+                mrn = patientDao.getMRN();
+                Log.d("check", "MRN doInBackground = "+mrn);
+                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;

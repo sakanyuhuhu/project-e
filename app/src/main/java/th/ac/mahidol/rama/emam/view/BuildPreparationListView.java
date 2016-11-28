@@ -101,7 +101,7 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
 //        tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
 //        tvMrn.setText("HN: " + textMrn);
 
-        if(dao.getComplete() == null){
+        if(dao.getStatus() == null){
             tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
             tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
             tvMrn.setText("HN: " + dao.getMRN());
@@ -109,14 +109,14 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
             tvComplete.setVisibility(INVISIBLE);
             imgvNote.setVisibility(INVISIBLE);
         }
-        else if(dao.getComplete().equals("0")){
+        else if(dao.getStatus().equals("0")){
             tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
             tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
             tvMrn.setText("HN: " + dao.getMRN());
             point.setImageResource(R.drawable.red);
             tvComplete.setVisibility(VISIBLE);
             imgvNote.setVisibility(VISIBLE);
-        }else if(dao.getComplete().equals("1")){
+        }else if(dao.getStatus().equals("1")){
             tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
             tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
             tvMrn.setText("HN: " + dao.getMRN());

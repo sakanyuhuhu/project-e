@@ -1,113 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite">
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:orientation="vertical">
+
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="กรุณาแตะ Smart Card ของหัวหน้า Ward หรือหัวหน้าเวร"
-            android:textSize="20sp"
             android:textColor="@color/colorRed"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:textSize="20sp" />
+
         <ImageView
-            android:layout_weight="1"
-            android:layout_gravity="center"
             android:layout_width="100dp"
             android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:background="@drawable/ramamahidol_hos" />
+
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="กรุณาลงชื่อเข้าใช้เพื่อตรวจสอบการเตรียมยา"
-            android:textSize="20sp"
             android:textColor="@color/colorPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:textSize="20sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+
         <TextView
-            android:text="Username : "
-            android:textSize="20sp"
-            android:gravity="right"
-            android:layout_gravity="center"
             android:layout_width="250dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="right"
+            android:text="Username : "
+            android:textSize="20sp" />
+
         <EditText
             android:id="@+id/edUsername"
-            android:hint="username"
-            android:gravity="left"
-            android:textSize="20sp"
-            android:layout_gravity="center"
             android:layout_width="250dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left"
+            android:hint="username"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+
         <TextView
-            android:text="Password : "
-            android:textSize="20sp"
-            android:gravity="right"
-            android:layout_gravity="center"
             android:layout_width="250dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="right"
+            android:text="Password : "
+            android:textSize="20sp" />
+
         <EditText
             android:id="@+id/edPassword"
-            android:hint="password"
-            android:gravity="left"
-            android:inputType="textPassword"
-            android:layout_gravity="center"
             android:layout_width="250dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left"
+            android:hint="password"
+            android:inputType="textPassword" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="340dp">
-    </LinearLayout>
+        android:layout_height="340dp"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
+
         <Button
-            android:layout_weight="1"
             android:id="@+id/btnCancel"
-            android:background="@color/colorBlack"
-            android:textColor="@color/colorWhite"
-            android:text="ยกเลิก"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <Button
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/colorBlack"
+            android:text="ยกเลิก"
+            android:textColor="@color/colorWhite" />
+
+        <Button
             android:id="@+id/btnLogin"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorWhite"
-            android:text="ตกลง"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="ตกลง"
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 
 

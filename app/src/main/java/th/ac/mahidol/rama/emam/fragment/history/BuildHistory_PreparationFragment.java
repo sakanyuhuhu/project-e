@@ -40,8 +40,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.history.History_AdministrationActivity;
-import th.ac.mahidol.rama.emam.activity.history.History_DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
@@ -54,7 +52,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
     private String  nfcUID, sdlocID, wardName, toDayDate, dateSelect;
     private int position;
     private ListView listView;
-    private TextView tvDrugAdr, tvDate, tvDoublecheck, tvAdministration, tvCurrentMed;
+    private TextView tvDrugAdr, tvDate;
     private ImageView imgCalendar;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
@@ -112,9 +110,6 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
         buildHistoryPrepareAdapter = new BuildHistoryPrepareAdapter();
 
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
-//        tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
-//        tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
-//        tvCurrentMed = (TextView) rootView.findViewById(R.id.tvCurrentMed);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
         imgCalendar = (ImageView) rootView.findViewById(R.id.imgCalendar);
 
@@ -130,21 +125,11 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
             Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position);
             buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
-
         }
 
-        getDrugFromPraration();
-//        tvDoublecheck.setOnClickListener(this);
-//        tvAdministration.setOnClickListener(this);
-//        tvCurrentMed.setOnClickListener(this);
         imgCalendar.setOnClickListener(this);
 
     }
-
-    private void getDrugFromPraration(){
-
-    }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -158,31 +143,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.tvDoublecheck){
-            Intent intent = new Intent(getContext(), History_DoubleCheckActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-        else if(view.getId() == R.id.tvAdministration){
-            Intent intent = new Intent(getContext(), History_AdministrationActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-//        else if(view.getId() == R.id.tvCurrentMed){
-//            Intent intent = new Intent(getContext(), CurrentMedActivity.class);
-//            intent.putExtra("nfcUId", nfcUID);
-//            intent.putExtra("sdlocId", sdlocID);
-//            intent.putExtra("wardname", wardName);
-//            getActivity().startActivity(intent);
-//            getActivity().finish();
-//        }
-        else if(view.getId() == R.id.imgCalendar){
+        if(view.getId() == R.id.imgCalendar){
             final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
             final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 
@@ -310,3 +271,6 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
         }
     }
 }
+
+
+

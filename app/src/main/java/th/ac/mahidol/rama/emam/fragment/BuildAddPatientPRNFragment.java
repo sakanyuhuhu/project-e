@@ -109,8 +109,6 @@ public class BuildAddPatientPRNFragment extends Fragment{
         else{
             loadPatientPRN(sdlocID);
         }
-//        loadPersonWard(nfcUID, sdlocID);
-//        loadPatientPRN(sdlocID);
     }
 
     @Override

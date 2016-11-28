@@ -50,11 +50,8 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListStatusPreparationDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.StatusPreparationDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
-import th.ac.mahidol.rama.emam.manager.BuildStatusPraparationManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
@@ -75,8 +72,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private PatientDataDao patientDao;
     private Date datetoDay;
     private boolean checkNote = false;
-    private ListStatusPreparationDao listStatusPreparationDao;
-    private BuildStatusPraparationManager buildStatusPraparationManager = new BuildStatusPraparationManager();
+
 
     public BuildPreparationForPatientFragment() {
         super();
@@ -142,8 +138,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         Log.d("check", "BuildPreparationForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /namePrepare = "+userName+" /prn = "+prn);
 
-        Log.d("check", "daoPRN = "+daoPRN+" ***** patientDao = "+patientDao.getMRN());
-
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
         buildPreparationForPatientAdapter = new BuildPreparationForPatientAdapter();
@@ -173,43 +167,13 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         admintime = time.split(":");
         adminTime = Integer.parseInt(admintime[0]);
         sumTime = currentTime - adminTime;
-        Log.d("check", "currentTime = "+currentTime +" / adminTime = "+adminTime+" /sumTime = "+sumTime);
 
         tvTime.setText(time);
         tvDate.setText(dateFortvDate );
 
-//        SharedPreferences prefs = getContext().getSharedPreferences("patientindata", Context.MODE_PRIVATE);
-//        String data = prefs.getString("patientindata",null);
-//        if(data != null){
-//            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-//            mrn = listPatientDataDao.getPatientDao().get(position).getMRN();
-//            Log.d("check", "data size = "+listPatientDataDao.getPatientDao().size()+ " position = "+position+" mrn = "+mrn);
-//            buildHeaderPatientDataView.setData(listPatientDataDao, position);
-//
-//            if(timeposition <= 23) {
-//                DrugCardDao drugCardDao = new DrugCardDao();
-//                drugCardDao.setAdminTimeHour(time);
-//                drugCardDao.setDrugUseDate(toDayDate);
-//                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-//                drugCardDao.setCheckType("First Check");
-//
-//                loadMedicalData(drugCardDao);
-//            }
-//            else{
-//                DrugCardDao drugCardDao = new DrugCardDao();
-//                drugCardDao.setAdminTimeHour(time);
-//                drugCardDao.setDrugUseDate(tomorrowDate);
-//                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-//                drugCardDao.setCheckType("First Check");
-//
-//                loadMedicalData(drugCardDao);
-//            }
-//        }
         if(patientDao != null){
             mrn = patientDao.getMRN();
-            Log.d("check", "data size = "+patientDao.getMRN()+ " position = "+position+" mrn = "+mrn);
             buildHeaderPatientDataView.setData(patientDao, position);
-
             if(timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
@@ -358,6 +322,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                        intent.putExtra("mrn", mrn);
                        intent.putExtra("checkType", "First Check");
                        intent.putExtra("date", toDayDate);
+                       intent.putExtra("patientDao", patientDao);
                        getActivity().startActivity(intent);
 
                    }else{
@@ -374,6 +339,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                        intent.putExtra("mrn", mrn);
                        intent.putExtra("checkType", "First Check");
                        intent.putExtra("date", tomorrowDate);
+                       intent.putExtra("patientDao", patientDao);
                        getActivity().startActivity(intent);
                    }
                }
@@ -428,7 +394,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     checkNull = false;
             }
             if(checkNull) {
-                String statustcomplete = "1";
                 for(DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()){
                     d.setRFID(RFID);
                     d.setFirstName(firstName);
@@ -436,28 +401,10 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     d.setWardName(wardName);
                     d.setActualAdmin(dateActualAdmin);
                     d.setActivityHour(time);
-                    if(d.getComplete().equals("0")){
-                        statustcomplete = "0";
-                    }
+
                 }
                 updateDrugData(buildDrugCardListManager.getDaoAll());
                 prn = "prepare";
-
-                listStatusPreparationDao = new ListStatusPreparationDao();
-                List<StatusPreparationDao> addDao = new ArrayList<>();
-                StatusPreparationDao statusPreparationDao = new StatusPreparationDao();
-                statusPreparationDao.setHn(mrn);
-                statusPreparationDao.setTime(time);
-                if(timeposition <= 23){
-                    statusPreparationDao.setDate(toDayDate);
-                }else{
-                    statusPreparationDao.setDate(tomorrowDate);
-                }
-                statusPreparationDao.setComplete(statustcomplete);
-                addDao.add(statusPreparationDao);
-                listStatusPreparationDao.setStatusPreparationDaoList(addDao);
-                buildStatusPraparationManager.appendDao(listStatusPreparationDao);
-
                 tricker = "save";
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), PreparationActivity.class);
@@ -792,14 +739,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         protected List<DrugAdrDao> doInBackground(Void... params) {
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
-
-//            SharedPreferences prefs = getContext().getSharedPreferences("patientindata", Context.MODE_PRIVATE);
-//            String data = prefs.getString("patientindata",null);
-//            if(data != null){
-//                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-//                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-//                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
-//            }
             patientDao = getArguments().getParcelable("patientDao");
             if(patientDao != null){
                 mrn = patientDao.getMRN();

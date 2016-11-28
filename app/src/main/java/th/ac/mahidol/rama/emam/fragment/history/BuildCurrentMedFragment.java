@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -30,9 +29,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.history.History_AdministrationActivity;
-import th.ac.mahidol.rama.emam.activity.history.History_DoubleCheckActivity;
-import th.ac.mahidol.rama.emam.activity.history.History_PrepareActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.adapter.history.BuildCurrentMedAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CurrentMedDao;
@@ -42,12 +38,11 @@ import th.ac.mahidol.rama.emam.manager.SearchCurrentMedManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
-public class BuildCurrentMedFragment extends Fragment implements View.OnClickListener{
+public class BuildCurrentMedFragment extends Fragment {
     private String nfcUID, sdlocID, wardName, mrn;
     private int position;
     private ListView listView;
     private Spinner spinner1;
-    private TextView tvPreparation, tvDoublecheck, tvAdministration;
     private BuildCurrentMedAdapter buildCurrentMedAdapter;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
 
@@ -78,7 +73,7 @@ public class BuildCurrentMedFragment extends Fragment implements View.OnClickLis
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_currentmed, container, false);
         initInstances(rootView, savedInstanceState);
         return rootView;
@@ -94,20 +89,17 @@ public class BuildCurrentMedFragment extends Fragment implements View.OnClickLis
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
-        Log.d("check", "BuildCurrentMedFragment nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName+" /position = "+position);
+        Log.d("check", "BuildCurrentMedFragment nfcUID = " + nfcUID + " /sdlocID = " + sdlocID + " /wardName = " + wardName + " /position = " + position);
 
         spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
-//        tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
-//        tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
-//        tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
         listView = (ListView) rootView.findViewById(R.id.lvCurrentMed);
 
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildCurrentMedAdapter = new BuildCurrentMedAdapter();
 
         SharedPreferences prefs = getContext().getSharedPreferences("patientalldata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientalldata",null);
-        if(data != null) {
+        String data = prefs.getString("patientalldata", null);
+        if (data != null) {
             ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
             mrn = listPatientDataDao.getPatientDao().get(position).getMRN();
             Log.d("check", "data size = " + listPatientDataDao.getPatientDao().size() + " position = " + position + " mrn = " + mrn);
@@ -115,23 +107,18 @@ public class BuildCurrentMedFragment extends Fragment implements View.OnClickLis
         }
 
         getOnClickSpinner();
-//        tvPreparation.setOnClickListener(this);
-//        tvDoublecheck.setOnClickListener(this);
-//        tvAdministration.setOnClickListener(this);
     }
 
-    private void getOnClickSpinner(){
+    private void getOnClickSpinner() {
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
-                if(selectedItem.equals("All")){
+                if (selectedItem.equals("All")) {
                     Log.d("check", "All");
-                }
-                else if(selectedItem.equals("Active")){
+                } else if (selectedItem.equals("Active")) {
                     Log.d("check", "Active");
-                }
-                else if(selectedItem.equals("Discontinue")){
+                } else if (selectedItem.equals("Discontinue")) {
                     Log.d("check", "Discontinue");
                 }
             }
@@ -167,7 +154,7 @@ public class BuildCurrentMedFragment extends Fragment implements View.OnClickLis
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), PatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
@@ -185,45 +172,17 @@ public class BuildCurrentMedFragment extends Fragment implements View.OnClickLis
 
     }
 
-    @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.tvPreparation){
-            Intent intent = new Intent(getContext(), History_PrepareActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-        else if(view.getId() == R.id.tvDoublecheck){
-            Intent intent = new Intent(getContext(), History_DoubleCheckActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-        else if(view.getId() == R.id.tvAdministration){
-            Intent intent = new Intent(getContext(), History_AdministrationActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
-        }
-    }
+    public class getDrugIPD extends AsyncTask<Void, Void, List<CurrentMedDao>> {
+        private int i = 0;
 
-
-    public class getDrugIPD extends AsyncTask<Void, Void, List<CurrentMedDao>>{
-        private int i=0;
         @Override
         protected void onPostExecute(List<CurrentMedDao> currentMedDaos) {
             super.onPostExecute(currentMedDaos);
-            Log.d("check", "*****CurrentMedDao onPostExecute = " +  currentMedDaos.size());
+            Log.d("check", "*****CurrentMedDao onPostExecute = " + currentMedDaos.size());
             ListCurrentMedDao listCurrentMedDao = new ListCurrentMedDao();
             List<CurrentMedDao> medDaoList = new ArrayList<CurrentMedDao>();
-            for(CurrentMedDao c : currentMedDaos){
-                Log.d("check", i+" Route = (" +  c.getRoute() + ") ***** OFF = ('"+c.getOffdt()+"')***** PRN = "+c.isPrn()+" ***** type = "+c.getTakeaction());
+            for (CurrentMedDao c : currentMedDaos) {
+                Log.d("check", i + " Route = (" + c.getRoute() + ") ***** OFF = ('" + c.getOffdt() + "')***** PRN = " + c.isPrn() + " ***** type = " + c.getTakeaction());
                 i++;
                 medDaoList.add(c);
             }
@@ -238,9 +197,9 @@ public class BuildCurrentMedFragment extends Fragment implements View.OnClickLis
             SoapManager soapManager = new SoapManager();
 
             SharedPreferences prefs = getContext().getSharedPreferences("patientalldata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientalldata",null);
-            if(data != null){
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
+            String data = prefs.getString("patientalldata", null);
+            if (data != null) {
+                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
                 Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
                 itemsList = parseXML(soapManager.getDrugIPD("get_drug_IPD", listPatientDataDao.getPatientDao().get(position).getMRN()));
             }

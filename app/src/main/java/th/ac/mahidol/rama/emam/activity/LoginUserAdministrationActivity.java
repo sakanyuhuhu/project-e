@@ -28,7 +28,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
  * Created by mac-mini-1 on 9/13/2016 AD.
  */
 public class LoginUserAdministrationActivity extends AppCompatActivity {
-    private String username, password, sdlocID, wardName, time, nfcUID = null;
+    private String username, password, sdlocID, wardName, time, nfcUID = null, tricker;
     private int timeposition;
 
     @Override
@@ -57,7 +57,7 @@ public class LoginUserAdministrationActivity extends AppCompatActivity {
             super.onPostExecute(checkLoginDaos);
             Log.d("check", "*****getResultForLogin onPostExecute = " +  checkLoginDaos.get(0).getName());
             if(checkLoginDaos.get(0).getRole().equals("G")){ // N
-                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName())).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName(), tricker)).commit();
             }
             else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();

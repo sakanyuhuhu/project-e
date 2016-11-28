@@ -1,137 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    android:background="@color/colorLemonChiffon">
+    android:background="@color/colorLemonChiffon"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tvDrugName"
-            android:text=" Drug Name"
-            android:gravity="center_vertical"
-            android:textSize="20sp"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:text=" Drug Name"
+            android:textSize="20sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
+
             <CheckBox
                 android:id="@+id/chkHold"
-                android:text="Hold"
                 android:layout_width="70dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:text="Hold" />
+
             <TextView
-                android:text="BP:"
-                android:textSize="16sp"
                 android:layout_width="30dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="BP:"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/txtStatusHoldBP"
-                android:enabled="false"
-                android:gravity="center_vertical"
-                android:cursorVisible="true"
-                android:focusable="true"
-                android:textSize="20sp"
                 android:layout_width="100dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:cursorVisible="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:textSize="20sp" />
+
             <TextView
-                android:text=",Heart Rate:"
-                android:textSize="16sp"
                 android:layout_width="110dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text=",Heart Rate:"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/txtStatusHoldHR"
-                android:enabled="false"
-                android:gravity="center_vertical"
-                android:cursorVisible="true"
-                android:focusable="true"
-                android:textSize="20sp"
                 android:layout_width="100dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:cursorVisible="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:textSize="20sp" />
+
             <TextView
-                android:text=",CBG:"
-                android:textSize="16sp"
                 android:layout_width="50dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text=",CBG:"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/txtStatusHoldCBG"
-                android:enabled="false"
-                android:gravity="center_vertical"
-                android:cursorVisible="true"
-                android:focusable="true"
-                android:textSize="20sp"
                 android:layout_width="100dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:cursorVisible="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:textSize="20sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <RadioGroup
                 android:id="@+id/radiogroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <RadioButton
                     android:id="@+id/rdb1"
-                    android:checked="true"
-                    android:text="ไม่ระบุสาเหตุตามหัวข้อข้างล่าง"
                     android:layout_width="220dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:checked="true"
+                    android:text="ไม่ระบุสาเหตุตามหัวข้อข้างล่าง" />
+
                 <RadioButton
                     android:id="@+id/rdb2"
-                    android:text="NPO"
                     android:layout_width="150dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="NPO" />
+
                 <RadioButton
                     android:id="@+id/rdb3"
-                    android:text="คนไข้ปฏิเสธ"
                     android:layout_width="150dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="คนไข้ปฏิเสธ" />
+
                 <RadioButton
                     android:id="@+id/rdb4"
-                    android:text="คนไข้มีอาการคลื่นไส้อาเจียน"
                     android:layout_width="250dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="คนไข้มีอาการคลื่นไส้อาเจียน" />
+
                 <RadioButton
                     android:id="@+id/rdb5"
-                    android:text="แทงเส้นเลือดไม่ได้"
                     android:layout_width="1500dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="แทงเส้นเลือดไม่ได้" />
+
                 <RadioButton
                     android:id="@+id/rdb6"
-                    android:text="แพทย์สั่ง off ณ เวลานั้น"
                     android:layout_width="250dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="แพทย์สั่ง off ณ เวลานั้น" />
+
                 <RadioButton
                     android:id="@+id/rdb7"
-                    android:text="ผู้ป่วยไปทำหัตการ"
                     android:layout_width="150dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:text="ผู้ป่วยไปทำหัตการ" />
             </RadioGroup>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp">
-        </LinearLayout>
+            android:layout_height="20dp"></LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="200dp">
-                <EditText
-                    android:background="@color/colorWhite"
-                    android:id="@+id/txtStatus"
-                    android:inputType="textMultiLine"
-                    android:lines="4"
-                    android:gravity="center_vertical"
-                    android:cursorVisible="true"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:scrollbars="vertical"/>
+
+            <EditText
+                android:id="@+id/txtStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:cursorVisible="true"
+                android:gravity="center_vertical"
+                android:inputType="textMultiLine"
+                android:lines="4"
+                android:scrollbars="vertical" />
         </LinearLayout>
 
     </LinearLayout>

@@ -1,101 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:orientation="horizontal"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/tvTimer"
-            android:text="Time"
-            android:textSize="18sp"
-            android:gravity="center"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff" />
-        <TextView
-            android:layout_weight="1"
-            android:text="  รายการยา PRN"
-            android:textSize="18sp"
-            android:gravity="left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffff" />
-        <TextView
-            android:layout_weight="1"
-            android:text=""
-            android:textSize="18sp"
             android:gravity="center"
+            android:text="Time"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"/>
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="  รายการยา PRN"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
 
     </LinearLayout>
+
     <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView
         android:id="@+id/headerPatientAdapter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/colorWhite">
-        <TextView
-            android:id="@+id/tvDrugAdr"
-            android:padding="5dp"
-            android:gravity="center_vertical"
-            android:layout_weight="1"
-            android:text=" การแพ้ยา: "
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:background="@color/colorPrimary">
-        <TextView
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:id="@+id/tvDate"
-            android:textSize="22sp"
-            android:gravity="center_vertical"
-            android:text="Date time"
-            android:textColor="#ffffff"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-    <ListView
-        android:id="@+id/lvPrepareForPatientAdapter"
-        android:padding="5dp"
-        android:layout_weight="100"
-        android:textSize="50sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDrugAdr"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text=" การแพ้ยา: "
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text="Date time"
+            android:textColor="#ffffff"
+            android:textSize="22sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvPrepareForPatientAdapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="100"
+        android:padding="5dp"
+        android:textSize="50sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/btnCancel"
-            android:text="ยกเลิก"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/background_floating_material_dark" />
+            android:layout_weight="1"
+            android:background="@color/background_floating_material_dark"
+            android:text="ยกเลิก" />
+
         <Button
             android:id="@+id/btnAdd"
-            android:text="เพิ่ม"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/accent_material_light" />
+            android:layout_weight="1"
+            android:background="@color/accent_material_light"
+            android:text="เพิ่ม" />
     </LinearLayout>
 
 </LinearLayout>

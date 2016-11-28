@@ -6,14 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckForPatientFragment;
 
-/**
- * Created by mac-mini-1 on 9/8/2016 AD.
- */
+
 public class DoubleCheckForPatientActivity extends AppCompatActivity {
     private String nfcUID, sdlocID, wardName, time, firstName, lastName, RFID;
     private int position, timeposition;
+    private PatientDataDao patientDouble;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,11 +27,13 @@ public class DoubleCheckForPatientActivity extends AppCompatActivity {
         lastName = getIntent().getExtras().getString("lastname");
         timeposition = getIntent().getExtras().getInt("timeposition");
         position = getIntent().getExtras().getInt("position");
+        patientDouble = getIntent().getParcelableExtra("patientDouble");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "PreparationForPatientActivity sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
+
+        Log.d("check", "DoubleCheckForPatientActivity sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientDouble, time)).commit();
         }
     }
 

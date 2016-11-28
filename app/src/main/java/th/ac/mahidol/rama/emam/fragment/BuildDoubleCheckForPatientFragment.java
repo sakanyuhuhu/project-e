@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,8 +20,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -48,7 +44,7 @@ import th.ac.mahidol.rama.emam.adapter.BuildDoubleCheckForPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
@@ -57,7 +53,7 @@ import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
 
 public class BuildDoubleCheckForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID;
+    private String  nfcUID, sdlocID, wardName, mrn, toDayDate, tomorrowDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tricker;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory;
@@ -68,6 +64,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
     private Spinner spinner1;
     private ListDrugCardDao dao;
+    private PatientDataDao patientDouble;
     private Date datetoDay;
     private boolean checkNote = false;
 
@@ -75,7 +72,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time) {
+    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
         BuildDoubleCheckForPatientFragment fragment = new BuildDoubleCheckForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -86,6 +83,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         args.putString("lastname", lastName);
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
+        args.putParcelable("patientDouble", patientDouble);
         args.putString("time", time);
         fragment.setArguments(args);
         return fragment;
@@ -122,12 +120,11 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         lastName = getArguments().getString("lastname");
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
+        patientDouble = getArguments().getParcelable("patientDouble");
         time = getArguments().getString("time");
 
-
         listView = (ListView) rootView.findViewById(R.id.lvDoubleForPatientAdapter);
-//        buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
-        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD)  rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataView = (BuildHeaderPatientDataView)  rootView.findViewById(R.id.headerPatientAdapter);
         buildDoubleCheckForPatientAdapter = new BuildDoubleCheckForPatientAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
@@ -149,23 +146,21 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         Calendar c = Calendar.getInstance();
         c.setTime(datetoDay);
         c.add(Calendar.DATE,1);
-        String tomorrowDate = sdfForDrugUseDate.format(c.getTime());
-
+        tomorrowDate = sdfForDrugUseDate.format(c.getTime());
         tvTime.setText(time);
 
+//        SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
+//        String data = prefs.getString("patientdoublecheck",null);
+//        if(data != null){
+//            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientdoublecheck",null);
-        if(data != null){
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-//            buildHeaderPatientDataView.setData(listPatientDataDao, position);
-            buildHeaderPatientDataViewOLD.setData(listPatientDataDao, position);
-
+        if(patientDouble != null){
+            buildHeaderPatientDataView.setData(patientDouble, position);
             if(timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
                 drugCardDao.setDrugUseDate(toDayDate);
-                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                drugCardDao.setMRN(patientDouble.getMRN());
                 drugCardDao.setCheckType("Second Check");
 
                 loadMedicalData(drugCardDao);
@@ -174,7 +169,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
                 drugCardDao.setDrugUseDate(tomorrowDate);
-                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
+                drugCardDao.setMRN(patientDouble.getMRN());
                 drugCardDao.setCheckType("Second Check");
 
                 loadMedicalData(drugCardDao);
@@ -303,7 +298,9 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                     d.setActualAdmin(dateActualAdmin);
                     d.setActivityHour(time);
                 }
+
                 updateDrugData(buildDrugCardListManager.getDaoAll());
+                tricker = "save";
                 Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
                 intent.putExtra("nfcUId", nfcUID);
@@ -311,6 +308,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", timeposition);
                 intent.putExtra("time", time);
+                intent.putExtra("save", tricker);
                 getActivity().startActivity(intent);
                 getActivity().finish();
             }
@@ -327,6 +325,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             intent.putExtra("lastname", lastName);
             intent.putExtra("timeposition", timeposition);
             intent.putExtra("position", position);
+            intent.putExtra("patientDouble", patientDouble);
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
             getActivity().finish();
@@ -379,7 +378,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             dao = response.body();
             for(DrugCardDao d : dao.getListDrugCardDao()){
                 if(d.getCheckType().equals("First Check")) {
-                    Log.d("check", "Complete = "+d.getComplete());
                     if ((d.getComplete().equals("1")))
                         d.setComplete(null);
                     else {
@@ -445,6 +443,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                                 else if (strCheckbox3[0].equals("ลืมจัด"))
                                     d.setStrForget("");
                             }
+
                         } else if (strCheckbox1.length == 3) {
                             String[] strCheckbox2 = strCheckbox1[0].split(":");
                             String[] strCheckbox3 = strCheckbox1[1].split(":");
@@ -510,6 +509,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                     }
                 }
             }
+
             buildDrugCardListManager.setDao(dao);
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
             if(checkNote){
@@ -567,12 +567,20 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
 
-            SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientdoublecheck",null);
-            if(data != null){
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
+//            SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
+//            String data = prefs.getString("patientdoublecheck",null);
+//            if(data != null){
+//                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
+//                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
+//                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
+//            }
+//            Log.d("check", "itemsList doInBackground = "+ itemsList);
+
+            patientDouble = getArguments().getParcelable("patientDouble");
+            if(patientDouble != null){
+                mrn = patientDouble.getMRN();
+                Log.d("check", "MRN doInBackground = "+mrn);
+                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;

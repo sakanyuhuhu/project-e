@@ -17,7 +17,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildAdministrationFragment;
 public class AdministrationActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time, nameAdmin = null;
+    private String sdlocID, nfcUID, wardName, nfcTagID, time, nameAdmin = null, tricker;
     private int position;
 
     @Override
@@ -35,10 +35,11 @@ public class AdministrationActivity extends AppCompatActivity {
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
+        tricker = getIntent().getExtras().getString("save");
         Log.d("check", "AdministrationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameAdmin)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameAdmin, tricker)).commit();
         }
 
 
@@ -61,7 +62,7 @@ public class AdministrationActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameAdmin)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameAdmin, tricker)).commit();
 
         }
         super.onNewIntent(intent);

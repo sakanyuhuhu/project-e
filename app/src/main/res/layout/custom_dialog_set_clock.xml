@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorLemonChiffon">
+    android:background="@color/colorLemonChiffon"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <DatePicker
         android:id="@+id/date_picker"
         android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:calendarViewShown="false"
         android:spinnersShown="false"
-        android:layout_height="1dp"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <TimePicker
         android:id="@+id/time_picker"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/date_time_set"
         android:layout_width="match_parent"
-        android:text="ตั้งค่า"
-        android:layout_height="60dp" />
+        android:layout_height="60dp"
+        android:text="ตั้งค่า" />
 </LinearLayout>
