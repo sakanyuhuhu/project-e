@@ -58,7 +58,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildPreparationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, userName, prn, mrn,tomorrowDate, tricker;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, prn, mrn,tomorrowDate, tricker;
     private int position, timeposition, positionPrepare, currentTime, adminTime, sumTime;
     private String[] admintime;
     private ListView listView;
@@ -78,7 +78,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, String userName,ListDrugCardDao listDrugCardDao, PatientDataDao patientDao, String prn) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time,ListDrugCardDao listDrugCardDao, PatientDataDao patientDao, String prn) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -90,7 +90,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         args.putInt("timeposition", timeposition);
         args.putInt("position", position);
         args.putString("time", time);
-        args.putString("namePrepare", userName);
         args.putParcelable("listdrugcard",listDrugCardDao);
         args.putParcelable("patientDao", patientDao);
         args.putString("prn", prn);
@@ -130,13 +129,12 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         timeposition = getArguments().getInt("timeposition");
         position = getArguments().getInt("position");
         time = getArguments().getString("time");
-        userName = getArguments().getString("namePrepare");
         daoPRN = getArguments().getParcelable("listdrugcard");
         patientDao = getArguments().getParcelable("patientDao");
         prn = getArguments().getString("prn");
         positionPrepare = position;
         Log.d("check", "BuildPreparationForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /namePrepare = "+userName+" /prn = "+prn);
+                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /prn = "+prn);
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -164,9 +162,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         c.setTime(datetoDay);
         c.add(Calendar.DATE,1);
         tomorrowDate = sdfForDrugUseDate.format(c.getTime());
-        admintime = time.split(":");
-        adminTime = Integer.parseInt(admintime[0]);
-        sumTime = currentTime - adminTime;
 
         tvTime.setText(time);
         tvDate.setText(dateFortvDate );

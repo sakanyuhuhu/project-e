@@ -3,7 +3,6 @@ package th.ac.mahidol.rama.emam.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,30 +17,35 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildCheckLoginDAO.CheckLoginDao;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchLoginManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 
 public class LoginUserPrepareActivity extends AppCompatActivity {
-    private String username, password, sdlocID, wardName, time, nfcUID = null;
+    private String username, password, sdlocID, wardName, time;
     private int timeposition;
     private String prn = "prepare", tricker;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         initInstance(savedInstanceState);
     }
 
-    private void  initInstance(Bundle savedInstanceState){
+    private void initInstance(Bundle savedInstanceState) {
         username = getIntent().getExtras().getString("username");
         password = getIntent().getExtras().getString("password");
-        sdlocID  = getIntent().getExtras().getString("sdlocId");
+        sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
@@ -49,16 +53,39 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
     }
 
 
+    private void loadPersonWard(String staffID, String sdlocID) {
+        Log.d("check", "LoginUserPrepareActivity staffId = " + username + "  sdlocId = " + sdlocID);
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonLogin(staffID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
+
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
+
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            Log.d("check", "LoginUserPrepareActivity dao login = " + dao.getRFID() + " " + dao.getFirstName() + " " + dao.getLastName() + " " + dao.getNfcUId());
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(dao.getNfcUId(), sdlocID, wardName, timeposition, time, prn, tricker)).commit();
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+
+        }
+    }
+
     public class getResultForLogin extends AsyncTask<Void, Void, List<CheckLoginDao>> {
 
         @Override
         protected void onPostExecute(List<CheckLoginDao> checkLoginDaos) {
             super.onPostExecute(checkLoginDaos);
-            Log.d("check", "*****getResultForLogin onPostExecute = " +  checkLoginDaos.get(0).getName());
-            if(checkLoginDaos.get(0).getRole().equals("G")){ // N
-                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName(), prn, tricker)).commit();
-            }
-            else {
+            Log.d("check", "*****getResultForLogin onPostExecute = " + checkLoginDaos.get(0).getName());
+            if (checkLoginDaos.get(0).getRole().equals("G")) { // N
+                loadPersonWard(username, sdlocID);
+            } else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginPreparationActivity.class);
                 intent.putExtra("sdlocId", sdlocID);
@@ -77,13 +104,12 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
             List<CheckLoginDao> itemsList = new ArrayList<CheckLoginDao>();
             SoapManager soapManager = new SoapManager();
 
-            if(username != null & password != null) {
+            if (username != null & password != null) {
                 itemsList = parseXML(soapManager.getLogin("Get_staff_detail", username, password));
             }
-            Log.d("check", "itemsList doInBackground = "+ itemsList);
+            Log.d("check", "itemsList doInBackground = " + itemsList);
             return itemsList;
         }
-
 
 
         private ArrayList<CheckLoginDao> parseXML(String soap) {

@@ -85,18 +85,24 @@ public class BuildHistoryPrepareListView extends BaseCustomViewGroup {
     }
 
     public void setDrugName(DrugCardDao dao){
-        tvDrugName.setText(String.valueOf(dao.getTradeName()));
-        tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
-        if (dao.getAdminType().equals("C")) {
-            tvType.setText("Type: Continue");
-        } else {
-            tvType.setText("Type: One day");
+        if(dao.getComplete().equals("1")) {
+            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvRoute.setText("Route: " + dao.getRoute());
+            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvSite.setText("Site: " + dao.getSite());
+            tvMethod.setText("Method: " + dao.getMethod());
+            imgvNote.setVisibility(INVISIBLE);
         }
-        tvRoute.setText("Route: " + dao.getRoute());
-        tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
-        tvSite.setText("Site: " + dao.getSite());
-        tvMethod.setText("Method: " + dao.getMethod());
-        imgvNote.setVisibility(VISIBLE);
+        else {
+            tvDrugName.setText(String.valueOf(dao.getTradeName()));
+            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvRoute.setText("Route: " + dao.getRoute());
+            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvSite.setText("Site: " + dao.getSite());
+            tvMethod.setText("Method: " + dao.getMethod());
+            imgvNote.setVisibility(VISIBLE);
+        }
     }
 
 }

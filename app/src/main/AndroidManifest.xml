@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".MainApplication"
@@ -57,6 +58,7 @@
         <activity android:name=".activity.LoginAdministrationActivity" />
         <activity android:name=".activity.LoginUserAdministrationActivity" />
         <activity android:name=".activity.AddDrugNotPrepareActivity" />
+
         <!--History-->
         <activity android:name=".activity.history.PatientAllActivity" />
         <activity android:name=".activity.history.CurrentMedActivity" />
@@ -64,6 +66,12 @@
         <!--Add Medication-->
         <activity android:name=".activity.addmedication.AddMedicationPatientAllActivity" />
         <activity android:name=".activity.addmedication.AddMedicationForPatientActivity" />
+
+        <!--Alarm-->
+        <activity android:name=".activity.alarm.AlarmActivity" />
+        <activity android:name=".activity.alarm.PatientOnTimeActivity" />
+        <receiver android:name=".activity.alarm.AlarmBroadcastReceiver" />
+        <activity android:name=".activity.alarm.PatientMedOnTimeActivity" />
     </application>
 
 </manifest>

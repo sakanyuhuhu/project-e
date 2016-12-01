@@ -1,10 +1,8 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -15,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -39,6 +35,7 @@ public class BuildTimelineFragment extends Fragment {
     private BuildTimelineAdapter buildTimelineAdapter;
     private String currentTime[];
     private ProgressDialog progressDialog;
+    private TimelineDao exc, in;
 
     public BuildTimelineFragment() {
         super();
@@ -55,7 +52,7 @@ public class BuildTimelineFragment extends Fragment {
     }
 
     @Override
-    public void onCreate( Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init(savedInstanceState);
 
@@ -86,18 +83,13 @@ public class BuildTimelineFragment extends Fragment {
         buildTimelineAdapter = new BuildTimelineAdapter();
         currentTime = DateFormat.getTimeInstance().format(new Date()).split(":");
 
-        if(currentTime[0].equals("00")|currentTime[0].equals("01")|currentTime[0].equals("02")|currentTime[0].equals("03")|currentTime[0].equals("04")|currentTime[0].equals("05")|
-                currentTime[0].equals("06")|currentTime[0].equals("07")|currentTime[0].equals("08")|currentTime[0].equals("09"))
+        if (currentTime[0].equals("00") | currentTime[0].equals("01") | currentTime[0].equals("02") | currentTime[0].equals("03") | currentTime[0].equals("04") | currentTime[0].equals("05") |
+                currentTime[0].equals("06") | currentTime[0].equals("07") | currentTime[0].equals("08") | currentTime[0].equals("09"))
             focustimer = currentTime[0].substring(1);
         else
             focustimer = currentTime[0];
 
         loadTimelineExclude();
-        loadTimelineInclude();
-
-        progressDialog.dismiss();
-
-        loadTimeline();
     }
 
     @Override
@@ -110,19 +102,64 @@ public class BuildTimelineFragment extends Fragment {
 
     }
 
-    private void loadTimeline(){
-        SharedPreferences prefs1 = getContext().getSharedPreferences("patientexclude", Context.MODE_PRIVATE);
-        String patientexclude = prefs1.getString("patientexclude",null);
 
-        SharedPreferences prefs2 = getContext().getSharedPreferences("patientinclude", Context.MODE_PRIVATE);
-        String patientinclude = prefs2.getString("patientinclude",null);
+    private void loadTimelineExclude() {
+        Call<TimelineDao> call = HttpManager.getInstance().getService().getListCountPatientExcPRN(sdlocID);
+        call.enqueue(new TimelineExcLoadCallback());
 
-        if(patientexclude != null & patientinclude != null) {
-            TimelineDao exc = new Gson().fromJson(patientexclude, TimelineDao.class);
-            final TimelineDao in = new Gson().fromJson(patientinclude, TimelineDao.class);
+    }
+
+    private void loadTimelineInclude() {
+        Call<TimelineDao> call = HttpManager.getInstance().getService().getListCountPatientPRN(sdlocID);
+        call.enqueue(new TimelineInLoadCallback());
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
+                    Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    class TimelineExcLoadCallback implements Callback<TimelineDao> {
+        @Override
+        public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
+            exc = response.body();
+            loadTimelineInclude();
+        }
+
+        @Override
+        public void onFailure(Call<TimelineDao> call, Throwable t) {
+            Log.d("check", "TimelineExcLoadCallback Failure " + t);
+        }
+    }
+
+
+    class TimelineInLoadCallback implements Callback<TimelineDao> {
+
+        @Override
+        public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
+            in = response.body();
 
             buildTimelineAdapter.setDao(listTimeline, exc, focustimer, in);
             listView.setAdapter(buildTimelineAdapter);
+            progressDialog.dismiss();
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
@@ -158,84 +195,6 @@ public class BuildTimelineFragment extends Fragment {
                     return true;
                 }
             });
-        }
-    }
-
-    private void saveCachePatientExclude(TimelineDao timelineDao){
-        String json = new Gson().toJson(timelineDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientexclude", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientexclude",json);
-        editor.apply();
-    }
-
-    private void saveCachePatientInclude(TimelineDao timelineDao){
-        String json = new Gson().toJson(timelineDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientinclude", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientinclude",json);
-        editor.apply();
-    }
-
-    private void loadTimelineExclude(){
-        Call<TimelineDao> call = HttpManager.getInstance().getService().getListCountPatientExcPRN(sdlocID);
-        call.enqueue(new TimelineExcLoadCallback());
-
-    }
-
-    private void loadTimelineInclude(){
-        Call<TimelineDao> call = HttpManager.getInstance().getService().getListCountPatientPRN(sdlocID);
-        call.enqueue(new TimelineInLoadCallback());
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
-                    Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    startActivity(intent);
-                    getActivity().finish();
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
-
-    class TimelineExcLoadCallback implements Callback<TimelineDao>{
-        @Override
-        public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
-            TimelineDao dao = response.body();
-//            String json = new Gson().toJson(dao);
-//            Log.d("check", "TimelineExcLoadCallback = "+json);
-            saveCachePatientExclude(dao);
-        }
-
-        @Override
-        public void onFailure(Call<TimelineDao> call, Throwable t) {
-            Log.d("check", "TimelineExcLoadCallback Failure " + t);
-        }
-    }
-
-
-
-    class TimelineInLoadCallback implements Callback<TimelineDao>{
-
-        @Override
-        public void onResponse(Call<TimelineDao> call, Response<TimelineDao> response) {
-            TimelineDao dao = response.body();
-//            String json = new Gson().toJson(dao);
-//            Log.d("check", "getListCountPatientPRN = "+json);
-            saveCachePatientInclude(dao);
         }
 
         @Override

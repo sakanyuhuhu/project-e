@@ -61,5 +61,13 @@ public interface ApiService {
     @POST("CompareDrug")
     Call<ListDrugCardDao> getCompareDrug(@Body DrugCardDao drugCardDao);
 
+    @FormUrlEncoded
+    @POST("LoginService")
+    Call<CheckPersonWardDao> getPersonLogin(@Field("staffId") String staffId, @Field("sdlocId") String sdlocId);
+
+    @FormUrlEncoded
+    @POST("DrugHistory")
+    Call<ListDrugCardDao> getMedicalHistory(@Field("mrn") String mrn, @Field("checkType") String checkType, @Field("startDate") String startDate);
+
 
 }

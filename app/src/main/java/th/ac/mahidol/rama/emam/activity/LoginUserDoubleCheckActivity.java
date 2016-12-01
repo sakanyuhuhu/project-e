@@ -18,17 +18,19 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildCheckLoginDAO.CheckLoginDao;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckFragment;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchLoginManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 
-/**
- * Created by mac-mini-1 on 9/13/2016 AD.
- */
 public class LoginUserDoubleCheckActivity extends AppCompatActivity {
-    private String username, password, sdlocID, wardName, time, nfcUID = null, tricker;
+    private String username, password, sdlocID, wardName, time, tricker;
     private int timeposition;
 
     @Override
@@ -39,14 +41,38 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
         initInstance(savedInstanceState);
     }
 
-    private void  initInstance(Bundle savedInstanceState){
+    private void initInstance(Bundle savedInstanceState) {
         username = getIntent().getExtras().getString("username");
         password = getIntent().getExtras().getString("password");
-        sdlocID  = getIntent().getExtras().getString("sdlocId");
+        sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
         new getResultForLogin().execute();
+    }
+
+
+    private void loadPersonWard(String staffID, String sdlocID) {
+        Log.d("check", "LoginUserDoubleCheckActivity staffId = " + username + "  sdlocId = " + sdlocID);
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonLogin(staffID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
+
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            Log.d("check", "LoginUserDoubleCheckActivity dao login = " + dao.getRFID() + " " + dao.getFirstName() + " " + dao.getLastName() + " " + dao.getNfcUId());
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(dao.getNfcUId(), sdlocID, wardName, timeposition, time, tricker)).commit();
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+
+        }
     }
 
 
@@ -55,11 +81,10 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<CheckLoginDao> checkLoginDaos) {
             super.onPostExecute(checkLoginDaos);
-            Log.d("check", "*****getResultForLogin onPostExecute = " +  checkLoginDaos.get(0).getName());
-            if(checkLoginDaos.get(0).getRole().equals("G")){ // N
-                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName(), tricker)).commit();
-            }
-            else {
+            Log.d("check", "*****getResultForLogin onPostExecute = " + checkLoginDaos.get(0).getName());
+            if (checkLoginDaos.get(0).getRole().equals("G")) { // N
+                loadPersonWard(username, sdlocID);
+            } else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginDoubleCheckActivity.class);
                 intent.putExtra("sdlocId", sdlocID);
@@ -78,13 +103,12 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
             List<CheckLoginDao> itemsList = new ArrayList<CheckLoginDao>();
             SoapManager soapManager = new SoapManager();
 
-            if(username != null & password != null) {
+            if (username != null & password != null) {
                 itemsList = parseXML(soapManager.getLogin("Get_staff_detail", username, password));
             }
-            Log.d("check", "itemsList doInBackground = "+ itemsList);
+            Log.d("check", "itemsList doInBackground = " + itemsList);
             return itemsList;
         }
-
 
 
         private ArrayList<CheckLoginDao> parseXML(String soap) {

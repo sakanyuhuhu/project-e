@@ -213,8 +213,6 @@ public class BuildAddPatientPRNFragment extends Fragment{
         @Override
         public void onResponse(Call<MrnTimelineDao> call, Response<MrnTimelineDao> response) {
             MrnTimelineDao dao = response.body();
-//            String json = new Gson().toJson(dao);
-//            Log.d("check", "MrnTimelineDao = "+json);
             loadPatientData(dao);
         }
 
@@ -235,25 +233,6 @@ public class BuildAddPatientPRNFragment extends Fragment{
             if(dao.getPatientDao().size() != 0) {
                 buildPatientAllAdapter.setDao(dao);
                 listView.setAdapter(buildPatientAllAdapter);
-//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
-//                        intent.putExtra("nfcUId", nfcUID);
-//                        intent.putExtra("sdlocId", sdlocID);
-//                        intent.putExtra("wardname", wardName);
-//                        intent.putExtra("RFID", RFID);
-//                        intent.putExtra("firstname", firstName);
-//                        intent.putExtra("lastname", lastName);
-//                        intent.putExtra("timeposition", timeposition);
-//                        intent.putExtra("position", position);
-//                        intent.putExtra("time", time);
-//                        intent.putExtra("patientPRN", dao.getPatientDao().get(position));
-//                        intent.putExtra("prn", prn);
-//                        getActivity().startActivity(intent);
-//                        getActivity().finish();
-//                    }
-//                });
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();

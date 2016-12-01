@@ -15,7 +15,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.LoginUserPrepareActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 
-public class BuildLoginPreparationFragment extends Fragment implements View.OnClickListener{
+public class BuildLoginPreparationFragment extends Fragment implements View.OnClickListener {
     private EditText edUsername, edPassword;
     private Button btnLogin, btnCancel;
     private String sdlocID, wardName, time;
@@ -87,8 +87,8 @@ public class BuildLoginPreparationFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.btnLogin){
-            if(!(edUsername.getText().toString().equals("") | edPassword.getText().toString().equals(""))){
+        if (view.getId() == R.id.btnLogin) {
+            if (!(edUsername.getText().toString().equals("") | edPassword.getText().toString().equals(""))) {
                 Intent intent = new Intent(getContext(), LoginUserPrepareActivity.class);
                 intent.putExtra("username", edUsername.getText().toString());
                 intent.putExtra("password", edPassword.getText().toString());
@@ -98,11 +98,9 @@ public class BuildLoginPreparationFragment extends Fragment implements View.OnCl
                 intent.putExtra("time", time);
                 getActivity().startActivity(intent);
                 getActivity().finish();
-            }
-            else
+            } else
                 Toast.makeText(getActivity(), "กรุณาใส่ Username และ Password ให้ถูกต้อง", Toast.LENGTH_LONG).show();
-        }
-        else if(view.getId() == R.id.btnCancel){
+        } else if (view.getId() == R.id.btnCancel) {
             Intent intent = new Intent(getContext(), PreparationActivity.class);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);

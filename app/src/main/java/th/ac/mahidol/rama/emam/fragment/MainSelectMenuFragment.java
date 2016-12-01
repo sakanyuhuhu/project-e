@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.alarm.AlarmActivity;
 import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
@@ -108,7 +109,10 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
             getActivity().startActivity(intent);
         }
         else if(view.getId() == R.id.imgBLogout){
-
+            Intent intent = new Intent(getContext(), AlarmActivity.class);
+            intent.putExtra("sdlocId", sdlocID);
+            intent.putExtra("wardname", wardName);
+            getActivity().startActivity(intent);
         }
     }
 

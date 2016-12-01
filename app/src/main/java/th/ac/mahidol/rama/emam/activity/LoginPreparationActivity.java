@@ -21,15 +21,15 @@ public class LoginPreparationActivity extends AppCompatActivity {
         initInstance(savedInstanceState);
     }
 
-    private void  initInstance(Bundle savedInstanceState){
+    private void initInstance(Bundle savedInstanceState) {
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
 
-        Log.d("check", "LoginPreparationActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /timeposition = "+timeposition+" /time = "+time);
+        Log.d("check", "LoginPreparationActivity sdlocId = " + sdlocID + " /wardName = " + wardName + " /timeposition = " + timeposition + " /time = " + time);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildLoginPreparationFragment.newInstance(sdlocID, wardName, timeposition, time)).commit();
         }
     }

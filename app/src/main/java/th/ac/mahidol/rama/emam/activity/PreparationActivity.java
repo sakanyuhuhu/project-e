@@ -19,7 +19,7 @@ public class PreparationActivity extends AppCompatActivity {
 
     private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time, namePrepare = null, prn = "prepare", tricker;
+    private String sdlocID, nfcUID, wardName, nfcTagID, time, prn = "prepare", tricker;
     private int position;
 
     @Override
@@ -38,10 +38,10 @@ public class PreparationActivity extends AppCompatActivity {
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
         tricker = getIntent().getExtras().getString("save");
-        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /namePrepare = "+namePrepare+" /prn = "+prn);
+        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /prn = "+prn);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, namePrepare, prn, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
         }
 
 
@@ -59,26 +59,13 @@ public class PreparationActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        boolean checkRegisterNFC;
         String action = intent.getAction();
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
-//            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
+            nfcUID = nfcTagID;
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
 
-//            dbHelper = new SQLiteManager(this);
-//            dbHelper.addNFCRegister(nfcTagID);
-//            checkRegisterNFC = dbHelper.getNFCRegister(nfcTagID);
-
-//            if(checkRegisterNFC == true){
-                nfcUID = nfcTagID;
-//                Toast.makeText(this, "NFC found!", Toast.LENGTH_LONG).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time,namePrepare, prn, tricker)).commit();
-
-//            }
-//            else{
-//                Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
-//            }
         }
         super.onNewIntent(intent);
     }

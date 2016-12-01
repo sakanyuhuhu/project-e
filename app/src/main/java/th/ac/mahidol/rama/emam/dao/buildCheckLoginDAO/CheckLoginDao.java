@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.dao.buildCheckLoginDAO;
 
-/**
- * Created by mac-mini-1 on 9/2/2016 AD.
- */
+
 public class CheckLoginDao {
     private String name;
     private String role;

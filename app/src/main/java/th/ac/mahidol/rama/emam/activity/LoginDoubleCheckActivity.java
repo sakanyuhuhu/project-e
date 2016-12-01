@@ -8,9 +8,6 @@ import android.util.Log;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.fragment.BuildLoginDoubleCheckFragment;
 
-/**
- * Created by mac-mini-1 on 9/13/2016 AD.
- */
 public class LoginDoubleCheckActivity extends AppCompatActivity {
     private String sdlocID, wardName, time;
     private int timeposition;

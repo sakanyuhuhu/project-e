@@ -17,7 +17,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildAdministrationFragment;
 public class AdministrationActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time, nameAdmin = null, tricker;
+    private String sdlocID, nfcUID, wardName, nfcTagID, time, tricker;
     private int position;
 
     @Override
@@ -39,7 +39,7 @@ public class AdministrationActivity extends AppCompatActivity {
         Log.d("check", "AdministrationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameAdmin, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, tricker)).commit();
         }
 
 
@@ -62,7 +62,7 @@ public class AdministrationActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, nameAdmin, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, tricker)).commit();
 
         }
         super.onNewIntent(intent);

@@ -9,6 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
         android:background="@color/colorPrimary"
         android:orientation="horizontal">
 
@@ -17,6 +19,7 @@
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="Time"
             android:textColor="#ffffff"
             android:textSize="18sp" />
@@ -27,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="PREPARATION"
             android:textColor="#ffffff"
             android:textSize="18sp" />
@@ -37,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="DOUBLECHECK"
             android:textColor="#ffffff"
             android:textSize="18sp" />
@@ -47,19 +52,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="ADMINISTRATION"
             android:textColor="#ffffff"
             android:textSize="18sp" />
-        <!--<TextView-->
-        <!--android:id="@+id/tvAddPRN"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="เพิ่มยา PRN"-->
-        <!--android:textSize="18sp"-->
-        <!--android:gravity="center"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textColor="#000000"/>-->
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -77,12 +75,35 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lvDoubleCheckAdapter"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="100"
-        android:textSize="50sp" />
+        android:layout_height="770dp">
+
+        <ListView
+            android:id="@+id/lvDoubleCheckAdapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="100"
+            android:textSize="50sp"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/tvNoPatient"
+            android:text="ไม่มีผู้ป่วย"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
+    </FrameLayout>
+
+    <!--<ListView-->
+        <!--android:id="@+id/lvDoubleCheckAdapter"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="100"-->
+        <!--android:textSize="50sp" />-->
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -18,17 +18,20 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildCheckLoginDAO.CheckLoginDao;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.fragment.BuildAdministrationFragment;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchLoginManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 
-/**
- * Created by mac-mini-1 on 9/13/2016 AD.
- */
+
 public class LoginUserAdministrationActivity extends AppCompatActivity {
-    private String username, password, sdlocID, wardName, time, nfcUID = null, tricker;
+    private String username, password, sdlocID, wardName, time, tricker;
     private int timeposition;
 
     @Override
@@ -49,6 +52,29 @@ public class LoginUserAdministrationActivity extends AppCompatActivity {
         new getResultForLogin().execute();
     }
 
+    private void loadPersonWard(String staffID, String sdlocID) {
+        Log.d("check", "LoginUserAdministrationActivity staffId = " + username + "  sdlocId = " + sdlocID);
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonLogin(staffID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
+
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            Log.d("check", "LoginUserAdministrationActivity dao login = " + dao.getRFID() + " " + dao.getFirstName() + " " + dao.getLastName() + " " + dao.getNfcUId());
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(dao.getNfcUId(), sdlocID, wardName, timeposition, time, tricker)).commit();
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+
+        }
+    }
+
 
     public class getResultForLogin extends AsyncTask<Void, Void, List<CheckLoginDao>> {
 
@@ -57,7 +83,7 @@ public class LoginUserAdministrationActivity extends AppCompatActivity {
             super.onPostExecute(checkLoginDaos);
             Log.d("check", "*****getResultForLogin onPostExecute = " +  checkLoginDaos.get(0).getName());
             if(checkLoginDaos.get(0).getRole().equals("G")){ // N
-                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, checkLoginDaos.get(0).getName(), tricker)).commit();
+                loadPersonWard(username, sdlocID);
             }
             else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
