@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.view.BuildHistoryPrepareListView;
+import th.ac.mahidol.rama.emam.view.BuildHistoryListView;
 
-public class BuildHistoryPrepareAdapter extends BaseAdapter {
+public class BuildHistoryAdapter extends BaseAdapter {
     private Context context;
     private ListDrugCardDao dao;
-    private BuildHistoryPrepareListView buildHistoryPrepareListView;
+    private BuildHistoryListView buildHistoryListView;
 
 
     public void setDao(Context context, ListDrugCardDao dao){
@@ -41,9 +41,20 @@ public class BuildHistoryPrepareAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        buildHistoryPrepareListView = new BuildHistoryPrepareListView(viewGroup.getContext());
-        buildHistoryPrepareListView.setDrugName(dao.getListDrugCardDao().get(position));
+        buildHistoryListView = new BuildHistoryListView(viewGroup.getContext());
+        buildHistoryListView.setDrugName(dao.getListDrugCardDao().get(position));
 
-        return buildHistoryPrepareListView;
+//        ImageView imageViewNote = BuildHistoryListView.imageViewNote();
+//        imageViewNote.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                drugNoteDialog(position);
+//            }
+//        });
+
+
+
+
+        return buildHistoryListView;
     }
 }

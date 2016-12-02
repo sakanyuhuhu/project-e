@@ -31,6 +31,7 @@ public class HistoryDoubleCheckActivity extends AppCompatActivity {
         Log.d("check", "HistoryDoubleCheckActivity nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
                 " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
         Log.d("check", "patientDouble = "+patientDouble);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildHistoryDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientDouble, time)).commit();
         }

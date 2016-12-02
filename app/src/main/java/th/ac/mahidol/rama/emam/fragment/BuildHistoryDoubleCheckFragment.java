@@ -1,5 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -24,6 +26,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,25 +38,36 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckForPatientActivity;
-import th.ac.mahidol.rama.emam.adapter.BuildHistoryPrepareAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildHistoryAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
 
-public class BuildHistoryDoubleCheckFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, time, firstName, lastName, RFID, userName, dateSelect, mrn;
+public class BuildHistoryDoubleCheckFragment extends Fragment implements View.OnClickListener {
+    private String nfcUID, sdlocID, wardName, time, firstName, lastName, RFID, startDate, mrn, newDateStart;
     private int position, timeposition;
-    private ListView listView;
+    private ListView listView, listViewAdr;
+    private String[] admintime;
     private TextView tvTime, tvDrugAdr, tvDoublecheck, tvDate;
     private ImageView imgCalendar;
     private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
-    private BuildHistoryPrepareAdapter buildHistoryPrepareAdapter;
+    private BuildHistoryAdapter buildHistoryAdapter;
+    private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private PatientDataDao patientDouble;
-    private Date datetoDay;
+    private ListDrugCardDao dao;
+    private Date datetoDay, date;
     long startMillis = 0;
     long endMillis = 0;
 
@@ -73,7 +88,6 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         args.putInt("position", position);
         args.putParcelable("patientDouble", patientDouble);
         args.putString("time", time);
-//        args.putString("userName", userName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -111,16 +125,16 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         position = getArguments().getInt("position");
         patientDouble = getArguments().getParcelable("patientDouble");
         time = getArguments().getString("time");
-//        userName = getArguments().getString("userName");
 
-        Log.d("check", "BuildHistoryDoubleCheckFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time+" /userName = "+userName);
+        Log.d("check", "BuildHistoryDoubleCheckFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = " + RFID + " /firstName = " + firstName + " /lastName = " + lastName +
+                " /timeposition = " + timeposition + " /position = " + position + " /time = " + time);
 
-        Log.d("check", "patientDouble mrn = "+patientDouble.getMRN());
+        Log.d("check", "patientDouble mrn = " + patientDouble.getMRN());
 
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
         buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD) rootView.findViewById(R.id.headerPatientAdapter);
-        buildHistoryPrepareAdapter = new BuildHistoryPrepareAdapter();
+        buildHistoryAdapter = new BuildHistoryAdapter();
+        buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
@@ -129,23 +143,24 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         imgCalendar = (ImageView) rootView.findViewById(R.id.imgCalendar);
 
         datetoDay = new Date();
-        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("dd/MM/yyyy");
-        toDayDate = sdfForDrugUseDate.format(datetoDay);
-        dateSelect = toDayDate;
-        tvDate.setText(dateSelect);
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
+        startDate = sdfForDrugUseDate.format(datetoDay);
+        tvDate.setText(startDate);
         tvTime.setText(time);
+        admintime = time.split(":");
 
-        if(patientDouble != null){
+        if (patientDouble != null) {
             buildHeaderPatientDataViewOLD.setData(patientDouble);
         }
 
-        getDrugFromPraration();
+        getDrugDouble(patientDouble.getMRN(), "Second Check", startDate);
         tvDoublecheck.setOnClickListener(this);
         imgCalendar.setOnClickListener(this);
     }
 
-    private void getDrugFromPraration(){
-
+    private void getDrugDouble(String mrn, String checkType, String startDate) {
+        Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getMedicalHistory(mrn, checkType, startDate);
+        call.enqueue(new DrugHistoryLoadCallback());
     }
 
 
@@ -161,7 +176,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.tvDoublecheck){
+        if (view.getId() == R.id.tvDoublecheck) {
             Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
             intent.putExtra("nfcUId", nfcUID);
             intent.putExtra("sdlocId", sdlocID);
@@ -175,8 +190,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
             intent.putExtra("time", time);
             getActivity().startActivity(intent);
             getActivity().finish();
-        }
-        else if(view.getId() == R.id.imgCalendar){
+        } else if (view.getId() == R.id.imgCalendar) {
             final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
             final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 
@@ -195,8 +209,16 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
                                 pickDay = datePicker.getDayOfMonth(),
                                 pickHour = timePicker.getHour(),
                                 pickMinute = timePicker.getMinute());
-                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
-                        tvDate.setText(dateSelect);
+                        startDate = (pickMonth + 1) + "/" + pickDay + "/" + pickYear;
+                        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                        try {
+                            date = df.parse(startDate);
+                            newDateStart = df.format(date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        tvDate.setText(newDateStart);
+                        getDrugDouble(patientDouble.getMRN(), "Second Check", newDateStart);
                     } else {
                         calendar = new GregorianCalendar(
                                 pickYear = datePicker.getYear(),
@@ -204,8 +226,16 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
                                 pickDay = datePicker.getDayOfMonth(),
                                 pickHour = timePicker.getCurrentHour(),
                                 pickMinute = timePicker.getCurrentMinute());
-                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
-                        tvDate.setText(dateSelect);
+                        startDate = (pickMonth + 1) + "/" + pickDay + "/" + pickYear;
+                        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                        try {
+                            date = df.parse(startDate);
+                            newDateStart = df.format(date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        tvDate.setText(newDateStart);
+                        getDrugDouble(patientDouble.getMRN(), "Second Check", newDateStart);
                     }
 
                     Calendar timePick = Calendar.getInstance();
@@ -221,14 +251,37 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
     }
 
 
+    class DrugHistoryLoadCallback implements Callback<ListDrugCardDao> {
+        @Override
+        public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
+            dao = response.body();
+            List<DrugCardDao> listDrugTime = new ArrayList<>();
+            for (DrugCardDao d : dao.getListDrugCardDao()) {
+                if (d.getActivityHour().equals(admintime[0])) {
+                    listDrugTime.add(d);
+                }
+            }
+            dao.setListDrugCardDao(listDrugTime);
+            buildHistoryAdapter.setDao(getContext(), dao);
+            listView.setAdapter(buildHistoryAdapter);
+        }
+
+        @Override
+        public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
+            Log.d("check", "DrugLoadCallback Failure " + t);
+        }
+    }
+
     public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>> {
 
         @Override
-        protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
+        protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " +  drugAdrDaos.size());
+            Log.d("check", "*****DrugAdrDao onPostExecute = " + drugAdrDaos.size());
 
-            if(drugAdrDaos.size() != 0){
+            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+            if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
                 spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
@@ -236,9 +289,38 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
-//                tvDrugAdr.setText("การแพ้ยา:แตะสำหรับรายละเอียด");
-            }
-            else {
+                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
+                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        for (DrugAdrDao d : drugAdrDaos) {
+                            DrugAdrDao drugAdrDao = new DrugAdrDao();
+                            drugAdrDao.setDrugname(d.getDrugname());
+                            drugAdrDao.setSideEffect(d.getSideEffect());
+                            drugAdrDao.setNaranjo(d.getNaranjo());
+                            drugAdrDaoList.add(drugAdrDao);
+                        }
+
+                        listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
+                        buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
+
+                        builder.setView(dialogView);
+                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
+                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        builder.create();
+                        builder.show().getWindow().setLayout(1200, 700);
+                    }
+                });
+            } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
         }
@@ -248,16 +330,15 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
             patientDouble = getArguments().getParcelable("patientDouble");
-            if(patientDouble != null){
+            if (patientDouble != null) {
                 mrn = patientDouble.getMRN();
-                Log.d("check", "MRN doInBackground = "+mrn);
+                Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
-            Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;
         }
 
-        private   ArrayList<DrugAdrDao>  parseXML(String soap) {
+        private ArrayList<DrugAdrDao> parseXML(String soap) {
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             try {
 

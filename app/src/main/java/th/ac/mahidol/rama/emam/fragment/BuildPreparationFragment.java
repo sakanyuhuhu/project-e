@@ -132,19 +132,23 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                 if (tricker.equals("save")) {
                     loadPersonWard(nfcUID, sdlocID);
                     if (timeposition <= 23) {
+                        Log.d("check", "tricker.equals(save) timeposition <=23");
                         loadPatientData(sdlocID, time, checkType, toDayDate);
                         loadCacheDao();
-                    }
-                    else {
+                    } else {
+                        Log.d("check", "tricker.equals(save) timeposition");
                         loadPatientData(sdlocID, time, checkType, tomorrowDate);
                         loadCacheDao();
                     }
                 }
             } else {
-                if (timeposition <= 23)
+                if (timeposition <= 23) {
+                    Log.d("check", "tricker timeposition <= 23");
                     loadPatientData(sdlocID, time, checkType, toDayDate);
-                else
+                } else {
+                    Log.d("check", "tricker timeposition");
                     loadPatientData(sdlocID, time, checkType, tomorrowDate);
+                }
             }
         }
     }

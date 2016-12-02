@@ -31,6 +31,7 @@ public class BuildPatientAllFragment extends Fragment{
     private String nfcUID, sdlocID, wardName;
     private ListView listView;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
+    private ListPatientDataDao dao;
 
 
     public BuildPatientAllFragment() {
@@ -164,7 +165,7 @@ public class BuildPatientAllFragment extends Fragment{
 
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
-            final ListPatientDataDao dao = response.body();
+            dao = response.body();
             saveCachePatientData(dao);
             if(dao.getPatientDao().size() != 0) {
                 buildPatientAllAdapter.setDao(dao);
@@ -177,6 +178,7 @@ public class BuildPatientAllFragment extends Fragment{
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("position", position);
+                        intent.putExtra("patient", dao.getPatientDao().get(position));
                         getActivity().startActivity(intent);
                         getActivity().finish();
                     }

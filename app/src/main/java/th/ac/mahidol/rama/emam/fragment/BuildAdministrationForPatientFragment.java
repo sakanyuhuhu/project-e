@@ -3,7 +3,6 @@ package th.ac.mahidol.rama.emam.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,8 +27,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -51,10 +48,11 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.HistoryAdministrationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAdministrationForPatientAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
@@ -63,10 +61,10 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 
 public class BuildAdministrationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime, useTime, tricker;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime, useTime, tricker, mrn;
     private int position, timeposition, currentTime, adminTime, sumTime;
     private String[] admintime;
-    private ListView listView;
+    private ListView listView, listViewAdr;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory, tvCurrentTime;
     private EditText txtStatus;
     private RadioGroup radioGroup;
@@ -74,6 +72,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildAdministrationForPatientAdapter buildAdministrationForPatientAdapter;
+    private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
     private Spinner spinner1, spinner2;
     private ListDrugCardDao dao;
@@ -142,6 +141,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         listView = (ListView) rootView.findViewById(R.id.lvAdminForPatientAdapter);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildAdministrationForPatientAdapter = new BuildAdministrationForPatientAdapter();
+        buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
@@ -173,32 +173,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         Log.d("check", "currentTime = "+currentTime +" / adminTime = "+adminTime+" /sumTime = "+sumTime+" ***** tvcurrentTime = "+tvcurrentTime);
 
         tvTime.setText(time);
-
-//        SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
-//        String data = prefs.getString("patientadministration",null);
-//        if(data != null){
-//            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-////            buildHeaderPatientDataViewOLD.setData(listPatientDataDao, position);
-//
-//            if(timeposition <= 23) {
-//                DrugCardDao drugCardDao = new DrugCardDao();
-//                drugCardDao.setAdminTimeHour(time);
-//                drugCardDao.setDrugUseDate(toDayDate);
-//                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-//                drugCardDao.setCheckType("Administration");
-//
-//                loadMedicalData(drugCardDao);
-//            }
-//            else{
-//                DrugCardDao drugCardDao = new DrugCardDao();
-//                drugCardDao.setAdminTimeHour(time);
-//                drugCardDao.setDrugUseDate(tomorrowDate);
-//                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-//                drugCardDao.setCheckType("Administration");
-//
-//                loadMedicalData(drugCardDao);
-//            }
-//        }
 
         if(patientAdmin != null){
             buildHeaderPatientDataView.setData(patientAdmin, position);
@@ -542,7 +516,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             for(DrugCardDao d : dao.getListDrugCardDao()){
-                Log.d("check", "Description = '"+d.getDescription() + "' ***** getCheckType = '"+d.getCheckType()+"' ***** DescriptionTemplate = '"+d.getDescriptionTemplate()+"' ***** Complete = "+d.getComplete());
+//                Log.d("check", "Description = '"+d.getDescription() + "' ***** getCheckType = '"+d.getCheckType()+"' ***** DescriptionTemplate = '"+d.getDescriptionTemplate()+"' ***** Complete = "+d.getComplete());
                 if(d.getCheckType().equals("Second Check")) {
                     if (d.getComplete().equals("1"))
                         d.setComplete(null);
@@ -652,11 +626,12 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>>{
 
         @Override
-        protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
+        protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
             Log.d("check", "*****DrugAdrDao onPostExecute = " +  drugAdrDaos.size());
-
-            if(drugAdrDaos.size() != 0){
+            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+            if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
                 spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
@@ -664,8 +639,38 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
-            }
-            else {
+                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
+                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        for (DrugAdrDao d : drugAdrDaos) {
+                            DrugAdrDao drugAdrDao = new DrugAdrDao();
+                            drugAdrDao.setDrugname(d.getDrugname());
+                            drugAdrDao.setSideEffect(d.getSideEffect());
+                            drugAdrDao.setNaranjo(d.getNaranjo());
+                            drugAdrDaoList.add(drugAdrDao);
+                        }
+
+                        listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
+                        buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
+
+                        builder.setView(dialogView);
+                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
+                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        builder.create();
+                        builder.show().getWindow().setLayout(1200, 700);
+                    }
+                });
+            } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
         }
@@ -674,15 +679,11 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         protected List<DrugAdrDao> doInBackground(Void... params) {
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
-
-            SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientadministration",null);
-            if(data != null){
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
+            if(patientAdmin != null){
+                mrn = patientAdmin.getMRN();
+                Log.d("check", "MRN doInBackground = " + mrn);
+                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
-            Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;
         }
 

@@ -1,13 +1,10 @@
 package th.ac.mahidol.rama.emam.fragment.alarm;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -265,30 +262,6 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
 //                });
             } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
-                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
-                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
-
-                        buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
-                        buildListDrugAdrAdapter.setDao(drugAdr, sideEffect, naranjo);
-                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
-                        builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + drugAdr.length + ")");
-                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                        builder.create();
-                        builder.show().getWindow().setLayout(1200, 600);
-                    }
-                });
             }
         }
 

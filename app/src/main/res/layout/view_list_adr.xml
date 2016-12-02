@@ -13,7 +13,8 @@
         <TextView
             android:id="@+id/tvDrugName"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
             android:gravity="center_vertical"
             android:text="Drug Name"
             android:textSize="20sp" />
@@ -21,7 +22,8 @@
         <TextView
             android:id="@+id/tvSideEffect"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
             android:gravity="center_vertical"
             android:text="Side Effect"
             android:textSize="20sp" />
@@ -29,7 +31,8 @@
         <TextView
             android:id="@+id/tvNaranjo"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
             android:gravity="center_vertical"
             android:text="Naranjo"
             android:textSize="20sp" />

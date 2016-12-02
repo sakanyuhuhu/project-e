@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.fragment.addmedication.BuildAddMedicationForPatientFragment;
 
 public class AddMedicationForPatientActivity extends AppCompatActivity {
@@ -15,18 +16,20 @@ public class AddMedicationForPatientActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private String sdlocID, nfcUID, wardName;
     private int position;
+    private PatientDataDao patient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_currentmed);
+        setContentView(R.layout.activity_login);
         nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
+        patient = getIntent().getParcelableExtra("patient");
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddMedicationForPatientFragment.newInstance(nfcUID,sdlocID, wardName, position)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddMedicationForPatientFragment.newInstance(nfcUID,sdlocID, wardName, position, patient)).commit();
         }
 
     }

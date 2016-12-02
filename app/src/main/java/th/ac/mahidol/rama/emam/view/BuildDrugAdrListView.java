@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
@@ -55,18 +56,7 @@ public class BuildDrugAdrListView extends BaseCustomViewGroup {
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        /*
-        TypedArray a = getContext().getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.StyleableName,
-                defStyleAttr, defStyleRes);
 
-        try {
-
-        } finally {
-            a.recycle();
-        }
-        */
     }
 
     @Override
@@ -74,9 +64,6 @@ public class BuildDrugAdrListView extends BaseCustomViewGroup {
         Parcelable superState = super.onSaveInstanceState();
 
         BundleSavedState savedState = new BundleSavedState(superState);
-        // Save Instance State(s) here to the 'savedState.getBundle()'
-        // for example,
-        // savedState.getBundle().putString("key", value);
 
         return savedState;
     }
@@ -87,13 +74,12 @@ public class BuildDrugAdrListView extends BaseCustomViewGroup {
         super.onRestoreInstanceState(ss.getSuperState());
 
         Bundle bundle = ss.getBundle();
-        // Restore State from bundle here
     }
 
-    public void setDrugAdr(String drugName, String sideEffect, String naranjo){
-        tvDrugName.setText(" Drug: "+drugName);
-        tvSideEffect.setText(" Side Effect: "+sideEffect);
-        tvNaranjo.setText(" Naranjo: "+naranjo);
+    public void setDrugAdr(DrugAdrDao dao){
+        tvDrugName.setText("Drug : "+dao.getDrugname());
+        tvSideEffect.setText("Side Effect : "+dao.getSideEffect());
+        tvNaranjo.setText("Naranjo : "+dao.getNaranjo());
     }
 
 }

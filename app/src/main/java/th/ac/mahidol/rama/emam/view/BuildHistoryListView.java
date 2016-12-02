@@ -13,25 +13,25 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
-public class BuildHistoryPrepareListView extends BaseCustomViewGroup {
+public class BuildHistoryListView extends BaseCustomViewGroup {
 
-    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite, tvMethod;
+    private TextView tvDrugName, tvDosage, tvRoute, tvFrequency, tvSite, tvMethod;
     private ImageView imgvNote;
 
-    public BuildHistoryPrepareListView(Context context) {
+    public BuildHistoryListView(Context context) {
         super(context);
         initInflate();
         initInstances();
     }
 
-    public BuildHistoryPrepareListView(Context context, AttributeSet attrs) {
+    public BuildHistoryListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initInflate();
         initInstances();
         initWithAttrs(attrs, 0, 0);
     }
 
-    public BuildHistoryPrepareListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BuildHistoryListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initInflate();
         initInstances();
@@ -39,7 +39,7 @@ public class BuildHistoryPrepareListView extends BaseCustomViewGroup {
     }
 
     @TargetApi(21)
-    public BuildHistoryPrepareListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BuildHistoryListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initInflate();
         initInstances();
@@ -53,7 +53,6 @@ public class BuildHistoryPrepareListView extends BaseCustomViewGroup {
     private void initInstances() {
         tvDrugName = (TextView) findViewById(R.id.tvDrugName);
         tvDosage = (TextView) findViewById(R.id.tvDosage);
-        tvType = (TextView) findViewById(R.id.tvType);
         tvRoute = (TextView) findViewById(R.id.tvRoute);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         tvSite = (TextView) findViewById(R.id.tvSite);
@@ -103,6 +102,10 @@ public class BuildHistoryPrepareListView extends BaseCustomViewGroup {
             tvMethod.setText("Method: " + dao.getMethod());
             imgvNote.setVisibility(VISIBLE);
         }
+    }
+
+    public  ImageView imageViewNote(){
+        return (ImageView) findViewById(R.id.imgvNote);
     }
 
 }

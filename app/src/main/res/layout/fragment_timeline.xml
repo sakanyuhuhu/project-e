@@ -14,13 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_recent_history" />
+            android:src="@drawable/ic_time" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_weight="1"
-            android:src="@drawable/user" />
+            android:src="@drawable/ic_person" />
     </LinearLayout>
 
     <ListView

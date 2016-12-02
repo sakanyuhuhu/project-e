@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment.history;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
-
-import com.google.gson.Gson;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -33,7 +29,7 @@ import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.adapter.history.BuildCurrentMedAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CurrentMedDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListCurrentMedDao;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.SearchCurrentMedManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
@@ -45,19 +41,21 @@ public class BuildCurrentMedFragment extends Fragment {
     private Spinner spinner1;
     private BuildCurrentMedAdapter buildCurrentMedAdapter;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
+    private PatientDataDao patient;
 
 
     public BuildCurrentMedFragment() {
         super();
     }
 
-    public static BuildCurrentMedFragment newInstance(String nfcUID, String sdlocID, String wardName, int position) {
+    public static BuildCurrentMedFragment newInstance(String nfcUID, String sdlocID, String wardName, int position, PatientDataDao patient) {
         BuildCurrentMedFragment fragment = new BuildCurrentMedFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", position);
+        args.putParcelable("patient", patient);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,6 +87,7 @@ public class BuildCurrentMedFragment extends Fragment {
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
+        patient = getArguments().getParcelable("patient");
         Log.d("check", "BuildCurrentMedFragment nfcUID = " + nfcUID + " /sdlocID = " + sdlocID + " /wardName = " + wardName + " /position = " + position);
 
         spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
@@ -97,13 +96,8 @@ public class BuildCurrentMedFragment extends Fragment {
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildCurrentMedAdapter = new BuildCurrentMedAdapter();
 
-        SharedPreferences prefs = getContext().getSharedPreferences("patientalldata", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientalldata", null);
-        if (data != null) {
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
-            mrn = listPatientDataDao.getPatientDao().get(position).getMRN();
-            Log.d("check", "data size = " + listPatientDataDao.getPatientDao().size() + " position = " + position + " mrn = " + mrn);
-            buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
+        if(patient != null){
+            buildHistoryHeaderPatientDataView.setData(patient, position);
         }
 
         getOnClickSpinner();
@@ -182,7 +176,7 @@ public class BuildCurrentMedFragment extends Fragment {
             ListCurrentMedDao listCurrentMedDao = new ListCurrentMedDao();
             List<CurrentMedDao> medDaoList = new ArrayList<CurrentMedDao>();
             for (CurrentMedDao c : currentMedDaos) {
-                Log.d("check", i + " Route = (" + c.getRoute() + ") ***** OFF = ('" + c.getOffdt() + "')***** PRN = " + c.isPrn() + " ***** type = " + c.getTakeaction());
+//                Log.d("check", i + " Route = (" + c.getRoute() + ") ***** OFF = ('" + c.getOffdt() + "')***** PRN = " + c.isPrn() + " ***** type = " + c.getTakeaction());
                 i++;
                 medDaoList.add(c);
             }
@@ -196,12 +190,8 @@ public class BuildCurrentMedFragment extends Fragment {
             List<CurrentMedDao> itemsList = new ArrayList<CurrentMedDao>();
             SoapManager soapManager = new SoapManager();
 
-            SharedPreferences prefs = getContext().getSharedPreferences("patientalldata", Context.MODE_PRIVATE);
-            String data = prefs.getString("patientalldata", null);
-            if (data != null) {
-                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
-                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-                itemsList = parseXML(soapManager.getDrugIPD("get_drug_IPD", listPatientDataDao.getPatientDao().get(position).getMRN()));
+            if (patient != null) {
+                itemsList = parseXML(soapManager.getDrugIPD("get_drug_IPD", patient.getMRN()));
             }
             return itemsList;
         }

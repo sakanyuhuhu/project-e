@@ -61,7 +61,6 @@
 
         <!--History-->
         <activity android:name=".activity.history.PatientAllActivity" />
-        <activity android:name=".activity.history.CurrentMedActivity" />
         <activity android:name=".activity.history.HistoryActivity" />
         <!--Add Medication-->
         <activity android:name=".activity.addmedication.AddMedicationPatientAllActivity" />

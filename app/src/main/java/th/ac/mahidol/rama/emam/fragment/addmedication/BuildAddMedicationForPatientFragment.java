@@ -1,8 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment.addmedication;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,8 +20,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +27,7 @@ import java.util.GregorianCalendar;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
-import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.AdminTimeSelectionSpinner;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
@@ -39,6 +35,7 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
     private String nfcUID, sdlocID, wardName, mrn, selectedItem, dateSelect, toDayDate;
     private int position;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
+    private PatientDataDao patient;
     private Button btnCancel, btnAdd;
     private Spinner spinnerRoute;
     private EditText edtDrugName, edtDrugID, edtDosage, edtUnit, edtFrequency, edtMedthod;
@@ -54,13 +51,14 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         super();
     }
 
-    public static BuildAddMedicationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, int position) {
+    public static BuildAddMedicationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, int position, PatientDataDao patient) {
         BuildAddMedicationForPatientFragment fragment = new BuildAddMedicationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", position);
+        args.putParcelable("patient", patient);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,6 +80,8 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
+        patient = getArguments().getParcelable("patient");
+
         Log.d("check", "BuildAddMedicationForPatientFragment nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName+" /position = "+position);
 
         edtDrugName = (EditText) rootView.findViewById(R.id.edtDrugName);
@@ -108,13 +108,8 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         dateSelect = toDayDate;
         tvDate.setText(dateSelect);
 
-        SharedPreferences prefs = getContext().getSharedPreferences("addmedpatientalldata", Context.MODE_PRIVATE);
-        String data = prefs.getString("addmedpatientalldata",null);
-        if(data != null) {
-            ListPatientDataDao listPatientDataDao = new Gson().fromJson(data, ListPatientDataDao.class);
-            mrn = listPatientDataDao.getPatientDao().get(position).getMRN();
-            Log.d("check", "data size = " + listPatientDataDao.getPatientDao().size() + " position = " + position + " mrn = " + mrn);
-            buildHistoryHeaderPatientDataView.setData(listPatientDataDao, position);
+        if (patient != null) {
+            buildHistoryHeaderPatientDataView.setData(patient, position);
         }
 
         getSpinnerRoute();

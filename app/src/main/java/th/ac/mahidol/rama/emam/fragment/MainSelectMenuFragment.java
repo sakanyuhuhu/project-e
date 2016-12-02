@@ -10,18 +10,18 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.activity.alarm.AlarmActivity;
 import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
+import th.ac.mahidol.rama.emam.activity.alarm.AlarmActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 
 
 public class MainSelectMenuFragment extends Fragment implements View.OnClickListener{
-    private ImageButton imgBMedication, imgBHistory, imgBAddMedication, imgBLogout;
+    private RelativeLayout imgBMedication, imgBHistory, imgBAddMedication, imgBLogout;
     private String sdlocID, nfcUID, wardName;
     public MainSelectMenuFragment() {
         super();
@@ -62,10 +62,10 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
-        imgBMedication = (ImageButton) rootView.findViewById(R.id.imgBMedication);
-        imgBHistory = (ImageButton) rootView.findViewById(R.id.imgBHistory);
-        imgBAddMedication = (ImageButton) rootView.findViewById(R.id.imgBAddMedication);
-        imgBLogout = (ImageButton) rootView.findViewById(R.id.imgBLogout);
+        imgBMedication = (RelativeLayout) rootView.findViewById(R.id.imgBMedication);
+        imgBHistory = (RelativeLayout) rootView.findViewById(R.id.imgBHistory);
+        imgBAddMedication = (RelativeLayout) rootView.findViewById(R.id.imgBAddMedication);
+        imgBLogout = (RelativeLayout) rootView.findViewById(R.id.imgBLogout);
 
         imgBMedication.setOnClickListener(this);
         imgBHistory.setOnClickListener(this);
