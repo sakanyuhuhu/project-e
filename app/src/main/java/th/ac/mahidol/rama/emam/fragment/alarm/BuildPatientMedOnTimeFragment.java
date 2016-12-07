@@ -1,10 +1,12 @@
 package th.ac.mahidol.rama.emam.fragment.alarm;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -49,11 +51,12 @@ import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
 public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnClickListener {
     private String sdlocID, wardName, toDayDate, mrn, time;
     private int position;
-    private ListView listView;
+    private ListView listView, listViewAdr;
     private TextView tvDrugAdr;
     private Button btnOK;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildPatientMedOnTimeAdapter buildPatientMedOnTimeAdapter;
+    private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private ListDrugCardDao dao;
     private PatientDataDao patientDao;
     private Date datetoDay;
@@ -107,6 +110,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
         listView = (ListView) rootView.findViewById(R.id.lvMedication);
         buildHeaderPatientDataView = (BuildHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildPatientMedOnTimeAdapter = new BuildPatientMedOnTimeAdapter();
+        buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         btnOK = (Button) rootView.findViewById(R.id.btnOK);
@@ -185,7 +189,6 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            Log.d("check", "size before = "+dao.getListDrugCardDao().size());
             List<String> listDrugId = new ArrayList<>();
             List<DrugCardDao> listDrug = new ArrayList<>();
             for(DrugCardDao d : dao.getListDrugCardDao()) {
@@ -197,11 +200,9 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
                 }
             }
             dao.setListDrugCardDao(listDrug);
-            Log.d("check", "size after = "+dao.getListDrugCardDao().size());
             buildPatientMedOnTimeAdapter.setDao(dao);
             listView.setAdapter(buildPatientMedOnTimeAdapter);
-
-        }
+                   }
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
@@ -211,11 +212,6 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
 
 
     public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>> {
-        private String[] drugAdr = {"drugname1", "drugname2", "drugname3"};
-        private String[] sideEffect = {"side effect1", "side effect2", "side effect3"};
-        private String[] naranjo = {"naranjo1", "naranjo2", "naranjo3"};
-        private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
-        private ListView listViewAdr;
 
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
@@ -231,35 +227,31 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
+                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
+                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        for (DrugAdrDao d : drugAdrDaos) {
+                            DrugAdrDao drugAdrDao = new DrugAdrDao();
+                            drugAdrDao.setDrugname(d.getDrugname());
+                            drugAdrDao.setSideEffect(d.getSideEffect());
+                            drugAdrDao.setNaranjo(d.getNaranjo());
+                            drugAdrDaoList.add(drugAdrDao);
+                        }
 
-//      wait data in service
-//                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
-//                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
-//
-//                        for(DrugAdrDao d : drugAdrDaos){
-//                            drugAdrDaoList.add(d);
-//                        }
-//                        listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
-//                        buildListDrugAdrAdapter.setDao(listDrugAdrDao);
-//                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
-//
-//                        builder.setView(dialogView);
-//                        builder.setTitle("ประวัติการแพ้ยา("+drugAdr.length+")");
-//                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        });
-//                        builder.create();
-//                        builder.show().getWindow().setLayout(1200,600);
-//                    }
-//                });
+                        listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
+                        buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
+
+                        builder.setView(dialogView);
+                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
+                        builder.create();
+                        builder.show().getWindow().setLayout(1200, 500);
+                    }
+                });
             } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
@@ -275,7 +267,6 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
                 Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
-            Log.d("check", "itemsList doInBackground = " + itemsList);
             return itemsList;
         }
 

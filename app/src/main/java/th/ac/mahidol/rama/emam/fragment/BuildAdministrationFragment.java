@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import th.ac.mahidol.rama.emam.activity.CameraScanActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.LoginAdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
+import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAdministrationAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
@@ -134,8 +136,6 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                         loadPatientData(sdlocID, time, checkType, toDayDate);
                     else
                         loadPatientData(sdlocID, time, checkType, tomorrowDate);
-
-                    loadCacheDao();
                 }
             } else {
                 if (timeposition <= 23)
@@ -226,6 +226,29 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
+                    Intent intent = new Intent(getContext(), TimelineActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+
+    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tvDoublecheck) {
             Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
@@ -273,12 +296,19 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                     saveCachePatientAdminData(dao);
                     buildAdministrationAdapter.setDao(dao);
                     listView.setAdapter(buildAdministrationAdapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการบริหารยา", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if(tricker != null) {
+                        if(tricker.equals("save"))
+                            loadCacheDao();
+                    }
+                    else{
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการบริหารยา", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
                 } else {
                     tvNoPatient.setText("ไม่มีผู้ป่วย");
                     tvNoPatient.setVisibility(View.VISIBLE);

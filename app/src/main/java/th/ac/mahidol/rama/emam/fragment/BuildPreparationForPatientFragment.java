@@ -591,21 +591,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     Log.d("check", "daoSum  = " + daoDrug.getListDrugCardDao().size());
                 }
             }
-
-//            before edit
-//            for(DrugCardDao d : dao.getListDrugCardDao()){
-//                if(d.getDescriptionTemplate() != null){
-//                    String[] strRadio = d.getDescriptionTemplate().split(",");
-//                    if (strRadio.length == 1) {
-//                        d.setDescriptionTemplate(strRadio[0]);
-//                    } else if (strRadio.length == 2) {
-//                        d.setDescriptionTemplate(strRadio[0]);
-//                        d.setStrRadio(strRadio[1]);
-//                    }
-//                }
-//            }
-//            buildDrugCardListManager.setDao(dao);
-//            tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
         }
 
         @Override

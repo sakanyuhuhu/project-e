@@ -12,6 +12,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -391,7 +392,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         });
         builder.setNegativeButton("ยกเลิก",null);
         builder.create();
-        builder.show().getWindow().setLayout(1000,850);
+        builder.show().getWindow().setLayout(1000, 850);
     }
 
     public void saveAdministration(){
@@ -469,6 +470,31 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             getActivity().finish();
         } else
             Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
+                    Intent intent = new Intent(getContext(), AdministrationActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("position", timeposition);
+                    intent.putExtra("time", time);
+                    intent.putExtra("save", tricker);
+                    getActivity().startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

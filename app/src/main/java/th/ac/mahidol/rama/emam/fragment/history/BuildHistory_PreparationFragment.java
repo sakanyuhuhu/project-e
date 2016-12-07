@@ -1,7 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment.history;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -17,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,6 +46,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryAdapter;
 import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
+import th.ac.mahidol.rama.emam.adapter.history.BuildListDrugHistoryAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
@@ -58,12 +59,13 @@ import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 public class BuildHistory_PreparationFragment extends Fragment implements View.OnClickListener {
     private String nfcUID, sdlocID, wardName, newDateStart, startDate;
     private int position;
-    private ListView listView, listViewAdr;
-    private TextView tvDrugAdr, tvDate;
+    private ListView listView, listViewAdr, lvMedHistory;
+    private TextView tvDrugAdr, tvDate, tvDrugName, tvRoute, tvDosage;
     private ImageView imgCalendar;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private BuildHistoryAdapter buildHistoryAdapter;
     private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
+    private BuildListDrugHistoryAdapter buildListDrugHistoryAdapter;
     private ListDrugCardDao dao;
     private PatientDataDao patient;
     private Date datetoDay, date;
@@ -121,6 +123,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryAdapter = new BuildHistoryAdapter();
         buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
+        buildListDrugHistoryAdapter = new BuildListDrugHistoryAdapter();
 
         tvDrugAdr = (TextView) rootView.findViewById(R.id.tvDrugAdr);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
@@ -246,6 +249,29 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
             dao = response.body();
             buildHistoryAdapter.setDao(getContext(), dao);
             listView.setAdapter(buildHistoryAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View dialogView = inflater.inflate(R.layout.custom_dialog_history, null);
+                    lvMedHistory = (ListView) dialogView.findViewById(R.id.lvMedHistory);
+                    tvDrugName = (TextView) dialogView.findViewById(R.id.tvDrugName);
+                    tvRoute = (TextView) dialogView.findViewById(R.id.tvRoute);
+                    tvDosage = (TextView) dialogView.findViewById(R.id.tvDosage);
+
+                    tvDrugName.setText(dao.getListDrugCardDao().get(position).getTradeName());
+                    tvRoute.setText("Route: " + dao.getListDrugCardDao().get(position).getRoute());
+                    tvDosage.setText("Dosage: " + dao.getListDrugCardDao().get(position).getDose() +" "+ dao.getListDrugCardDao().get(position).getUnit());
+                    buildListDrugHistoryAdapter.setDao(dao);
+                    lvMedHistory.setAdapter(buildListDrugHistoryAdapter);
+
+                    builder.setView(dialogView);
+                    builder.create();
+                    builder.show().getWindow().setLayout(1200, 800);
+
+                }
+            });
         }
 
         @Override
@@ -292,14 +318,8 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
 
                         builder.setView(dialogView);
                         builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
-                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 700);
+                        builder.show().getWindow().setLayout(1200, 500);
                     }
                 });
             } else {

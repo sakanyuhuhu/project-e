@@ -28,8 +28,8 @@ public class AlarmActivity extends AppCompatActivity{
          /* Set the alarm to start at 10:30 AM */
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 11);
+        calendar.set(Calendar.MINUTE, 35);
 
         Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
         intent.putExtra("sdlocId", sdlocID);
@@ -38,7 +38,7 @@ public class AlarmActivity extends AppCompatActivity{
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         /* Repeating on every 30 second interval or 30 minutes(1000 * 60 * 30) */
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),1000 * 60 * 30, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),1000 * 60, pendingIntent);
 
     }
 }

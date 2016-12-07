@@ -131,22 +131,15 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             if (nfcUID != null & tricker != null) {
                 if (tricker.equals("save")) {
                     loadPersonWard(nfcUID, sdlocID);
-                    if (timeposition <= 23) {
-                        Log.d("check", "tricker.equals(save) timeposition <=23");
+                    if (timeposition <= 23)
                         loadPatientData(sdlocID, time, checkType, toDayDate);
-                        loadCacheDao();
-                    } else {
-                        Log.d("check", "tricker.equals(save) timeposition");
+                    else
                         loadPatientData(sdlocID, time, checkType, tomorrowDate);
-                        loadCacheDao();
-                    }
                 }
             } else {
                 if (timeposition <= 23) {
-                    Log.d("check", "tricker timeposition <= 23");
                     loadPatientData(sdlocID, time, checkType, toDayDate);
                 } else {
-                    Log.d("check", "tricker timeposition");
                     loadPatientData(sdlocID, time, checkType, tomorrowDate);
                 }
             }
@@ -168,7 +161,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientindata", null);
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
-            Log.d("check", "************************************************* timeposition = " + timeposition + " ********* dao = " + dao.getPatientDao().size());
             buildPreparationAdapter.setDao(dao);
             listView.setAdapter(buildPreparationAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -289,12 +281,18 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     saveCachePatientData(dao);
                     buildPreparationAdapter.setDao(dao);
                     listView.setAdapter(buildPreparationAdapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการเตรียมยา", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if(tricker != null) {
+                        if(tricker.equals("save"))
+                            loadCacheDao();
+                    }
+                    else {
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการเตรียมยา", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 } else {
                     tvNoPatient.setText("ไม่มีผู้ป่วย");
                     tvNoPatient.setVisibility(View.VISIBLE);

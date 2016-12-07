@@ -143,8 +143,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                         loadPatientData(sdlocID, time, checkType, toDayDate);
                     else
                         loadPatientData(sdlocID, time, checkType, tomorrowDate);
-
-                    loadCacheDao();
                 }
             } else {
                 if (timeposition <= 23)
@@ -165,14 +163,14 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
 
     }
 
-    private void loadCheckPersonBynfcUID() {
-        SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
-        String data = prefs.getString("patientdoublecheck", null);
-        if (data != null) {
-            ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
-            buildDoubleCheckAdapter.setDao(dao);
-            listView.setAdapter(buildDoubleCheckAdapter);
-        }
+    private void setMedication(String time, String date, String mrn){
+        DrugCardDao drugCardDao = new DrugCardDao();
+        drugCardDao.setAdminTimeHour(time);
+        drugCardDao.setDrugUseDate(date);
+        drugCardDao.setMRN(mrn);
+        drugCardDao.setCheckType("First Check");
+
+        loadMedicalData(drugCardDao);
     }
 
     private void loadCacheDao() {
@@ -186,22 +184,12 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    if (!dao.getPatientDao().get(position).getRFID().equals(RFIDouble)) {
-                        Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("RFID", RFIDouble);
-                        intent.putExtra("firstname", firstName);
-                        intent.putExtra("lastname", lastName);
-                        intent.putExtra("timeposition", timeposition);
-                        intent.putExtra("position", positionPatient);
-                        intent.putExtra("patientDouble", dao.getPatientDao().get(position));
-                        intent.putExtra("time", time);
-                        getActivity().startActivity(intent);
-                    } else {
-                        Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
-                        loadCheckPersonBynfcUID();
+                    positionPatient = position;
+                    if (timeposition <= 23) {
+                        setMedication(time, todayDateDrug, dao.getPatientDao().get(position).getMRN());
+                    }
+                    else{
+                        setMedication(time, tomorrowDateDrug, dao.getPatientDao().get(position).getMRN());
                     }
                 }
             });
@@ -294,7 +282,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                 if (dao.getPatientDao().size() != 0) {
                     for (PatientDataDao p : dao.getPatientDao()) {
                         if (!listMrn.contains(p.getMRN())) {
-                            Log.d("check", "RFID2 = " + p.getRFID());
                             listMrn.add(p.getMRN());
                             patientDao.add(p);
                         }
@@ -304,12 +291,17 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     saveCacheDoubleCheckData(dao);
                     buildDoubleCheckAdapter.setDao(dao);
                     listView.setAdapter(buildDoubleCheckAdapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการตรวจสอบยา", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if (tricker != null) {
+                        if (tricker.equals("save"))
+                            loadCacheDao();
+                    } else {
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการตรวจสอบยา", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 } else {
                     tvNoPatient.setText("ไม่มีผู้ป่วย");
                     tvNoPatient.setVisibility(View.VISIBLE);
@@ -354,22 +346,27 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                 RFIDPrepare = d.getRFID();
                 break;
             }
+            SharedPreferences prefs = getContext().getSharedPreferences("patientdoublecheck", Context.MODE_PRIVATE);
+            String data = prefs.getString("patientdoublecheck", null);
 
-            if (!RFIDPrepare.equals(RFIDouble)) {
-                Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
-                intent.putExtra("nfcUId", nfcUID);
-                intent.putExtra("sdlocId", sdlocID);
-                intent.putExtra("wardname", wardName);
-                intent.putExtra("RFID", RFIDouble);
-                intent.putExtra("firstname", firstName);
-                intent.putExtra("lastname", lastName);
-                intent.putExtra("timeposition", timeposition);
-                intent.putExtra("position", positionPatient);
-                intent.putExtra("time", time);
-                getActivity().startActivity(intent);
-            } else {
-                Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
-                loadCheckPersonBynfcUID();
+            if (data != null) {
+                final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
+                if (!RFIDPrepare.equals(RFIDouble)) {
+                    Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("RFID", RFIDouble);
+                    intent.putExtra("firstname", firstName);
+                    intent.putExtra("lastname", lastName);
+                    intent.putExtra("timeposition", timeposition);
+                    intent.putExtra("position", positionPatient);
+                    intent.putExtra("patientDouble", dao.getPatientDao().get(positionPatient));
+                    intent.putExtra("time", time);
+                    getActivity().startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
+                }
             }
         }
 

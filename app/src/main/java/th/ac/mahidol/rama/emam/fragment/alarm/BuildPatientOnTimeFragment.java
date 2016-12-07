@@ -97,9 +97,7 @@ public class BuildPatientOnTimeFragment extends Fragment {
         currentTime = c.get(Calendar.HOUR_OF_DAY);
         adminTimeNext = String.valueOf(currentTime + 1);
         adminTimePre = String.valueOf(currentTime - 1);
-        Log.d("check", "currentTime = " + currentTime);
         checkType = "First Check";
-
         tvNextTime.setText("กรุณาบริหารยาภายใน " + (currentTime + 1) + ".00 น.");
         tvPreTime.setText("กรุณาตรวจสอบการบริหารยา " + (currentTime - 1) + ".00 น.");
 
@@ -128,7 +126,6 @@ public class BuildPatientOnTimeFragment extends Fragment {
 
     }
 
-
     private void loadPatientNextData(String sdlocID, String time, String checkType, String dayDate) {
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, dayDate);
         call.enqueue(new PatientNextLoadCallback());
@@ -146,7 +143,6 @@ public class BuildPatientOnTimeFragment extends Fragment {
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             daoNext = response.body();
             if (daoNext.getPatientDao() != null) {
-                Log.d("check", "dao ALARM Next = " + daoNext.getPatientDao().size());
                 if (daoNext.getPatientDao().size() != 0) {
                     buildPatientNextTimeAdapter.setDao(daoNext);
                     lvPatienNext.setAdapter(buildPatientNextTimeAdapter);
@@ -180,7 +176,6 @@ public class BuildPatientOnTimeFragment extends Fragment {
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             daoPrevious = response.body();
             if (daoPrevious.getPatientDao() != null) {
-                Log.d("check", "dao ALARM Previous = " + daoPrevious.getPatientDao().size());
                 if (daoPrevious.getPatientDao().size() != 0) {
                     List<PatientDataDao> patient = new ArrayList<>();
                     for (PatientDataDao p : daoPrevious.getPatientDao()) {
@@ -189,7 +184,6 @@ public class BuildPatientOnTimeFragment extends Fragment {
                         }
                     }
                     daoPrevious.setPatientDao(patient);
-                    Log.d("check", "dao ALARM Previous listPatient = " + daoPrevious.getPatientDao().size());
                     buildPatientPreviousTimeAdapter.setDao(daoPrevious);
                     lvPatientPrevious.setAdapter(buildPatientPreviousTimeAdapter);
                     lvPatientPrevious.setOnItemClickListener(new AdapterView.OnItemClickListener() {
