@@ -48,6 +48,7 @@ import th.ac.mahidol.rama.emam.adapter.BuildHistoryAdapter;
 import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
 import th.ac.mahidol.rama.emam.adapter.history.BuildListDrugHistoryAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -244,10 +245,23 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
 
 
     class DrugHistoryLoadCallback implements Callback<ListDrugCardDao> {
+        List<String> listDrugId = new ArrayList<String>();
+        List<DrugCardDao> drugCardDaoList = new ArrayList<DrugCardDao>();
+        ListDrugCardDao listDrugCardDao = new ListDrugCardDao();
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            buildHistoryAdapter.setDao(getContext(), dao);
+
+//           new listDrugCardDao for set DrugCardDao, show list med not consains.
+            for(DrugCardDao d : dao.getListDrugCardDao()){
+                if(!listDrugId.contains(d.getDrugID())){
+                    listDrugId.add(d.getDrugID());
+                    drugCardDaoList.add(d);
+                }
+            }
+            listDrugCardDao.setListDrugCardDao(drugCardDaoList);
+            Log.d("check", "listDrugCardDao = "+listDrugCardDao.getListDrugCardDao().size());
+            buildHistoryAdapter.setDao(getContext(), listDrugCardDao);
             listView.setAdapter(buildHistoryAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -260,12 +274,22 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
                     tvRoute = (TextView) dialogView.findViewById(R.id.tvRoute);
                     tvDosage = (TextView) dialogView.findViewById(R.id.tvDosage);
 
-                    tvDrugName.setText(dao.getListDrugCardDao().get(position).getTradeName());
-                    tvRoute.setText("Route: " + dao.getListDrugCardDao().get(position).getRoute());
-                    tvDosage.setText("Dosage: " + dao.getListDrugCardDao().get(position).getDose() +" "+ dao.getListDrugCardDao().get(position).getUnit());
-                    buildListDrugHistoryAdapter.setDao(dao);
-                    lvMedHistory.setAdapter(buildListDrugHistoryAdapter);
+                    tvDrugName.setText(listDrugCardDao.getListDrugCardDao().get(position).getTradeName());
+                    tvRoute.setText("Route: " + listDrugCardDao.getListDrugCardDao().get(position).getRoute());
+                    tvDosage.setText("Dosage: " + listDrugCardDao.getListDrugCardDao().get(position).getDose() +" "+ listDrugCardDao.getListDrugCardDao().get(position).getUnit());
 
+//                    dao show list med all.;
+                    List<DrugCardDao> drugId = new ArrayList<DrugCardDao>();
+                    ListDrugCardDao daoListDrug = new ListDrugCardDao();
+                    for(DrugCardDao d : dao.getListDrugCardDao()){
+                        if(dao.getListDrugCardDao().get(position).getDrugID().equals(d.getDrugID())){
+                            drugId.add(d);
+                        }
+                    }
+                    daoListDrug.setListDrugCardDao(drugId);
+                    Log.d("check", "dao = "+daoListDrug.getListDrugCardDao().size());
+                    buildListDrugHistoryAdapter.setDao(daoListDrug, dao.getListDrugCardDao().get(position).getDrugID());
+                    lvMedHistory.setAdapter(buildListDrugHistoryAdapter);
                     builder.setView(dialogView);
                     builder.create();
                     builder.show().getWindow().setLayout(1200, 800);

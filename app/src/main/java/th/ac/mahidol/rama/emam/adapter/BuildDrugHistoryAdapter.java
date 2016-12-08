@@ -36,7 +36,7 @@ public class BuildDrugHistoryAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
 
         BuildDrugHistoryListView buildDrugHistoryListView = new BuildDrugHistoryListView(viewGroup.getContext());
-        buildDrugHistoryListView.setDrugAdr(dao);
+        buildDrugHistoryListView.setDrug(dao);
 
         return buildDrugHistoryListView;
     }

@@ -266,8 +266,8 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
                 if (d.getActivityHour().equals(admintime[0])) {
                     Log.d("check", "getTradeName = " + d.getTradeName());
                     Log.d("check", "getFirstName = " + d.getFirstName());
-                    Log.d("check", "getLastName = " + d.getLastName());
-                    Log.d("check", "getRFID = " + d.getRFID());
+                    Log.d("check", "getDescription = " + d.getDescription());
+                    Log.d("check", "getDescriptionTemplate = " + d.getDescriptionTemplate());
                     listDrugTime.add(d);
                 }
             }

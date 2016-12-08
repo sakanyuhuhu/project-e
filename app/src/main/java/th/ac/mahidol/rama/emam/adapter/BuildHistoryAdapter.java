@@ -44,14 +44,6 @@ public class BuildHistoryAdapter extends BaseAdapter {
         buildHistoryListView = new BuildHistoryListView(viewGroup.getContext());
         buildHistoryListView.setDrugName(dao.getListDrugCardDao().get(position));
 
-//        ImageView imageViewNote = BuildHistoryListView.imageViewNote();
-//        imageViewNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                drugNoteDialog(position);
-//            }
-//        });
-
 
 
 

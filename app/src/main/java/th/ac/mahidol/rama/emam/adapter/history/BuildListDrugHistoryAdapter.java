@@ -6,13 +6,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.view.BuildDrugHistoryListView;
+import th.ac.mahidol.rama.emam.view.history.BuildListDrugHistoryListView;
 
 public class BuildListDrugHistoryAdapter extends BaseAdapter {
     private ListDrugCardDao dao;
+    private String drugId;
 
-    public void setDao(ListDrugCardDao dao){
+    public void setDao(ListDrugCardDao dao, String drugId){
         this.dao = dao;
+        this.drugId = drugId;
     }
 
     @Override
@@ -37,9 +39,9 @@ public class BuildListDrugHistoryAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 
-        BuildDrugHistoryListView buildDrugHistoryListView = new BuildDrugHistoryListView(viewGroup.getContext());
-        buildDrugHistoryListView.setDrugAdr(dao.getListDrugCardDao().get(position));
+        BuildListDrugHistoryListView buildListDrugHistoryListView = new BuildListDrugHistoryListView(viewGroup.getContext());
+        buildListDrugHistoryListView.setDrug(dao.getListDrugCardDao().get(position), drugId);
 
-        return buildDrugHistoryListView;
+        return buildListDrugHistoryListView;
     }
 }
