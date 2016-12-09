@@ -1,7 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -61,7 +60,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private String nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, prn, mrn, tomorrowDate, tricker;
     private int position, timeposition, positionPrepare;
     private ListView listView, listViewAdr;
-    private TextView tvDate, tvTime, tvDrugAdr, tvHistory;
+    private TextView tvDate, tvTime, tvDrugAdr, tvHistory, tvNumAdr;
     private Button btnCancel, btnSave;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildPreparationForPatientAdapter buildPreparationForPatientAdapter;
@@ -636,6 +635,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
                         for (DrugAdrDao d : drugAdrDaos) {
                             DrugAdrDao drugAdrDao = new DrugAdrDao();
                             drugAdrDao.setDrugname(d.getDrugname());
@@ -646,18 +646,11 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
 
                         listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
                         buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
-                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 700);
+                        builder.show();
                     }
                 });
             } else {

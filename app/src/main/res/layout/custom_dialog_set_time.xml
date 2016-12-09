@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/tvCurrentTime"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:gravity="center_vertical"

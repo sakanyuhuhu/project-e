@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment.history;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ public class BuildPatientAllFragment extends Fragment{
     private ListView listView;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
     private ListPatientDataDao dao;
+    private ProgressDialog progressDialog;
 
 
     public BuildPatientAllFragment() {
@@ -77,7 +79,7 @@ public class BuildPatientAllFragment extends Fragment{
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
-
+        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
         loadPatientMRN(sdlocID);
     }
 
@@ -170,6 +172,7 @@ public class BuildPatientAllFragment extends Fragment{
             if(dao.getPatientDao().size() != 0) {
                 buildPatientAllAdapter.setDao(dao);
                 listView.setAdapter(buildPatientAllAdapter);
+                progressDialog.dismiss();
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

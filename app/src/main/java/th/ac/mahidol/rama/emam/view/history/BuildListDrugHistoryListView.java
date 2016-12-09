@@ -99,9 +99,6 @@ public class BuildListDrugHistoryListView extends BaseCustomViewGroup {
             }
             tvStatus.setText(dao.getDescription() + " " + dao.getDescriptionTemplate());
         }
-        else{
-            lnDrug.setVisibility(INVISIBLE);
-        }
     }
 
 }

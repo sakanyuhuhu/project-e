@@ -32,6 +32,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.StringReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,7 +67,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     private int position, timeposition, currentTime, adminTime, sumTime;
     private String[] admintime;
     private ListView listView, listViewAdr;
-    private TextView tvDate, tvTime, tvDrugAdr, tvHistory, tvCurrentTime;
+    private TextView tvDate, tvTime, tvDrugAdr, tvHistory, tvCurrentTime, tvNumAdr;
     private EditText txtStatus;
     private RadioGroup radioGroup;
     private RadioButton radioButton;
@@ -311,7 +312,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         tvCurrentTime = (TextView) dialogView.findViewById(R.id.tvCurrentTime);
         txtStatus = (EditText) dialogView.findViewById(R.id.txtStatus);
 
-        tvCurrentTime.setText(tvcurrentTime);
+        tvCurrentTime.setText(tvcurrentTime + ":00");
         useTime = tvcurrentTime;
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -319,7 +320,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 radioButton = (RadioButton) dialogView.findViewById(selectedId);
                 if(radioButton.getText().equals("บริหารยา ณ เวลานี้")){
-                    useTime = tvcurrentTime;
+                    useTime = tvcurrentTime + ":00";
                 }
                 else if(radioButton.getText().equals("ระบุเวลาในการบริหารยา")){
                     final View dialogViewClock = View.inflate(getActivity(), R.layout.custom_dialog_set_clock, null);
@@ -330,7 +331,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                         public void onClick(View v) {
                             DatePicker datePicker = (DatePicker) dialogViewClock.findViewById(R.id.date_picker);
                             TimePicker timePicker = (TimePicker) dialogViewClock.findViewById(R.id.time_picker);
-
+                            SimpleDateFormat sdfForActualAdmin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date;
                             int pickYear, pickMonth, pickDay, pickHour = 0, pickMinute = 0;
                             Calendar calendar = null;
                             if (android.os.Build.VERSION.SDK_INT >= 23) {
@@ -340,8 +342,14 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                                         pickDay = datePicker.getDayOfMonth(),
                                         pickHour = timePicker.getHour(),
                                         pickMinute = timePicker.getMinute());
-                                useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute);//used lpad
-                                tvCurrentTime.setText(useTime);
+                                useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute)+":00";//used lpad
+                                try {
+                                    date = sdfForActualAdmin.parse(useTime);
+                                    dateActualAdmin = sdfForActualAdmin.format(date);
+                                    tvCurrentTime.setText(dateActualAdmin);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             } else {
                                 calendar = new GregorianCalendar(
                                         pickYear = datePicker.getYear(),
@@ -349,8 +357,14 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                                         pickDay = datePicker.getDayOfMonth(),
                                         pickHour = timePicker.getCurrentHour(),
                                         pickMinute = timePicker.getCurrentMinute());
-                                useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute);//used lpad
-                                tvCurrentTime.setText(useTime);
+                                useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute)+":00";//used lpad
+                                try {
+                                    date = sdfForActualAdmin.parse(useTime);
+                                    dateActualAdmin = sdfForActualAdmin.format(date);
+                                    tvCurrentTime.setText(dateActualAdmin);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
 
                             Calendar timePick = Calendar.getInstance();
@@ -542,7 +556,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             for(DrugCardDao d : dao.getListDrugCardDao()){
-//                Log.d("check", "Description = '"+d.getDescription() + "' ***** getCheckType = '"+d.getCheckType()+"' ***** DescriptionTemplate = '"+d.getDescriptionTemplate()+"' ***** Complete = "+d.getComplete());
                 if(d.getCheckType().equals("Second Check")) {
                     if (d.getComplete().equals("1"))
                         d.setComplete(null);
@@ -672,6 +685,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
                         for (DrugAdrDao d : drugAdrDaos) {
                             DrugAdrDao drugAdrDao = new DrugAdrDao();
                             drugAdrDao.setDrugname(d.getDrugname());
@@ -682,18 +696,11 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
 
                         listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
                         buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
-                        builder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 700);
+                        builder.show();
                     }
                 });
             } else {

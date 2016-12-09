@@ -52,7 +52,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
     private String sdlocID, wardName, toDayDate, mrn, time;
     private int position;
     private ListView listView, listViewAdr;
-    private TextView tvDrugAdr;
+    private TextView tvDrugAdr, tvNumAdr;
     private Button btnOK;
     private BuildHeaderPatientDataView buildHeaderPatientDataView;
     private BuildPatientMedOnTimeAdapter buildPatientMedOnTimeAdapter;
@@ -234,6 +234,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
                         for (DrugAdrDao d : drugAdrDaos) {
                             DrugAdrDao drugAdrDao = new DrugAdrDao();
                             drugAdrDao.setDrugname(d.getDrugname());
@@ -244,12 +245,11 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
 
                         listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
                         buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 500);
+                        builder.show();
                     }
                 });
             } else {

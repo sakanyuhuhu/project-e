@@ -78,8 +78,8 @@ public class BuildDrugHistoryListView extends BaseCustomViewGroup {
         Bundle bundle = ss.getBundle();
     }
 
-    public void setDrug(DrugCardDao dao){
-        tvAdmintime.setText("Admin Time "+ dao.getAdminTime()+":00");
+    public void setDrug(DrugCardDao dao, String time){
+        tvAdmintime.setText("Admin Time "+ time);
         if(dao.getComplete() != null) {
             if(dao.getComplete().equals("1")) {
                 tvCheckstatus.setText("เตรียมยา");

@@ -3,9 +3,10 @@ package th.ac.mahidol.rama.emam.activity.alarm;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver{
-    private String nfcUID, sdlocID, wardName;
+    private String sdlocID, wardName;
 
     @Override
     public void onReceive(Context context, Intent intent) {

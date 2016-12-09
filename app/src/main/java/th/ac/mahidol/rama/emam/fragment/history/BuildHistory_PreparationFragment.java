@@ -61,7 +61,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
     private String nfcUID, sdlocID, wardName, newDateStart, startDate;
     private int position;
     private ListView listView, listViewAdr, lvMedHistory;
-    private TextView tvDrugAdr, tvDate, tvDrugName, tvRoute, tvDosage;
+    private TextView tvDrugAdr, tvDate, tvDrugName, tvRoute, tvDosage, tvNumAdr;
     private ImageView imgCalendar;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private BuildHistoryAdapter buildHistoryAdapter;
@@ -260,7 +260,6 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
                 }
             }
             listDrugCardDao.setListDrugCardDao(drugCardDaoList);
-            Log.d("check", "listDrugCardDao = "+listDrugCardDao.getListDrugCardDao().size());
             buildHistoryAdapter.setDao(getContext(), listDrugCardDao);
             listView.setAdapter(buildHistoryAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -282,17 +281,16 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
                     List<DrugCardDao> drugId = new ArrayList<DrugCardDao>();
                     ListDrugCardDao daoListDrug = new ListDrugCardDao();
                     for(DrugCardDao d : dao.getListDrugCardDao()){
-                        if(dao.getListDrugCardDao().get(position).getDrugID().equals(d.getDrugID())){
+                        if(listDrugCardDao.getListDrugCardDao().get(position).getDrugID().equals(d.getDrugID())){
                             drugId.add(d);
                         }
                     }
                     daoListDrug.setListDrugCardDao(drugId);
-                    Log.d("check", "dao = "+daoListDrug.getListDrugCardDao().size());
-                    buildListDrugHistoryAdapter.setDao(daoListDrug, dao.getListDrugCardDao().get(position).getDrugID());
+                    buildListDrugHistoryAdapter.setDao(daoListDrug, listDrugCardDao.getListDrugCardDao().get(position).getDrugID());
                     lvMedHistory.setAdapter(buildListDrugHistoryAdapter);
                     builder.setView(dialogView);
                     builder.create();
-                    builder.show().getWindow().setLayout(1200, 800);
+                    builder.show();
 
                 }
             });
@@ -328,6 +326,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
                         for (DrugAdrDao d : drugAdrDaos) {
                             DrugAdrDao drugAdrDao = new DrugAdrDao();
                             drugAdrDao.setDrugname(d.getDrugname());
@@ -338,12 +337,11 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
 
                         listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
                         buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 500);
+                        builder.show();
                     }
                 });
             } else {

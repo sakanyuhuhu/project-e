@@ -10,9 +10,11 @@ import th.ac.mahidol.rama.emam.view.BuildDrugHistoryListView;
 
 public class BuildDrugHistoryAdapter extends BaseAdapter {
     private DrugCardDao dao;
+    private String time;
 
-    public void setDao(DrugCardDao dao){
+    public void setDao(DrugCardDao dao, String time){
         this.dao = dao;
+        this.time = time;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class BuildDrugHistoryAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
 
         BuildDrugHistoryListView buildDrugHistoryListView = new BuildDrugHistoryListView(viewGroup.getContext());
-        buildDrugHistoryListView.setDrug(dao);
+        buildDrugHistoryListView.setDrug(dao, time);
 
         return buildDrugHistoryListView;
     }

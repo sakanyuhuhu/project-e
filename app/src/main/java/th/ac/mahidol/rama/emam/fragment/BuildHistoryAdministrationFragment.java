@@ -61,7 +61,7 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
     private int position, timeposition;
     private String[] admintime;
     private ListView listView, listViewAdr, lvMedHistory;
-    private TextView tvTime, tvDrugAdr, tvAdministration, tvDate,  tvDrugName, tvRoute, tvDosage;
+    private TextView tvTime, tvDrugAdr, tvAdministration, tvDate,  tvDrugName, tvRoute, tvDosage, tvNumAdr;
     private ImageView imgCalendar;
     private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
     private BuildHistoryAdapter buildHistoryAdapter;
@@ -280,12 +280,12 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
                     tvDrugName.setText(dao.getListDrugCardDao().get(position).getTradeName());
                     tvRoute.setText("Route: " + dao.getListDrugCardDao().get(position).getRoute());
                     tvDosage.setText("Dosage: " + dao.getListDrugCardDao().get(position).getDose() +" "+ dao.getListDrugCardDao().get(position).getUnit());
-                    buildDrugHistoryAdapter.setDao(dao.getListDrugCardDao().get(position));
+                    buildDrugHistoryAdapter.setDao(dao.getListDrugCardDao().get(position), time);
                     lvMedHistory.setAdapter(buildDrugHistoryAdapter);
 
                     builder.setView(dialogView);
                     builder.create();
-                    builder.show().getWindow().setLayout(1200, 500);
+                    builder.show();
 
                 }
             });
@@ -322,6 +322,7 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
                         for (DrugAdrDao d : drugAdrDaos) {
                             DrugAdrDao drugAdrDao = new DrugAdrDao();
                             drugAdrDao.setDrugname(d.getDrugname());
@@ -332,12 +333,11 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
 
                         listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
                         buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 500);
+                        builder.show();
                     }
                 });
             } else {

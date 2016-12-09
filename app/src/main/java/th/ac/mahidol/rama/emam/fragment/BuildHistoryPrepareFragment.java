@@ -61,7 +61,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
     private int position, timeposition;
     private String[] admintime;
     private ListView listView, listViewAdr, lvMedHistory;
-    private TextView tvTime, tvDrugAdr, tvPreparation, tvDate, tvDrugName, tvRoute, tvDosage;
+    private TextView tvTime, tvDrugAdr, tvPreparation, tvDate, tvDrugName, tvRoute, tvDosage, tvNumAdr;
     private ImageView imgCalendar;
     private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
     private BuildHistoryAdapter buildHistoryAdapter;
@@ -264,10 +264,6 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
             List<DrugCardDao> listDrugTime = new ArrayList<>();
             for (DrugCardDao d : dao.getListDrugCardDao()) {
                 if (d.getActivityHour().equals(admintime[0])) {
-                    Log.d("check", "getTradeName = " + d.getTradeName());
-                    Log.d("check", "getFirstName = " + d.getFirstName());
-                    Log.d("check", "getDescription = " + d.getDescription());
-                    Log.d("check", "getDescriptionTemplate = " + d.getDescriptionTemplate());
                     listDrugTime.add(d);
                 }
             }
@@ -288,12 +284,11 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
                     tvDrugName.setText(dao.getListDrugCardDao().get(position).getTradeName());
                     tvRoute.setText("Route: " + dao.getListDrugCardDao().get(position).getRoute());
                     tvDosage.setText("Dosage: " + dao.getListDrugCardDao().get(position).getDose() +" "+ dao.getListDrugCardDao().get(position).getUnit());
-                    buildDrugHistoryAdapter.setDao(dao.getListDrugCardDao().get(position));
+                    buildDrugHistoryAdapter.setDao(dao.getListDrugCardDao().get(position), time);
                     lvMedHistory.setAdapter(buildDrugHistoryAdapter);
-
                     builder.setView(dialogView);
                     builder.create();
-                    builder.show().getWindow().setLayout(1200, 500);
+                    builder.show();
 
                 }
             });
@@ -328,6 +323,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
                         listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
                         for (DrugAdrDao d : drugAdrDaos) {
                             DrugAdrDao drugAdrDao = new DrugAdrDao();
                             drugAdrDao.setDrugname(d.getDrugname());
@@ -338,12 +334,11 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
 
                         listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
                         buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         listViewAdr.setAdapter(buildListDrugAdrAdapter);
-
                         builder.setView(dialogView);
-                        builder.setTitle("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
                         builder.create();
-                        builder.show().getWindow().setLayout(1200, 500);
+                        builder.show();
                     }
                 });
             } else {
