@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -40,7 +41,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ListView mListView;
     private TextView tvName, tvRFID, tvWard;
-    private String sdlocID, nfcUID, wardName, RFID, firstName, lastName;
+    private String sdlocID, nfcUID, wardName, RFID, firstName, lastName, wardID;
     private String[] mDrawerTitle = {"Home", "Medication Management", "History & Medication List", "Add Medication", "Setting", "บันทึกการให้ยา", "Log out"};
 
     @Override
@@ -48,10 +49,10 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_select_menu);
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
 
-        Log.d("check", "MainSelectMenuActivity nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardname = "+wardName);
         initInstance(savedInstanceState);
     }
 
@@ -65,7 +66,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         loadPersonWard(nfcUID, sdlocID);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainSelectMenuFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, MainSelectMenuFragment.newInstance(nfcUID, wardID, sdlocID, wardName)).commit();
         }
 
         setSupportActionBar(toolbar);
@@ -86,12 +87,11 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                 if (save != -1 & save != position) {
                     parent.getChildAt(save).setBackgroundColor(Color.parseColor("#ffffff"));
                 }
-
                 save = position;
-
                 if(position == 0){
                     Intent intent = new Intent(MainSelectMenuActivity.this, MainSelectMenuActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     startActivity(intent);
@@ -99,6 +99,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                 else if(position == 1){
                     Intent intent = new Intent(MainSelectMenuActivity.this,TimelineActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     startActivity(intent);
@@ -106,6 +107,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                 else if(position == 2){
                     Intent intent = new Intent(MainSelectMenuActivity.this, PatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     startActivity(intent);
@@ -113,6 +115,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                 else if(position == 3){
                     Intent intent = new Intent(MainSelectMenuActivity.this, AddMedicationPatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     startActivity(intent);
@@ -185,14 +188,18 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
             if(dao != null) {
-                saveCachePersonWard(dao);
-                RFID = dao.getRFID();
-                firstName = dao.getFirstName();
-                lastName = dao.getLastName();
-
-                tvName.setText(firstName + " " + lastName);
-                tvRFID.setText("RFID : " + RFID);
-                tvWard.setText("Ward : " + wardName);
+                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                    saveCachePersonWard(dao);
+                    RFID = dao.getRFID();
+                    firstName = dao.getFirstName();
+                    lastName = dao.getLastName();
+                    tvName.setText(firstName + " " + lastName);
+                    tvRFID.setText("RFID : " + RFID);
+                    tvWard.setText("Ward : " + wardName);
+                }
+                else{
+                    Toast.makeText(MainSelectMenuActivity.this, "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                }
             }
         }
 

@@ -6,13 +6,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
-import th.ac.mahidol.rama.emam.view.BuildAddPatientAllListView;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
+import th.ac.mahidol.rama.emam.view.BuildAddPatientAllPRNListView;
 
-public class BuildAddPatientAllAdapter extends BaseAdapter {
+public class BuildAddPatientAllPRNAdapter extends BaseAdapter {
     private ListPatientDataDao dao;
+    private TimelineDao timelineDao;
 
-    public void setDao(ListPatientDataDao dao){
+    public void setDao(ListPatientDataDao dao, TimelineDao timelineDao){
         this.dao = dao;
+        this.timelineDao = timelineDao;
 
     }
 
@@ -38,9 +41,9 @@ public class BuildAddPatientAllAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 
-        BuildAddPatientAllListView patientListView;
-        patientListView = new BuildAddPatientAllListView(viewGroup.getContext());
-        patientListView.setPatient(dao.getPatientDao().get(position));
+        BuildAddPatientAllPRNListView patientListView;
+        patientListView = new BuildAddPatientAllPRNListView(viewGroup.getContext());
+        patientListView.setPatient(dao.getPatientDao().get(position), timelineDao);
 
         return patientListView;
     }

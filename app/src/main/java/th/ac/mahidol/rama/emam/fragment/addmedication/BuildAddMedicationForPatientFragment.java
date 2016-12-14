@@ -32,7 +32,7 @@ import th.ac.mahidol.rama.emam.manager.AdminTimeSelectionSpinner;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
 public class BuildAddMedicationForPatientFragment extends Fragment implements View.OnClickListener {
-    private String nfcUID, sdlocID, wardName, mrn, selectedItem, dateSelect, toDayDate;
+    private String nfcUID, wardID, sdlocID, wardName, mrn, selectedItem, dateSelect, toDayDate;
     private int position;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private PatientDataDao patient;
@@ -51,10 +51,11 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         super();
     }
 
-    public static BuildAddMedicationForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, int position, PatientDataDao patient) {
+    public static BuildAddMedicationForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, int position, PatientDataDao patient) {
         BuildAddMedicationForPatientFragment fragment = new BuildAddMedicationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", position);
@@ -77,12 +78,11 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
         patient = getArguments().getParcelable("patient");
-
-        Log.d("check", "BuildAddMedicationForPatientFragment nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName+" /position = "+position);
 
         edtDrugName = (EditText) rootView.findViewById(R.id.edtDrugName);
         edtDrugID = (EditText) rootView.findViewById(R.id.edtDrugID);
@@ -138,6 +138,7 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         if(view.getId() == R.id.btnCancel){
             Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);
@@ -154,7 +155,6 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
                 Toast.makeText(getActivity(), "กรุณาใส่ Unit", Toast.LENGTH_LONG).show();
 
             String getTimeItems = adminTimeSelectionSpinner.get_items().toString();
-            Log.d("check", "getTimeItems = "+ getTimeItems);
             String getTimeItem = getTimeItems.substring(1,getTimeItems.lastIndexOf("]"));
             String[] arrayTime = getTimeItem.split(", ");
             for(String s : arrayTime){

@@ -78,17 +78,6 @@ public class BuildHistoryHeaderPatientDataView extends BaseCustomViewGroup {
 
     }
 
-//    public void setData(ListPatientDataDao listPatientDataDao, int position){
-//        tvBedNo.setText("เลขที่เตียง/ห้อง: " + listPatientDataDao.getPatientDao().get(position).getBedID());
-//        tvPatientName.setText(listPatientDataDao.getPatientDao().get(position).getInitialName()+ listPatientDataDao.getPatientDao().get(position).getFirstName()+" "+listPatientDataDao.getPatientDao().get(position).getLastName());
-//        tvPatientID.setText(listPatientDataDao.getPatientDao().get(position).getIdCardNo());
-//        tvHN.setText("HN:" + listPatientDataDao.getPatientDao().get(position).getMRN());
-//        tvSex.setText("เพศ:"+ listPatientDataDao.getPatientDao().get(position).getGender());
-//        tvBirth.setText("วันเกิด:"+ listPatientDataDao.getPatientDao().get(position).getDob());
-//        tvAge.setText("อายุ:"+ listPatientDataDao.getPatientDao().get(position).getAge());
-//        tvStatus.setText("สถานะภาพ:"+ listPatientDataDao.getPatientDao().get(position).getMaritalstatus());
-//    }
-
     public void setData(PatientDataDao dao, int position){
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
         tvPatientName.setText(dao.getInitialName()+ dao.getFirstName()+" "+dao.getLastName());

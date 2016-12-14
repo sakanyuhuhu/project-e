@@ -18,7 +18,7 @@ import th.ac.mahidol.rama.emam.activity.LoginUserDoubleCheckActivity;
 public class BuildLoginDoubleCheckFragment extends Fragment implements View.OnClickListener{
     private EditText edUsername, edPassword;
     private Button btnLogin, btnCancel;
-    private String sdlocID, wardName, time;
+    private String wardID, sdlocID, wardName, time;
     private int timeposition;
 
 
@@ -26,9 +26,10 @@ public class BuildLoginDoubleCheckFragment extends Fragment implements View.OnCl
         super();
     }
 
-    public static BuildLoginDoubleCheckFragment newInstance(String sdlocID, String wardName, int timeposition, String time) {
+    public static BuildLoginDoubleCheckFragment newInstance(String wardID, String sdlocID, String wardName, int timeposition, String time) {
         BuildLoginDoubleCheckFragment fragment = new BuildLoginDoubleCheckFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -60,6 +61,7 @@ public class BuildLoginDoubleCheckFragment extends Fragment implements View.OnCl
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
@@ -93,6 +95,7 @@ public class BuildLoginDoubleCheckFragment extends Fragment implements View.OnCl
                 Intent intent = new Intent(getContext(), LoginUserDoubleCheckActivity.class);
                 intent.putExtra("username", edUsername.getText().toString());
                 intent.putExtra("password", edPassword.getText().toString());
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", timeposition);
@@ -105,6 +108,7 @@ public class BuildLoginDoubleCheckFragment extends Fragment implements View.OnCl
         }
         else if(view.getId() == R.id.btnCancel){
             Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);

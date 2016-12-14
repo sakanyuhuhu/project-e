@@ -6,14 +6,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import java.util.Calendar;
 
 import th.ac.mahidol.rama.emam.R;
 
 public class AlarmActivity extends AppCompatActivity{
-    private String sdlocID, wardName;
+    private String wardID, sdlocID, wardName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +22,7 @@ public class AlarmActivity extends AppCompatActivity{
     }
 
     public void startAlert() {
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
 
@@ -33,6 +33,7 @@ public class AlarmActivity extends AppCompatActivity{
         calendar.set(Calendar.MINUTE, 00);
 
         Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+        intent.putExtra("wardId", wardID);
         intent.putExtra("sdlocId", sdlocID);
         intent.putExtra("wardname", wardName);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 1, intent, 0);//234324243

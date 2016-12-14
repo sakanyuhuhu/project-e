@@ -64,10 +64,6 @@ public class BuildPatientOnTimeListView extends BaseCustomViewGroup {
         Parcelable superState = super.onSaveInstanceState();
 
         BundleSavedState savedState = new BundleSavedState(superState);
-        // Save Instance State(s) here to the 'savedState.getBundle()'
-        // for example,
-        // savedState.getBundle().putString("key", value);
-
         return savedState;
     }
 
@@ -77,7 +73,7 @@ public class BuildPatientOnTimeListView extends BaseCustomViewGroup {
         super.onRestoreInstanceState(ss.getSuperState());
 
         Bundle bundle = ss.getBundle();
-        // Restore State from bundle here
+
     }
 
     public void setPatient(PatientDataDao dao){

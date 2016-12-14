@@ -61,18 +61,7 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        /*
-        TypedArray a = getContext().getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.StyleableName,
-                defStyleAttr, defStyleRes);
 
-        try {
-
-        } finally {
-            a.recycle();
-        }
-        */
     }
 
     @Override
@@ -80,9 +69,6 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
         Parcelable superState = super.onSaveInstanceState();
 
         BundleSavedState savedState = new BundleSavedState(superState);
-        // Save Instance State(s) here to the 'savedState.getBundle()'
-        // for example,
-        // savedState.getBundle().putString("key", value);
 
         return savedState;
     }
@@ -97,10 +83,6 @@ public class BuildPreparationListView extends BaseCustomViewGroup {
     }
 
     public void setPatient(PatientDataDao dao){
-//        tvPatient.setText(textPatient);
-//        tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
-//        tvMrn.setText("HN: " + textMrn);
-
         if(dao.getStatus() == null){
             tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
             tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());

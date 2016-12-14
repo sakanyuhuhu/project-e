@@ -18,7 +18,7 @@ import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 public class BuildLoginPreparationFragment extends Fragment implements View.OnClickListener {
     private EditText edUsername, edPassword;
     private Button btnLogin, btnCancel;
-    private String sdlocID, wardName, time;
+    private String wardID, sdlocID, wardName, time;
     private int timeposition;
 
 
@@ -26,9 +26,10 @@ public class BuildLoginPreparationFragment extends Fragment implements View.OnCl
         super();
     }
 
-    public static BuildLoginPreparationFragment newInstance(String sdlocID, String wardName, int timeposition, String time) {
+    public static BuildLoginPreparationFragment newInstance(String wardID, String sdlocID, String wardName, int timeposition, String time) {
         BuildLoginPreparationFragment fragment = new BuildLoginPreparationFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -59,6 +60,7 @@ public class BuildLoginPreparationFragment extends Fragment implements View.OnCl
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
@@ -92,6 +94,7 @@ public class BuildLoginPreparationFragment extends Fragment implements View.OnCl
                 Intent intent = new Intent(getContext(), LoginUserPrepareActivity.class);
                 intent.putExtra("username", edUsername.getText().toString());
                 intent.putExtra("password", edPassword.getText().toString());
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", timeposition);
@@ -102,6 +105,7 @@ public class BuildLoginPreparationFragment extends Fragment implements View.OnCl
                 Toast.makeText(getActivity(), "กรุณาใส่ Username และ Password ให้ถูกต้อง", Toast.LENGTH_LONG).show();
         } else if (view.getId() == R.id.btnCancel) {
             Intent intent = new Intent(getContext(), PreparationActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);

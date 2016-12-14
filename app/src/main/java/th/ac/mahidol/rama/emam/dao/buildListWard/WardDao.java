@@ -6,10 +6,6 @@ public class WardDao {
     private String id;
     private String wardName;
     @SerializedName("sdloc_id") private String sdlocId;
-//    private Date registerDate;
-//    private Date lastVisited;
-//    private Date lastUpdated;
-//    private int independenRule;
     private boolean trolley;
     private boolean active;
 

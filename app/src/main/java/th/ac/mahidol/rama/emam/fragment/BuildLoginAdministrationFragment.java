@@ -18,7 +18,7 @@ import th.ac.mahidol.rama.emam.activity.LoginUserAdministrationActivity;
 public class BuildLoginAdministrationFragment extends Fragment implements View.OnClickListener{
     private EditText edUsername, edPassword;
     private Button btnLogin, btnCancel;
-    private String sdlocID, wardName, time;
+    private String wardID, sdlocID, wardName, time;
     private int timeposition;
 
 
@@ -26,9 +26,10 @@ public class BuildLoginAdministrationFragment extends Fragment implements View.O
         super();
     }
 
-    public static BuildLoginAdministrationFragment newInstance(String sdlocID, String wardName, int timeposition, String time) {
+    public static BuildLoginAdministrationFragment newInstance(String wardID, String sdlocID, String wardName, int timeposition, String time) {
         BuildLoginAdministrationFragment fragment = new BuildLoginAdministrationFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -59,6 +60,7 @@ public class BuildLoginAdministrationFragment extends Fragment implements View.O
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
@@ -92,6 +94,7 @@ public class BuildLoginAdministrationFragment extends Fragment implements View.O
                 Intent intent = new Intent(getContext(), LoginUserAdministrationActivity.class);
                 intent.putExtra("username", edUsername.getText().toString());
                 intent.putExtra("password", edPassword.getText().toString());
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", timeposition);
@@ -104,6 +107,7 @@ public class BuildLoginAdministrationFragment extends Fragment implements View.O
         }
         else if(view.getId() == R.id.btnCancel){
             Intent intent = new Intent(getContext(), AdministrationActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);

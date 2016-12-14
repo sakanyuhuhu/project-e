@@ -30,7 +30,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 
 public class LoginUserActivity extends AppCompatActivity {
-    private String username, password, name, sdlocID, wardName;
+    private String username, password, wardID, sdlocID, wardName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +43,7 @@ public class LoginUserActivity extends AppCompatActivity {
     private void initInstance(Bundle savedInstanceState) {
         username = getIntent().getExtras().getString("username");
         password = getIntent().getExtras().getString("password");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         new getResultForLogin().execute();
@@ -50,7 +51,6 @@ public class LoginUserActivity extends AppCompatActivity {
 
 
     private void loadPersonWard(String staffID, String sdlocID) {
-        Log.d("check", "2 staffId = " + username + "  sdlocId = " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonLogin(staffID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
@@ -61,9 +61,9 @@ public class LoginUserActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            Log.d("check", "dao login = " + dao.getRFID() + " " + dao.getFirstName() + " " + dao.getLastName() + " " + dao.getNfcUId());
             Intent intent = new Intent(getApplicationContext(), MainSelectMenuActivity.class);
             intent.putExtra("nfcUId", dao.getNfcUId());
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -82,12 +82,12 @@ public class LoginUserActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<CheckLoginDao> checkLoginDaos) {
             super.onPostExecute(checkLoginDaos);
-            Log.d("check", "*****getResultForLogin onPostExecute = " + checkLoginDaos.get(0).getName());
             if (checkLoginDaos.get(0).getRole() != null & checkLoginDaos.get(0).getName() != null) { // check leave in rama
                 loadPersonWard(username, sdlocID);
             } else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -104,7 +104,7 @@ public class LoginUserActivity extends AppCompatActivity {
             if (username != null & password != null) {
                 itemsList = parseXML(soapManager.getLogin("Get_staff_detail", username, password));
             }
-            Log.d("check", "itemsList doInBackground = " + itemsList);
+
             return itemsList;
         }
 

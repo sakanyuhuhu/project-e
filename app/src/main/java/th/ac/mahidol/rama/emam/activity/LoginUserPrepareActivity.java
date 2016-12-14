@@ -30,7 +30,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 
 public class LoginUserPrepareActivity extends AppCompatActivity {
-    private String username, password, sdlocID, wardName, time;
+    private String username, password, wardID, sdlocID, wardName, time;
     private int timeposition;
     private String prn = "prepare", tricker;
 
@@ -45,6 +45,7 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
     private void initInstance(Bundle savedInstanceState) {
         username = getIntent().getExtras().getString("username");
         password = getIntent().getExtras().getString("password");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
@@ -54,7 +55,6 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
 
 
     private void loadPersonWard(String staffID, String sdlocID) {
-        Log.d("check", "LoginUserPrepareActivity staffId = " + username + "  sdlocId = " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonLogin(staffID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
@@ -67,8 +67,7 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            Log.d("check", "LoginUserPrepareActivity dao login = " + dao.getRFID() + " " + dao.getFirstName() + " " + dao.getLastName() + " " + dao.getNfcUId());
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(dao.getNfcUId(), sdlocID, wardName, timeposition, time, prn, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, dao.getNfcUId(), sdlocID, wardName, timeposition, time, prn, tricker)).commit();
         }
 
         @Override
@@ -82,12 +81,13 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<CheckLoginDao> checkLoginDaos) {
             super.onPostExecute(checkLoginDaos);
-            Log.d("check", "*****getResultForLogin onPostExecute = " + checkLoginDaos.get(0).getName());
-            if (checkLoginDaos.get(0).getRole().equals("G")) { // N
+
+            if (checkLoginDaos.get(0).getRole().equals("G") | checkLoginDaos.get(0).getRole().equals("N")) {
                 loadPersonWard(username, sdlocID);
             } else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginPreparationActivity.class);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", timeposition);
@@ -107,7 +107,7 @@ public class LoginUserPrepareActivity extends AppCompatActivity {
             if (username != null & password != null) {
                 itemsList = parseXML(soapManager.getLogin("Get_staff_detail", username, password));
             }
-            Log.d("check", "itemsList doInBackground = " + itemsList);
+
             return itemsList;
         }
 

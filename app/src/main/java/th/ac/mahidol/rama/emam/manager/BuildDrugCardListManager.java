@@ -97,7 +97,6 @@ public class BuildDrugCardListManager {
         editor.putString("drugdataperson",json);
         editor.apply();
 
-//        Log.d("check", "DrugLoadCallback = "+json);
     }
 
     private void loadCache(){

@@ -53,7 +53,7 @@ import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView;
 
 public class BuildDoubleCheckForPatientFragment extends Fragment implements View.OnClickListener {
     private String nfcUID, sdlocID, wardName, mrn, toDayDate, tomorrowDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tricker;
@@ -61,7 +61,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     private ListView listView, listViewAdr;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory, tvNumAdr;
     private Button btnCancel, btnSave;
-    private BuildHeaderPatientDataView buildHeaderPatientDataView;
+    private BuildHeaderPatientDataWhiteView buildHeaderPatientDataWhiteView;
     private BuildDoubleCheckForPatientAdapter buildDoubleCheckForPatientAdapter;
     private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
@@ -127,7 +127,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         time = getArguments().getString("time");
 
         listView = (ListView) rootView.findViewById(R.id.lvDoubleForPatientAdapter);
-        buildHeaderPatientDataView = (BuildHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataWhiteView = (BuildHeaderPatientDataWhiteView) rootView.findViewById(R.id.headerPatientAdapter);
         buildDoubleCheckForPatientAdapter = new BuildDoubleCheckForPatientAdapter();
         buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
@@ -154,7 +154,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         tvTime.setText(time);
 
         if (patientDouble != null) {
-            buildHeaderPatientDataView.setData(patientDouble, position);
+            buildHeaderPatientDataWhiteView.setData(patientDouble, position);
             if (timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
@@ -237,7 +237,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         if (view.getId() == R.id.btnSave) {
             Boolean checkNull = true;
             for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
-                Log.d("check", "Complete = " + d.getComplete() + " /Note = " + d.getCheckNote());
                 if (d.getComplete() == null & d.getCheckNote() == null) {
                     d.setComplete("0");
                     d.setCheckNote("0");
@@ -524,7 +523,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPreExecute();
-            Log.d("check", "*****DrugAdrDao onPostExecute = " + drugAdrDaos.size());
             final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
             final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
             if (drugAdrDaos.size() != 0) {
@@ -572,7 +570,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             patientDouble = getArguments().getParcelable("patientDouble");
             if (patientDouble != null) {
                 mrn = patientDouble.getMRN();
-                Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             return itemsList;

@@ -28,7 +28,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddDrugNotPrepareFragment extends Fragment{
-    private String nfcUID, sdlocID, wardName, time, RFID, firstName, lastName, prn, mrn, checkType, date, toDayDate, tomorrowDate;
+    private String nfcUID, wardID, sdlocID, wardName, time, RFID, firstName, lastName, prn, mrn, checkType, date, toDayDate, tomorrowDate;
     private int timeposition;
     private ListView listView;
     private TextView tvTime;
@@ -42,10 +42,11 @@ public class BuildAddDrugNotPrepareFragment extends Fragment{
         super();
     }
 
-    public static BuildAddDrugNotPrepareFragment newInstance(String nfcUID, String sdlocID, String wardName, int timeposition, String time, String RFID, String firstName, String lastName, String prn, String mrn, String checkType, String date, PatientDataDao patientDao) {
+    public static BuildAddDrugNotPrepareFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, int timeposition, String time, String RFID, String firstName, String lastName, String prn, String mrn, String checkType, String date, PatientDataDao patientDao) {
         BuildAddDrugNotPrepareFragment fragment = new BuildAddDrugNotPrepareFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -85,6 +86,7 @@ public class BuildAddDrugNotPrepareFragment extends Fragment{
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
@@ -97,12 +99,6 @@ public class BuildAddDrugNotPrepareFragment extends Fragment{
         checkType = getArguments().getString("checkType");
         date = getArguments().getString("date");
         patientDao = getArguments().getParcelable("patientDao");
-
-        Log.d("check", "BuildPreparationForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName+
-                " /timeposition = " +timeposition +" /position = " + timeposition+" /time = "+time+" /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName+
-                " /prn = "+prn+" /mrn = "+mrn+" /checkType = "+checkType+" /date = "+date);
-
-        Log.d("check", "patientDao = "+patientDao);
 
         listView = (ListView) rootView.findViewById(R.id.lvDrugNotPreapare);
         buildDrugNotPreapareAdapter = new BuildDrugNotPreapareAdapter();
@@ -156,6 +152,7 @@ public class BuildAddDrugNotPrepareFragment extends Fragment{
                 if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
                     Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     intent.putExtra("RFID", RFID);

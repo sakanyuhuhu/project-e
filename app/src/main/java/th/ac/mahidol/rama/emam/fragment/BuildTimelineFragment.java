@@ -15,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,11 +27,12 @@ import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildTimelineAdapter;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildTimelineFragment extends Fragment {
-    private String nfcUID, sdlocID, wardName, focustimer;
+    private String nfcUID, wardID, sdlocID, wardName, focustimer;
     private String[] listTimeline = {"0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "0:00", "1:00", "2:00"};
     private ListView listView;
     private BuildTimelineAdapter buildTimelineAdapter;
@@ -41,10 +44,11 @@ public class BuildTimelineFragment extends Fragment {
         super();
     }
 
-    public static BuildTimelineFragment newInstance(String nfcUID, String sdlocID, String wardName) {
+    public static BuildTimelineFragment newInstance(String nfcUID, String sdlocID, String wardName, String wardID) {
         BuildTimelineFragment fragment = new BuildTimelineFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         fragment.setArguments(args);
@@ -74,6 +78,7 @@ public class BuildTimelineFragment extends Fragment {
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
 
@@ -126,6 +131,7 @@ public class BuildTimelineFragment extends Fragment {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     startActivity(intent);
@@ -164,6 +170,7 @@ public class BuildTimelineFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                     Intent intent = new Intent(getContext(), PreparationActivity.class);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     intent.putExtra("position", position);
@@ -175,17 +182,24 @@ public class BuildTimelineFragment extends Fragment {
             listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                    final TimelineDao newTimelineDao = new TimelineDao();
+                    List<MrnTimelineDao> mrnTimelineDaoList = new ArrayList<MrnTimelineDao>();
+                    mrnTimelineDaoList.add(in.getTimelineDao().get(position));
+                    newTimelineDao.setTimelineDao(mrnTimelineDaoList);
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle("เพิ่มยา PRN");
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
-//                            intent.putExtra("nfcUId", nfcUID);
+                            intent.putExtra("wardId", wardID);
                             intent.putExtra("sdlocId", sdlocID);
                             intent.putExtra("wardname", wardName);
                             intent.putExtra("position", position);
                             intent.putExtra("time", listTimeline[position]);
+                            intent.putExtra("include", newTimelineDao);
                             getActivity().startActivity(intent);
                             dialog.dismiss();
                         }

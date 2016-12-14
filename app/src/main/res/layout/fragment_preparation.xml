@@ -76,7 +76,6 @@
     <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="770dp">
-        <!--// 770dp-->
         <ListView
         android:id="@+id/lvPatientAdapter"
         android:layout_width="match_parent"

@@ -28,7 +28,7 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAddMedicationPatientAllFragment extends Fragment{
-    private String nfcUID, sdlocID, wardName;
+    private String wardID, nfcUID, sdlocID, wardName;
     private ListView listView;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
     private ListPatientDataDao dao;
@@ -39,9 +39,10 @@ public class BuildAddMedicationPatientAllFragment extends Fragment{
         super();
     }
 
-    public static BuildAddMedicationPatientAllFragment newInstance(String nfcUID, String sdlocID, String wardName) {
+    public static BuildAddMedicationPatientAllFragment newInstance(String wardID, String nfcUID, String sdlocID, String wardName) {
         BuildAddMedicationPatientAllFragment fragment = new BuildAddMedicationPatientAllFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("nfcUId", nfcUID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
@@ -72,10 +73,10 @@ public class BuildAddMedicationPatientAllFragment extends Fragment{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
-        Log.d("check", "BuildAddMedicationPatientAllFragment nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
@@ -153,6 +154,7 @@ public class BuildAddMedicationPatientAllFragment extends Fragment{
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent(getContext(), AddMedicationForPatientActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("position", position);

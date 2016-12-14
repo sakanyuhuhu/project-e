@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -77,9 +78,9 @@ public class BuildDrugAdrListView extends BaseCustomViewGroup {
     }
 
     public void setDrugAdr(DrugAdrDao dao){
-        tvDrugName.setText("Drug : "+dao.getDrugname());
-        tvSideEffect.setText("Side Effect : "+dao.getSideEffect());
-        tvNaranjo.setText("Naranjo : "+dao.getNaranjo());
+        tvDrugName.setText(Html.fromHtml("<b>Drug :</b> "+ dao.getDrugname()));
+        tvSideEffect.setText(Html.fromHtml("<b>Side Effect :</b> " +dao.getSideEffect()));
+        tvNaranjo.setText(Html.fromHtml("<b>Naranjo :</b> " +dao.getNaranjo()));
     }
 
 }

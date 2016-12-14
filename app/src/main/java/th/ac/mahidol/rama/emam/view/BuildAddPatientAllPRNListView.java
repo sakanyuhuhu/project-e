@@ -5,31 +5,35 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
-public class BuildAddPatientAllListView extends BaseCustomViewGroup {
+public class BuildAddPatientAllPRNListView extends BaseCustomViewGroup {
 
     private TextView tvPatient, tvBedNo, tvMrn;
+    private LinearLayout bg;
 
-    public BuildAddPatientAllListView(Context context) {
+    public BuildAddPatientAllPRNListView(Context context) {
         super(context);
         initInflate();
         initInstances();
     }
 
-    public BuildAddPatientAllListView(Context context, AttributeSet attrs) {
+    public BuildAddPatientAllPRNListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initInflate();
         initInstances();
         initWithAttrs(attrs, 0, 0);
     }
 
-    public BuildAddPatientAllListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BuildAddPatientAllPRNListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initInflate();
         initInstances();
@@ -37,7 +41,7 @@ public class BuildAddPatientAllListView extends BaseCustomViewGroup {
     }
 
     @TargetApi(21)
-    public BuildAddPatientAllListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BuildAddPatientAllPRNListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initInflate();
         initInstances();
@@ -49,6 +53,7 @@ public class BuildAddPatientAllListView extends BaseCustomViewGroup {
     }
 
     private void initInstances() {
+        bg = (LinearLayout) findViewById(R.id.bg);
         tvPatient = (TextView) findViewById(R.id.tvPatient);
         tvBedNo = (TextView) findViewById(R.id.tvBedNo);
         tvMrn = (TextView) findViewById(R.id.tvMrn);
@@ -75,7 +80,21 @@ public class BuildAddPatientAllListView extends BaseCustomViewGroup {
         Bundle bundle = ss.getBundle();
     }
 
-    public void setPatient(PatientDataDao dao){
+    public void setPatient(PatientDataDao dao, TimelineDao timelineDao){
+        for (MrnTimelineDao m : timelineDao.getTimelineDao()) {
+            for (String s : m.getMrn()) {
+                if (dao.getMRN().equals(s)) {
+                    bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                    tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
+                    tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+                    tvMrn.setText("HN: " + dao.getMRN());
+                } else {
+                    tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
+                    tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+                    tvMrn.setText("HN: " + dao.getMRN());
+                }
+            }
+        }
         tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
         tvMrn.setText("HN: " + dao.getMRN());

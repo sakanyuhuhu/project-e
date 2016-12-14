@@ -52,16 +52,14 @@ import th.ac.mahidol.rama.emam.manager.BuildAddPRNPatientManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView;
 
 public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener, Serializable{
-    private String  nfcUID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID, toDayDate, prn, tomorrowDate, mrn;
+    private String  nfcUID, wardID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID, toDayDate, prn, tomorrowDate, mrn;
     private int position, timeposition;
     private ListView listView;
     private TextView tvDate, tvTime, tvDrugAdr;
-    private BuildHeaderPatientDataView buildHeaderPatientDataView;
-    private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
+    private BuildHeaderPatientDataWhiteView buildHeaderPatientDataWhiteView;
     private BuildAddDrugPRNForPatientAdapter buildAddDrugPRNForPatientAdapter;
     private ListDrugCardDao dao, listDrugCardDao;
     private ListPatientDataDao listPatientDataDao;
@@ -74,10 +72,11 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         super();
     }
 
-    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, PatientDataDao patientDao, String prn) {
+    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, PatientDataDao patientDao, String prn) {
         BuildAddDrugPRNForPatientFragment fragment = new BuildAddDrugPRNForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putString("RFID", RFID);
@@ -115,6 +114,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     private void initInstances(final View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         RFID = getArguments().getString("RFID");
@@ -126,12 +126,8 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         patientDao = getArguments().getParcelable("patientPRN");
         prn = getArguments().getString("prn");
 
-        Log.d("check", "BuildAddDrugPRNForPatientFragment nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-               " /timeposition = "+timeposition+" /position = " + position+" /time = "+time+" /prn = "+ prn);
-
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
-        buildHeaderPatientDataView = (BuildHeaderPatientDataView)rootView.findViewById(R.id.headerPatientAdapter);
-//        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD)rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataWhiteView = (BuildHeaderPatientDataWhiteView)rootView.findViewById(R.id.headerPatientAdapter);
         buildAddDrugPRNForPatientAdapter = new BuildAddDrugPRNForPatientAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
@@ -152,38 +148,8 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
         tvTime.setText(time);
 
-////            buildHeaderPatientDataView.setData(listPatientDataDao, position);
-//            buildHeaderPatientDataViewOLD.setData(listPatientDataDao, position);
-//            Log.d("check", "MRN = "+listPatientDataDao.getPatientDao().get(position).getMRN()+ " SIZE = "+listPatientDataDao.getPatientDao().size());
-//            if(timeposition <= 23) {
-//                DrugCardDao drugCardDao = new DrugCardDao();
-//                drugCardDao.setAdminTimeHour(time);
-//                drugCardDao.setDrugUseDate(toDayDate);
-//                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-//                drugCardDao.setCheckType("First Check");
-//
-//                loadDrugPRNData(drugCardDao);
-//            }
-//            else{
-//                DrugCardDao drugCardDao = new DrugCardDao();
-//                drugCardDao.setAdminTimeHour(time);
-//                drugCardDao.setDrugUseDate(tomorrowDate);
-//                drugCardDao.setMRN(listPatientDataDao.getPatientDao().get(position).getMRN());
-//                drugCardDao.setCheckType("First Check");
-//
-//                loadDrugPRNData(drugCardDao);
-//            }
-//        }
-
-//        SharedPreferences prefs = getContext().getSharedPreferences("patientprnAll", Context.MODE_PRIVATE);
-//        String data = prefs.getString("patientprnAll",null);
-//        if(data != null){
-//            listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-//            Log.d("check", "****************************"+listPatientDataDao.getPatientDao().size());
-//        }
-
         if(patientDao != null){
-            buildHeaderPatientDataView.setData(patientDao, position);
+            buildHeaderPatientDataWhiteView.setData(patientDao, position);
             if(timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
@@ -284,6 +250,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 Toast.makeText(getContext(), "เพิ่มยาเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                 intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("RFID", RFID);
@@ -305,6 +272,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
             if(prn.equals("prepare")){
                 Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                 intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("RFID", RFID);
@@ -319,6 +287,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
             else {
                 Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
                 intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", position);
@@ -341,6 +310,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                     if(prn.equals("prepare")) {
                         Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("RFID", RFID);
@@ -356,6 +326,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                     else {
                         Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("position", position);
@@ -395,7 +366,6 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         @Override
         protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " +  drugAdrDaos.size());
 
             if(drugAdrDaos.size() != 0){
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
@@ -416,21 +386,12 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
 
-//            SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
-//            String data = prefs.getString("patientprn",null);
-//            if(data != null){
-//                ListPatientDataDao listPatientDataDao = new Gson().fromJson(data,ListPatientDataDao.class);
-//                Log.d("check", "*****doInBackground data = " + listPatientDataDao.getPatientDao().get(position).getMRN());
-//                itemsList = parseXML(soapManager.getDrugADR("Get_Adr", listPatientDataDao.getPatientDao().get(position).getMRN()));
-//            }
             patientDao = getArguments().getParcelable("patientPRN");
             if(patientDao != null){
                 mrn = patientDao.getMRN();
-                Log.d("check", "MRN doInBackground = "+mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
 
-            Log.d("check", "itemsList doInBackground = "+ itemsList);
             return itemsList;
         }
 

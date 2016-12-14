@@ -2,7 +2,6 @@ package th.ac.mahidol.rama.emam.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -26,10 +25,7 @@ public class AdministrationForPatientActivity extends AppCompatActivity {
         timeposition = getIntent().getExtras().getInt("timeposition");
         patientAdmin = getIntent().getParcelableExtra("patientAdmin");
         position = getIntent().getExtras().getInt("position");
-
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "AdministrationForPatientActivity sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationForPatientFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientAdmin, time)).commit();
         }

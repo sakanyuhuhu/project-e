@@ -2,7 +2,6 @@ package th.ac.mahidol.rama.emam.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -28,9 +27,6 @@ public class HistoryDoubleCheckActivity extends AppCompatActivity {
         position = getIntent().getExtras().getInt("position");
         patientDouble = getIntent().getParcelableExtra("patientDouble");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "HistoryDoubleCheckActivity nfcUId = "+nfcUID+" /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = "+RFID+ " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " +timeposition +" /position = " + position+" /time = "+time);
-        Log.d("check", "patientDouble = "+patientDouble);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildHistoryDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientDouble, time)).commit();

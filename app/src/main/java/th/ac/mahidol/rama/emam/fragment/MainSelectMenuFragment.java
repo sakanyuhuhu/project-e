@@ -22,15 +22,16 @@ import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 
 public class MainSelectMenuFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout imgBMedication, imgBHistory, imgBAddMedication, imgBLogout;
-    private String sdlocID, nfcUID, wardName;
+    private String wardID, sdlocID, nfcUID, wardName;
     public MainSelectMenuFragment() {
         super();
     }
 
-    public static MainSelectMenuFragment newInstance(String nfcUID, String sdlocID, String wardname) {
+    public static MainSelectMenuFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardname) {
         MainSelectMenuFragment fragment = new MainSelectMenuFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId",sdlocID);
         args.putString("wardname", wardname);
         fragment.setArguments(args);
@@ -60,6 +61,7 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         imgBMedication = (RelativeLayout) rootView.findViewById(R.id.imgBMedication);
@@ -90,6 +92,7 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         if(view.getId() == R.id.imgBMedication) {
             Intent intent = new Intent(getContext(), TimelineActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);
@@ -97,6 +100,7 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         else if (view.getId() == R.id.imgBHistory){
             Intent intent = new Intent(getContext(), PatientAllActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);
@@ -104,12 +108,14 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
         else if(view.getId() == R.id.imgBAddMedication){
             Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);
         }
         else if(view.getId() == R.id.imgBLogout){
             Intent intent = new Intent(getContext(), AlarmActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);

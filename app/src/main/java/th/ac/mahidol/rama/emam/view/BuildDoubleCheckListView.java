@@ -81,11 +81,7 @@ public class BuildDoubleCheckListView extends BaseCustomViewGroup {
         Bundle bundle = ss.getBundle();
     }
 
-    public void setPatient(PatientDataDao dao){//(String textBedNo, String textPatient, String textMrn){
-//        tvPatient.setText(textPatient);
-//        tvBedNo.setText("เลขที่เตียง/ห้อง: " + textBedNo);
-//        tvMrn.setText("HN: " + textMrn);
-
+    public void setPatient(PatientDataDao dao){
         if(dao.getStatus() == null){
             tvPatient.setText(dao.getFirstName()+" "+dao.getLastName());
             tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());

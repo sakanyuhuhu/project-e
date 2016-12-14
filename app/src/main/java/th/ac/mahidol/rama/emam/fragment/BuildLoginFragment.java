@@ -17,16 +17,17 @@ import th.ac.mahidol.rama.emam.activity.LoginUserActivity;
 public class BuildLoginFragment extends Fragment{
     private EditText edtUsername, edtPassword;
     private Button btnLogin;
-    private String sdlocID, wardName;
+    private String sdlocID, wardName, wardID;
 
 
     public BuildLoginFragment() {
         super();
     }
 
-    public static BuildLoginFragment newInstance(String sdlocID, String wardName) {
+    public static BuildLoginFragment newInstance(String sdlocID, String wardName, String wardID) {
         BuildLoginFragment fragment = new BuildLoginFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         fragment.setArguments(args);
@@ -56,6 +57,7 @@ public class BuildLoginFragment extends Fragment{
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         edtUsername = (EditText) rootView.findViewById(R.id.edtUsername);
@@ -69,6 +71,7 @@ public class BuildLoginFragment extends Fragment{
                     Intent intent = new Intent(getContext(), LoginUserActivity.class);
                     intent.putExtra("username", edtUsername.getText().toString());
                     intent.putExtra("password", edtPassword.getText().toString());
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);

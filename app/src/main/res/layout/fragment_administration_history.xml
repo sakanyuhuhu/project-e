@@ -50,7 +50,7 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD
+    <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataHisView
         android:id="@+id/headerPatientAdapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

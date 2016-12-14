@@ -42,7 +42,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildAdministrationFragment extends Fragment implements View.OnClickListener {
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, message, tricker;
+    private String wardID, sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, message, tricker;
     private int timeposition, num;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvPreparation, tvNoPatient;
@@ -56,10 +56,11 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         super();
     }
 
-    public static BuildAdministrationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time, String tricker) {
+    public static BuildAdministrationFragment newInstance(String wardID, String nfcUId, String sdlocId, String wardName, int timeposition, String time, String tricker) {
         BuildAdministrationFragment fragment = new BuildAdministrationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUId);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocId);
         args.putString("wardname", wardName);
         args.putInt("position", timeposition);
@@ -92,14 +93,12 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         timeposition = getArguments().getInt("position");
         time = getArguments().getString("time");
         tricker = getArguments().getString("save");
-
-        Log.d("check", "BuildAdministrationFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = " + timeposition + " /time = " +
-                time + " /tricker = " + tricker);
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
@@ -160,16 +159,23 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
 
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
-            buildAdministrationAdapter.setDao(dao);
-            listView.setAdapter(buildAdministrationAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    num = position;
-                    Intent intent = new Intent(getContext(), CameraScanActivity.class);
-                    startActivityForResult(intent, 1);
-                }
-            });
+            if(dao.getPatientDao().size() != 0) {
+                buildAdministrationAdapter.setDao(dao);
+                listView.setAdapter(buildAdministrationAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        num = position;
+                        Intent intent = new Intent(getContext(), CameraScanActivity.class);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+            }
+            else{
+                tvNoPatient.setText("ไม่มีผู้ป่วย");
+                tvNoPatient.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -197,7 +203,6 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         if (requestCode == 1) {
             if (data != null) {
                 message = data.getStringExtra("MESSAGE");
-                Log.d("check", "message = " + message);
                 SharedPreferences prefs = getContext().getSharedPreferences("patientadministration", Context.MODE_PRIVATE);
                 String patient = prefs.getString("patientadministration", null);
                 if (patient != null) {
@@ -206,6 +211,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                         found = true;
                         Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("RFID", RFID);
@@ -236,6 +242,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), TimelineActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);
@@ -252,6 +259,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
     public void onClick(View view) {
         if (view.getId() == R.id.tvDoublecheck) {
             Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
@@ -260,6 +268,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             getActivity().finish();
         } else if (view.getId() == R.id.tvPreparation) {
             Intent intent = new Intent(getContext(), PreparationActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
@@ -268,6 +277,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             getActivity().finish();
         } else if (view.getId() == R.id.btnLogin) {
             Intent intent = new Intent(getContext(), LoginAdministrationActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
@@ -282,6 +292,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             dao = response.body();
+            saveCachePatientAdminData(dao);
             List<String> listMrn = new ArrayList<>();
             List<PatientDataDao> patientDao = new ArrayList<>();
             if (dao.getPatientDao() != null) {
@@ -328,12 +339,25 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            RFID = dao.getRFID();
-            firstName = dao.getFirstName();
-            lastName = dao.getLastName();
-            tvUserName.setText("บริหารยาโดย  " + firstName + " " + lastName);
-            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
+
+            if(dao != null) {
+                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                    RFID = dao.getRFID();
+                    firstName = dao.getFirstName();
+                    lastName = dao.getLastName();
+                    tvUserName.setText("บริหารยาโดย  " + firstName + " " + lastName);
+                    tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+                }
+                else{
+                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                }
+            }
+//            RFID = dao.getRFID();
+//            firstName = dao.getFirstName();
+//            lastName = dao.getLastName();
+//            tvUserName.setText("บริหารยาโดย  " + firstName + " " + lastName);
+//            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+//            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override

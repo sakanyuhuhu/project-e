@@ -29,7 +29,7 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPatientAllFragment extends Fragment{
-    private String nfcUID, sdlocID, wardName;
+    private String nfcUID, wardID, sdlocID, wardName;
     private ListView listView;
     private BuildAddPatientAllAdapter buildPatientAllAdapter;
     private ListPatientDataDao dao;
@@ -40,10 +40,11 @@ public class BuildPatientAllFragment extends Fragment{
         super();
     }
 
-    public static BuildPatientAllFragment newInstance(String nfcUID, String sdlocID, String wardName) {
+    public static BuildPatientAllFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName) {
         BuildPatientAllFragment fragment = new BuildPatientAllFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         fragment.setArguments(args);
@@ -73,9 +74,9 @@ public class BuildPatientAllFragment extends Fragment{
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
-        Log.d("check", "BuildPatientAllFragment nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
@@ -110,6 +111,7 @@ public class BuildPatientAllFragment extends Fragment{
                 if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
                     Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);
@@ -134,14 +136,11 @@ public class BuildPatientAllFragment extends Fragment{
     }
 
     private void loadPatientMRN(String sdlocID){
-        Log.d("check", "loadPatientMRN sdlocID = "+sdlocID);
         Call<MrnTimelineDao> call = HttpManager.getInstance().getService().getPatientPRN(sdlocID);
         call.enqueue(new PatientMRNAllLoadCallback());
     }
 
     private void loadPatientData(MrnTimelineDao mrnTimelineDao){
-        String json = new Gson().toJson(mrnTimelineDao);
-        Log.d("check", "json = "+json);
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientData(mrnTimelineDao);
         call.enqueue(new PatientAllDataLoadCallback());
     }
@@ -178,6 +177,7 @@ public class BuildPatientAllFragment extends Fragment{
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent(getContext(), HistoryActivity.class);
                         intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
                         intent.putExtra("sdlocId", sdlocID);
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("position", position);

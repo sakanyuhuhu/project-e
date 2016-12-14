@@ -54,16 +54,16 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataHisView;
 
 public class BuildHistoryPrepareFragment extends Fragment implements View.OnClickListener {
-    private String nfcUID, sdlocID, wardName, time, firstName, lastName, RFID, prn, startDate, mrn, newDateStart;
+    private String nfcUID, wardID, sdlocID, wardName, time, firstName, lastName, RFID, prn, startDate, mrn, newDateStart;
     private int position, timeposition;
     private String[] admintime;
     private ListView listView, listViewAdr, lvMedHistory;
     private TextView tvTime, tvDrugAdr, tvPreparation, tvDate, tvDrugName, tvRoute, tvDosage, tvNumAdr;
     private ImageView imgCalendar;
-    private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
+    private BuildHeaderPatientDataHisView buildHeaderPatientDataHisView;
     private BuildHistoryAdapter buildHistoryAdapter;
     private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private BuildDrugHistoryAdapter buildDrugHistoryAdapter;
@@ -77,10 +77,11 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         super();
     }
 
-    public static BuildHistoryPrepareFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, PatientDataDao patientDao, String prn) {
+    public static BuildHistoryPrepareFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, PatientDataDao patientDao, String prn) {
         BuildHistoryPrepareFragment fragment = new BuildHistoryPrepareFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putString("RFID", RFID);
@@ -119,6 +120,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         RFID = getArguments().getString("RFID");
@@ -130,11 +132,8 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         patientDao = getArguments().getParcelable("patientDao");
         prn = getArguments().getString("prn");
 
-        Log.d("check", "BuildHistoryPrepareFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = " + RFID + " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " + timeposition + " /position = " + position + " /time = " + time + " /prn = " + prn);
-
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
-        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD) rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataHisView = (BuildHeaderPatientDataHisView) rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryAdapter = new BuildHistoryAdapter();
         buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
         buildDrugHistoryAdapter = new BuildDrugHistoryAdapter();
@@ -154,7 +153,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
 
 
         if (patientDao != null) {
-            buildHeaderPatientDataViewOLD.setData(patientDao);
+            buildHeaderPatientDataHisView.setData(patientDao);
         }
 
         getDrugPraration(patientDao.getMRN(), "First Check", startDate);
@@ -184,6 +183,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         if (view.getId() == R.id.tvPreparation) {
             Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("RFID", RFID);
@@ -353,7 +353,6 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
             patientDao = getArguments().getParcelable("patientDao");
             if (patientDao != null) {
                 mrn = patientDao.getMRN();
-                Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             return itemsList;

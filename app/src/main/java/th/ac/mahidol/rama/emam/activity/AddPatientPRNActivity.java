@@ -7,18 +7,19 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.fragment.BuildAddPatientPRNFragment;
 
 
 public class AddPatientPRNActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
-    private String nfcUID, sdlocID, wardName, time, nfcTagID;
+    private String nfcUID, wardID, sdlocID, wardName, time, nfcTagID;
     private int timeposition;
     private String prn ="addprn";
+    private TimelineDao timelineDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,12 @@ public class AddPatientPRNActivity extends AppCompatActivity {
         setContentView(R.layout.activity_prn_patient_add);
 
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
-        Log.d("check", "AddPatientPRNActivity nfcUId = "+nfcUID+" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+timeposition+" /time = "+time+" /prn = "+prn);
+        timelineDao = getIntent().getParcelableExtra("include");
 
         initInstance(savedInstanceState);
 
@@ -39,7 +41,7 @@ public class AddPatientPRNActivity extends AppCompatActivity {
     private void  initInstance(Bundle savedInstanceState){
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, prn)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, wardID, sdlocID, wardName, timeposition, time, prn, timelineDao)).commit();
         }
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -60,7 +62,7 @@ public class AddPatientPRNActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, sdlocID, wardName, timeposition, time, prn)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddPatientPRNFragment.newInstance(nfcUID, wardID, sdlocID, wardName, timeposition, time, prn, timelineDao)).commit();
         }
         super.onNewIntent(intent);
     }

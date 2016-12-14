@@ -54,7 +54,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataViewOLD;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataHisView;
 
 public class BuildHistoryDoubleCheckFragment extends Fragment implements View.OnClickListener {
     private String nfcUID, sdlocID, wardName, time, firstName, lastName, RFID, startDate, mrn, newDateStart;
@@ -63,7 +63,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
     private String[] admintime;
     private TextView tvTime, tvDrugAdr, tvDoublecheck, tvDate, tvDrugName, tvRoute, tvDosage, tvNumAdr;
     private ImageView imgCalendar;
-    private BuildHeaderPatientDataViewOLD buildHeaderPatientDataViewOLD;
+    private BuildHeaderPatientDataHisView buildHeaderPatientDataHisView;
     private BuildHistoryAdapter buildHistoryAdapter;
     private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private BuildDrugHistoryAdapter buildDrugHistoryAdapter;
@@ -128,13 +128,8 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         patientDouble = getArguments().getParcelable("patientDouble");
         time = getArguments().getString("time");
 
-        Log.d("check", "BuildHistoryDoubleCheckFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /RFID = " + RFID + " /firstName = " + firstName + " /lastName = " + lastName +
-                " /timeposition = " + timeposition + " /position = " + position + " /time = " + time);
-
-        Log.d("check", "patientDouble mrn = " + patientDouble.getMRN());
-
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
-        buildHeaderPatientDataViewOLD = (BuildHeaderPatientDataViewOLD) rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataHisView = (BuildHeaderPatientDataHisView) rootView.findViewById(R.id.headerPatientAdapter);
         buildHistoryAdapter = new BuildHistoryAdapter();
         buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
         buildDrugHistoryAdapter = new BuildDrugHistoryAdapter();
@@ -153,7 +148,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         admintime = time.split(":");
 
         if (patientDouble != null) {
-            buildHeaderPatientDataViewOLD.setData(patientDouble);
+            buildHeaderPatientDataHisView.setData(patientDouble);
         }
 
         getDrugDouble(patientDouble.getMRN(), "Second Check", startDate);
@@ -303,7 +298,6 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " + drugAdrDaos.size());
 
             final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
             final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
@@ -352,7 +346,6 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
             patientDouble = getArguments().getParcelable("patientDouble");
             if (patientDouble != null) {
                 mrn = patientDouble.getMRN();
-                Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             return itemsList;

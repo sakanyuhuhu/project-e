@@ -30,7 +30,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPatientOnTimeFragment extends Fragment {
-    private String sdlocID, wardName, toDayDate, checkType, adminTimeNext, adminTimePre;
+    private String wardID, sdlocID, wardName, toDayDate, checkType, adminTimeNext, adminTimePre;
     private int currentTime;
     private TextView tvPreTime, tvNextTime;
     private ListView lvPatienNext, lvPatientPrevious;
@@ -45,9 +45,10 @@ public class BuildPatientOnTimeFragment extends Fragment {
         super();
     }
 
-    public static BuildPatientOnTimeFragment newInstance(String sdlocID, String wardName) {
+    public static BuildPatientOnTimeFragment newInstance(String wardID, String sdlocID, String wardName) {
         BuildPatientOnTimeFragment fragment = new BuildPatientOnTimeFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         fragment.setArguments(args);
@@ -76,9 +77,9 @@ public class BuildPatientOnTimeFragment extends Fragment {
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
-        Log.d("check", "BuildPatientOnTimeFragment sdlocID = " + sdlocID + " /wardName = " + wardName);
 
         progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
         tvPreTime = (TextView) rootView.findViewById(R.id.tvPreTime);
@@ -150,6 +151,7 @@ public class BuildPatientOnTimeFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Intent intent = new Intent(getContext(), PatientMedOnTimeActivity.class);
+                            intent.putExtra("wardId", wardID);
                             intent.putExtra("sdlocId", sdlocID);
                             intent.putExtra("wardname", wardName);
                             intent.putExtra("patient", daoNext.getPatientDao().get(position));
@@ -190,6 +192,7 @@ public class BuildPatientOnTimeFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Intent intent = new Intent(getContext(), PatientMedOnTimeActivity.class);
+                            intent.putExtra("wardId", wardID);
                             intent.putExtra("sdlocId", sdlocID);
                             intent.putExtra("wardname", wardName);
                             intent.putExtra("patient", daoPrevious.getPatientDao().get(position));

@@ -7,7 +7,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
@@ -16,27 +15,29 @@ import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckFragment;
 public class DoubleCheckActivity extends AppCompatActivity {
 
     private NfcAdapter mNfcAdapter;
-    private String nfcUID, nfcTagID,sdlocID, wardName, time, tricker;
+    private String nfcUID, nfcTagID, wardID, sdlocID, wardName, time, tricker;
     private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doublecheck);
+
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
         tricker = getIntent().getExtras().getString("save");
-        Log.d("check", "DoubleCheckActivity sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time);
+
         initInstance(savedInstanceState);
     }
 
     private void  initInstance(Bundle savedInstanceState){
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, position, time, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, tricker)).commit();
         }
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -57,7 +58,7 @@ public class DoubleCheckActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(nfcUID,sdlocID, wardName, position, time, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(wardID, nfcUID,sdlocID, wardName, position, time, tricker)).commit();
         }
         super.onNewIntent(intent);
     }

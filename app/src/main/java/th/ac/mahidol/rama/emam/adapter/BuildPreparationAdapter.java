@@ -36,7 +36,6 @@ public class BuildPreparationAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-
         BuildPreparationListView patientListView;
         patientListView = new BuildPreparationListView(viewGroup.getContext());
         patientListView.setPatient(dao.getPatientDao().get(position));

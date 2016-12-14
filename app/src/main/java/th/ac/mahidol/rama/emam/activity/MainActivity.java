@@ -9,18 +9,22 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.manager.SQLiteManager;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String nfcTagID, sdlocID, wardName, nfcUID;
+    private String nfcTagID, wardID,  sdlocID, wardName, nfcUID;
     private Button btnLogin;
 
     @Override
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initInstance() {
         SharedPreferences prefs = this.getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
+        wardID = prefs.getString("wardId", null);
         sdlocID = prefs.getString("sdlocId", null);
         wardName = prefs.getString("wardname", null);
 
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 startActivity(intent);
@@ -65,20 +71,13 @@ public class MainActivity extends AppCompatActivity {
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
-            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
             nfcUID = nfcTagID;
 
-            if(sdlocID != null & wardName != null){
-                intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
-                intent.putExtra("nfcUId", nfcUID);
-//                intent.putExtra("nfcUId", nfcTagID);
-                intent.putExtra("sdlocId", sdlocID);
-                intent.putExtra("wardname", wardName);
-                startActivity(intent);
-                finish();
+            if(sdlocID != null & wardName != null & wardID != null){
+                loadPersonWard(nfcUID,sdlocID);
             }
             else{
-                Toast.makeText(this, "Not found NFC tag!", Toast.LENGTH_LONG).show();
                 intent = new Intent(MainActivity.this, SelectWardActivity.class);
                 startActivity(intent);
             }
@@ -127,6 +126,40 @@ public class MainActivity extends AppCompatActivity {
 
     private void disableForegroundDispatchSystem(){
         mNfcAdapter.disableForegroundDispatch(this);
+    }
+
+
+    private void loadPersonWard(String nfcUID, String sdlocID){
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            if(dao != null) {
+                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                    Intent intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
+                    intent.putExtra("wardId", wardID);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
+        }
     }
 
 }

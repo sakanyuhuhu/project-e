@@ -21,7 +21,7 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView
+    <th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView
         android:id="@+id/headerPatientAdapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

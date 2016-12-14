@@ -16,6 +16,4 @@ public class SelectWardActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildSelectWardFragment.newInstance()).commit();
 
     }
-
-
 }

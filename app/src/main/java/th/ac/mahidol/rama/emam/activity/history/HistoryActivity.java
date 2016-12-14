@@ -14,7 +14,7 @@ import th.ac.mahidol.rama.emam.fragment.history.BuildHistory_DoubleCheckFragment
 import th.ac.mahidol.rama.emam.fragment.history.BuildHistory_PreparationFragment;
 
 public class HistoryActivity extends AppCompatActivity {
-    private String nfcUID, sdlocID, wardName;
+    private String nfcUID, wardID, sdlocID, wardName;
     private int position;
     private PatientDataDao patient;
     private TabLayout tabLayout;
@@ -27,6 +27,7 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
@@ -41,10 +42,10 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new BuildHistory_PreparationFragment().newInstance(nfcUID, sdlocID, wardName, position, patient), "FIRST CHECK");
-        adapter.addFragment(new BuildHistory_DoubleCheckFragment().newInstance(nfcUID, sdlocID, wardName, position, patient), "DOUBLE CHECK");
-        adapter.addFragment(new BuildHistory_AdministrationFragment().newInstance(nfcUID, sdlocID, wardName, position, patient), "ADMINISTRATION");
-        adapter.addFragment(new BuildCurrentMedFragment().newInstance(nfcUID, sdlocID, wardName, position, patient), "CURRENT MED");
+        adapter.addFragment(new BuildHistory_PreparationFragment().newInstance(nfcUID, wardID, sdlocID, wardName, position, patient), "FIRST CHECK");
+        adapter.addFragment(new BuildHistory_DoubleCheckFragment().newInstance(nfcUID, wardID, sdlocID, wardName, position, patient), "DOUBLE CHECK");
+        adapter.addFragment(new BuildHistory_AdministrationFragment().newInstance(nfcUID, wardID, sdlocID, wardName, position, patient), "ADMINISTRATION");
+        adapter.addFragment(new BuildCurrentMedFragment().newInstance(nfcUID, wardID, sdlocID, wardName, position, patient), "CURRENT MED");
         viewPager.setAdapter(adapter);
     }
 

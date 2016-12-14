@@ -8,18 +8,15 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
-import th.ac.mahidol.rama.emam.manager.SQLiteManager;
 
 public class PreparationActivity extends AppCompatActivity {
 
-    private SQLiteManager dbHelper;
     private NfcAdapter mNfcAdapter;
-    private String sdlocID, nfcUID, wardName, nfcTagID, time, prn = "prepare", tricker;
+    private String wardID, sdlocID, nfcUID, wardName, nfcTagID, time, prn = "prepare", tricker;
     private int position;
 
     @Override
@@ -33,15 +30,15 @@ public class PreparationActivity extends AppCompatActivity {
 
     private void  initInstance(Bundle savedInstanceState){
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         position = getIntent().getExtras().getInt("position");
         time = getIntent().getExtras().getString("time");
         tricker = getIntent().getExtras().getString("save");
-        Log.d("check", "PreparationActivity nfcUId = "+ nfcUID +" /sdlocId = "+sdlocID+" /wardName = "+wardName+" /position = "+position+" /time = "+time+" /prn = "+prn);
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
         }
 
 
@@ -64,7 +61,7 @@ public class PreparationActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
 
         }
         super.onNewIntent(intent);

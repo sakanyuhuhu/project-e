@@ -40,7 +40,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPreparationFragment extends Fragment implements View.OnClickListener {
-    private String sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, prn, toDayDateCheck, tomorrowDateCheck, tricker;
+    private String wardID, sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, prn, toDayDateCheck, tomorrowDateCheck, tricker;
     private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvAdministration, tvNoPatient;
@@ -54,9 +54,10 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     }
 
 
-    public static BuildPreparationFragment newInstance(String nfcUId, String sdlocId, String wardName, int timeposition, String time, String prn, String tricker) {
+    public static BuildPreparationFragment newInstance(String wardID, String nfcUId, String sdlocId, String wardName, int timeposition, String time, String prn, String tricker) {
         BuildPreparationFragment fragment = new BuildPreparationFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("nfcUId", nfcUId);
         args.putString("sdlocId", sdlocId);
         args.putString("wardname", wardName);
@@ -85,6 +86,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
+        wardID = getArguments().getString("wardId");
         nfcUID = getArguments().getString("nfcUId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
@@ -92,9 +94,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         time = getArguments().getString("time");
         prn = getArguments().getString("prn");
         tricker = getArguments().getString("save");
-
-        Log.d("check", "BuildPreparationFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = " + timeposition + " /time = " +
-                time + " /prn = " + prn + " /tricker = " + tricker);
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
@@ -161,26 +160,34 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientindata", null);
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
-            buildPreparationAdapter.setDao(dao);
-            listView.setAdapter(buildPreparationAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("RFID", RFID);
-                    intent.putExtra("firstname", firstName);
-                    intent.putExtra("lastname", lastName);
-                    intent.putExtra("timeposition", timeposition);
-                    intent.putExtra("position", position);
-                    intent.putExtra("time", time);
-                    intent.putExtra("patientDao", dao.getPatientDao().get(position));
-                    intent.putExtra("prn", prn);
-                    getActivity().startActivity(intent);
-                }
-            });
+            if(dao.getPatientDao().size() != 0) {
+                buildPreparationAdapter.setDao(dao);
+                listView.setAdapter(buildPreparationAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        intent.putExtra("patientDao", dao.getPatientDao().get(position));
+                        intent.putExtra("prn", prn);
+                        getActivity().startActivity(intent);
+                    }
+                });
+            }
+            else{
+                tvNoPatient.setText("ไม่มีผู้ป่วย");
+                tvNoPatient.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -215,6 +222,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     public void onClick(View view) {
         if (view.getId() == R.id.tvDoublecheck) {
             Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
@@ -223,6 +231,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().finish();
         } else if (view.getId() == R.id.tvAdministration) {
             Intent intent = new Intent(getContext(), AdministrationActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
@@ -231,6 +240,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().finish();
         } else if (view.getId() == R.id.btnLogin) {
             Intent intent = new Intent(getContext(), LoginPreparationActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
@@ -251,6 +261,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), TimelineActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);
@@ -267,6 +278,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             dao = response.body();
+            saveCachePatientData(dao);
             List<String> listMrn = new ArrayList<>();
             List<PatientDataDao> patientDao = new ArrayList<>();
             if (dao.getPatientDao() != null) {
@@ -318,13 +330,26 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            saveCachePersonWard(dao);
-            RFID = dao.getRFID();
-            firstName = dao.getFirstName();
-            lastName = dao.getLastName();
-            tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
-            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
+            if(dao != null) {
+                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                    saveCachePersonWard(dao);
+                    RFID = dao.getRFID();
+                    firstName = dao.getFirstName();
+                    lastName = dao.getLastName();
+                    tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
+                    tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+                }
+                else{
+                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                }
+            }
+//            saveCachePersonWard(dao);
+//            RFID = dao.getRFID();
+//            firstName = dao.getFirstName();
+//            lastName = dao.getLastName();
+//            tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
+//            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
+//            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override

@@ -30,7 +30,7 @@ import th.ac.mahidol.rama.emam.manager.SearchLoginManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 public class LoginUserDoubleCheckActivity extends AppCompatActivity {
-    private String username, password, sdlocID, wardName, time, tricker;
+    private String username, password, wardID, sdlocID, wardName, time, tricker;
     private int timeposition;
 
     @Override
@@ -44,6 +44,7 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
     private void initInstance(Bundle savedInstanceState) {
         username = getIntent().getExtras().getString("username");
         password = getIntent().getExtras().getString("password");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         timeposition = getIntent().getExtras().getInt("position");
@@ -53,7 +54,6 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
 
 
     private void loadPersonWard(String staffID, String sdlocID) {
-        Log.d("check", "LoginUserDoubleCheckActivity staffId = " + username + "  sdlocId = " + sdlocID);
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonLogin(staffID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
 
@@ -65,8 +65,7 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            Log.d("check", "LoginUserDoubleCheckActivity dao login = " + dao.getRFID() + " " + dao.getFirstName() + " " + dao.getLastName() + " " + dao.getNfcUId());
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(dao.getNfcUId(), sdlocID, wardName, timeposition, time, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(wardID, dao.getNfcUId(), sdlocID, wardName, timeposition, time, tricker)).commit();
         }
 
         @Override
@@ -81,12 +80,12 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<CheckLoginDao> checkLoginDaos) {
             super.onPostExecute(checkLoginDaos);
-            Log.d("check", "*****getResultForLogin onPostExecute = " + checkLoginDaos.get(0).getName());
-            if (checkLoginDaos.get(0).getRole().equals("G")) { // N
+            if (checkLoginDaos.get(0).getRole().equals("G") | checkLoginDaos.get(0).getRole().equals("N")) {
                 loadPersonWard(username, sdlocID);
             } else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginDoubleCheckActivity.class);
+                intent.putExtra("wardId", wardID);
                 intent.putExtra("sdlocId", sdlocID);
                 intent.putExtra("wardname", wardName);
                 intent.putExtra("position", timeposition);
@@ -106,7 +105,6 @@ public class LoginUserDoubleCheckActivity extends AppCompatActivity {
             if (username != null & password != null) {
                 itemsList = parseXML(soapManager.getLogin("Get_staff_detail", username, password));
             }
-            Log.d("check", "itemsList doInBackground = " + itemsList);
             return itemsList;
         }
 

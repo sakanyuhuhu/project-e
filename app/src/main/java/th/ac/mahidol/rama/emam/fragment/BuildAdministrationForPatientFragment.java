@@ -60,10 +60,10 @@ import th.ac.mahidol.rama.emam.manager.BuildDrugCardListManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView;
 
 public class BuildAdministrationForPatientFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime, useTime, tricker, mrn;
+    private String  nfcUID, sdlocID, wardName, toDayDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tomorrowDate, tvcurrentTime, useTime, tricker, mrn, txtstatus = null;
     private int position, timeposition, currentTime, adminTime, sumTime;
     private String[] admintime;
     private ListView listView, listViewAdr;
@@ -72,7 +72,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private Button btnCancel, btnSave;
-    private BuildHeaderPatientDataView buildHeaderPatientDataView;
+    private BuildHeaderPatientDataWhiteView buildHeaderPatientDataWhiteView;
     private BuildAdministrationForPatientAdapter buildAdministrationForPatientAdapter;
     private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private BuildDrugCardListManager buildDrugCardListManager = new BuildDrugCardListManager();
@@ -138,10 +138,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         patientAdmin = getArguments().getParcelable("patientAdmin");
         time = getArguments().getString("time");
 
-        Log.d("check", "patientAdmin = "+patientAdmin);
-
         listView = (ListView) rootView.findViewById(R.id.lvAdminForPatientAdapter);
-        buildHeaderPatientDataView = (BuildHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataWhiteView = (BuildHeaderPatientDataWhiteView) rootView.findViewById(R.id.headerPatientAdapter);
         buildAdministrationForPatientAdapter = new BuildAdministrationForPatientAdapter();
         buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
@@ -171,13 +169,12 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         tomorrowDate = sdfForDrugUseDate.format(c.getTime());
         admintime = time.split(":");
         adminTime = Integer.parseInt(admintime[0]);
-        sumTime = (currentTime+2) - adminTime;
-        Log.d("check", "currentTime = "+currentTime +" / adminTime = "+adminTime+" /sumTime = "+sumTime+" ***** tvcurrentTime = "+tvcurrentTime);
+        sumTime = currentTime - adminTime;
 
         tvTime.setText(time);
 
         if(patientAdmin != null){
-            buildHeaderPatientDataView.setData(patientAdmin, position);
+            buildHeaderPatientDataWhiteView.setData(patientAdmin, position);
             if(timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
                 drugCardDao.setAdminTimeHour(time);
@@ -331,8 +328,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                         public void onClick(View v) {
                             DatePicker datePicker = (DatePicker) dialogViewClock.findViewById(R.id.date_picker);
                             TimePicker timePicker = (TimePicker) dialogViewClock.findViewById(R.id.time_picker);
-                            SimpleDateFormat sdfForActualAdmin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             Date date;
+                            SimpleDateFormat sdfForActualAdmin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             int pickYear, pickMonth, pickDay, pickHour = 0, pickMinute = 0;
                             Calendar calendar = null;
                             if (android.os.Build.VERSION.SDK_INT >= 23) {
@@ -344,9 +341,9 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                                         pickMinute = timePicker.getMinute());
                                 useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute)+":00";//used lpad
                                 try {
-                                    date = sdfForActualAdmin.parse(useTime);
+                                    date = sdfForActualAdmin.parse(toDayDate +" "+ useTime);
                                     dateActualAdmin = sdfForActualAdmin.format(date);
-                                    tvCurrentTime.setText(dateActualAdmin);
+                                    tvCurrentTime.setText(useTime);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
@@ -359,9 +356,9 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                                         pickMinute = timePicker.getCurrentMinute());
                                 useTime = String.format("%02d", pickHour)+":"+String.format("%02d", pickMinute)+":00";//used lpad
                                 try {
-                                    date = sdfForActualAdmin.parse(useTime);
+                                    date = sdfForActualAdmin.parse(toDayDate +" "+ useTime);
                                     dateActualAdmin = sdfForActualAdmin.format(date);
-                                    tvCurrentTime.setText(dateActualAdmin);
+                                    tvCurrentTime.setText(useTime);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
@@ -398,8 +395,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                     builderStatus.show().getWindow().setLayout(1000,250);
                 }
                 else{
-                    Log.d("check", "txtStatus = "+txtStatus.getText().toString());
-                    Log.d("check", "tvCurrentTime = "+useTime);
+                    txtstatus = txtStatus.getText().toString();
                     saveAdministration();
                 }
             }
@@ -468,6 +464,15 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 d.setWardName(wardName);
                 d.setActualAdmin(dateActualAdmin);
                 d.setActivityHour(time);
+                if(d.getDescription() != null) {
+                    if (!d.getDescription().equals("") & txtstatus != null) {
+                        d.setDescription(d.getDescription() + " " + txtstatus);
+                    } else {
+                        if(txtstatus != null) {
+                            d.setDescription(txtstatus);
+                        }
+                    }
+                }
             }
 
             updateDrugData(buildDrugCardListManager.getDaoAll());
@@ -667,7 +672,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " +  drugAdrDaos.size());
             final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
             final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
             if (drugAdrDaos.size() != 0) {
@@ -714,7 +718,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             SoapManager soapManager = new SoapManager();
             if(patientAdmin != null){
                 mrn = patientAdmin.getMRN();
-                Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             return itemsList;

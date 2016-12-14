@@ -39,7 +39,6 @@ public class BuildListDrugAdrAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-
         BuildDrugAdrListView buildDrugAdrListView;
         buildDrugAdrListView = new BuildDrugAdrListView(viewGroup.getContext());
         buildDrugAdrListView.setDrugAdr(dao.getDrugAdrDaoList().get(position));

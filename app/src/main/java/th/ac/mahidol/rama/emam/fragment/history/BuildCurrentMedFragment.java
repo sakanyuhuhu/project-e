@@ -35,7 +35,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
 public class BuildCurrentMedFragment extends Fragment {
-    private String nfcUID, sdlocID, wardName, mrn;
+    private String nfcUID, wardID, sdlocID, wardName, mrn;
     private int position;
     private ListView listView;
     private Spinner spinner1;
@@ -48,10 +48,11 @@ public class BuildCurrentMedFragment extends Fragment {
         super();
     }
 
-    public static BuildCurrentMedFragment newInstance(String nfcUID, String sdlocID, String wardName, int position, PatientDataDao patient) {
+    public static BuildCurrentMedFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, int position, PatientDataDao patient) {
         BuildCurrentMedFragment fragment = new BuildCurrentMedFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", position);
@@ -84,6 +85,7 @@ public class BuildCurrentMedFragment extends Fragment {
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getDrugIPD().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
@@ -151,6 +153,7 @@ public class BuildCurrentMedFragment extends Fragment {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), PatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);

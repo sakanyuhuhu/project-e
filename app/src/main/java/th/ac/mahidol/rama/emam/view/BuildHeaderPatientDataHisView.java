@@ -11,23 +11,23 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
-public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
+public class BuildHeaderPatientDataHisView extends BaseCustomViewGroup {
     private TextView tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
 
-    public BuildHeaderPatientDataView(Context context) {
+    public BuildHeaderPatientDataHisView(Context context) {
         super(context);
         initInflate();
         initInstances();
     }
 
-    public BuildHeaderPatientDataView(Context context, AttributeSet attrs) {
+    public BuildHeaderPatientDataHisView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initInflate();
         initInstances();
         initWithAttrs(attrs, 0, 0);
     }
 
-    public BuildHeaderPatientDataView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BuildHeaderPatientDataHisView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initInflate();
         initInstances();
@@ -35,7 +35,7 @@ public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
     }
 
     @TargetApi(21)
-    public BuildHeaderPatientDataView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BuildHeaderPatientDataHisView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initInflate();
         initInstances();
@@ -43,7 +43,7 @@ public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
     }
 
     private void initInflate() {
-        inflate(getContext(), R.layout.view_header_patient_data, this);
+        inflate(getContext(), R.layout.view_history_header_patient_data_management, this);
     }
 
     private void initInstances() {
@@ -77,7 +77,7 @@ public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
 
     }
 
-    public void setData(PatientDataDao patientDao, int position){
+    public void setData(PatientDataDao patientDao){
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + patientDao.getBedID());
         tvPatientName.setText(patientDao.getInitialName()+ patientDao.getFirstName()+" "+patientDao.getLastName());
         tvPatientID.setText(patientDao.getIdCardNo());
@@ -87,4 +87,5 @@ public class BuildHeaderPatientDataView extends BaseCustomViewGroup {
         tvAge.setText("อายุ:"+ patientDao.getAge());
         tvStatus.setText("สถานะภาพ:"+ patientDao.getMaritalstatus());
     }
+
 }

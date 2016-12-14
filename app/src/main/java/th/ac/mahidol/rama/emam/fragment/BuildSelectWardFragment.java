@@ -98,6 +98,7 @@ public class BuildSelectWardFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences prefs = getContext().getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("wardId", dao.getListwardBean().get(position).getId());
                         editor.putString("sdlocId", dao.getListwardBean().get(position).getSdlocId());
                         editor.putString("wardname", dao.getListwardBean().get(position).getWardName());
                         editor.apply();

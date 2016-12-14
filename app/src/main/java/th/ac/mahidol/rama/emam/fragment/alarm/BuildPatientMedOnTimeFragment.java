@@ -46,15 +46,15 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
 import th.ac.mahidol.rama.emam.manager.SoapManager;
-import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataView;
+import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView;
 
 public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnClickListener {
-    private String sdlocID, wardName, toDayDate, mrn, time;
+    private String wardID, sdlocID, wardName, toDayDate, mrn, time;
     private int position;
     private ListView listView, listViewAdr;
     private TextView tvDrugAdr, tvNumAdr;
     private Button btnOK;
-    private BuildHeaderPatientDataView buildHeaderPatientDataView;
+    private BuildHeaderPatientDataWhiteView buildHeaderPatientDataWhiteView;
     private BuildPatientMedOnTimeAdapter buildPatientMedOnTimeAdapter;
     private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private ListDrugCardDao dao;
@@ -66,9 +66,10 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
         super();
     }
 
-    public static BuildPatientMedOnTimeFragment newInstance(String sdlocID, String wardName, PatientDataDao patientDao, int position, String time) {
+    public static BuildPatientMedOnTimeFragment newInstance(String wardID, String sdlocID, String wardName, PatientDataDao patientDao, int position, String time) {
         BuildPatientMedOnTimeFragment fragment = new BuildPatientMedOnTimeFragment();
         Bundle args = new Bundle();
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putParcelable("patient", patientDao);
@@ -101,6 +102,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
 
     private void initInstances(final View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         patientDao = getArguments().getParcelable("patient");
@@ -108,7 +110,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
         time = getArguments().getString("time");
 
         listView = (ListView) rootView.findViewById(R.id.lvMedication);
-        buildHeaderPatientDataView = (BuildHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
+        buildHeaderPatientDataWhiteView = (BuildHeaderPatientDataWhiteView) rootView.findViewById(R.id.headerPatientAdapter);
         buildPatientMedOnTimeAdapter = new BuildPatientMedOnTimeAdapter();
         buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
@@ -121,7 +123,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
 
         if (patientDao != null) {
             mrn = patientDao.getMRN();
-            buildHeaderPatientDataView.setData(patientDao, position);
+            buildHeaderPatientDataWhiteView.setData(patientDao, position);
 
             DrugCardDao drugCardDao = new DrugCardDao();
             drugCardDao.setAdminTimeHour(time);
@@ -156,6 +158,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
     public void onClick(View view) {
         if (view.getId() == R.id.btnOK) {
             Intent intent = new Intent(getContext(), PatientOnTimeActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             getActivity().startActivity(intent);
@@ -173,6 +176,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), PatientOnTimeActivity.class);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);
@@ -216,7 +220,6 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " + drugAdrDaos.size());
             final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
             final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
             if (drugAdrDaos.size() != 0) {
@@ -264,7 +267,6 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
             patientDao = getArguments().getParcelable("patient");
             if (patientDao != null) {
                 mrn = patientDao.getMRN();
-                Log.d("check", "MRN doInBackground = " + mrn);
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", mrn));
             }
             return itemsList;

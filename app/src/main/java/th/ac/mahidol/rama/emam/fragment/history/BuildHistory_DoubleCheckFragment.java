@@ -58,7 +58,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
 public class BuildHistory_DoubleCheckFragment extends Fragment implements View.OnClickListener {
-    private String nfcUID, sdlocID, wardName, newDateStart, startDate;
+    private String nfcUID, wardID, sdlocID, wardName, newDateStart, startDate;
     private int position;
     private ListView listView, listViewAdr, lvMedHistory;
     private TextView tvDrugAdr, tvDate, tvDrugName, tvRoute, tvDosage, tvNumAdr;
@@ -77,10 +77,11 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
         super();
     }
 
-    public static BuildHistory_DoubleCheckFragment newInstance(String nfcUID, String sdlocID, String wardName, int position, PatientDataDao patient) {
+    public static BuildHistory_DoubleCheckFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, int position, PatientDataDao patient) {
         BuildHistory_DoubleCheckFragment fragment = new BuildHistory_DoubleCheckFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putInt("position", position);
@@ -113,12 +114,11 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
         patient = getArguments().getParcelable("patient");
-
-        Log.d("check", "BuildHistory_DoubleCheckFragment nfcUId = " + nfcUID + " /sdlocId = " + sdlocID + " /wardName = " + wardName + " /position = " + position);
 
         listView = (ListView) rootView.findViewById(R.id.lvHistoryAdapter);
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
@@ -232,6 +232,7 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), PatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     getActivity().startActivity(intent);
@@ -306,7 +307,6 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            Log.d("check", "*****DrugAdrDao onPostExecute = " + drugAdrDaos.size());
             final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
             final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
             if (drugAdrDaos.size() != 0) {
@@ -352,7 +352,6 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
             List<DrugAdrDao> itemsList = new ArrayList<DrugAdrDao>();
             SoapManager soapManager = new SoapManager();
             if (patient != null) {
-                Log.d("check", "*****doInBackground data = " + patient.getMRN());
                 itemsList = parseXML(soapManager.getDrugADR("Get_Adr", patient.getMRN()));
             }
 

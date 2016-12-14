@@ -7,17 +7,19 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.fragment.addmedication.BuildAddMedicationPatientAllFragment;
 
 public class AddMedicationPatientAllActivity extends AppCompatActivity {
-    private String sdlocID, nfcUID, wardName;
+    private String wardID, sdlocID, nfcUID, wardName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patientall_addmedication);
+
+        wardID = getIntent().getExtras().getString("wardId");
         nfcUID = getIntent().getExtras().getString("nfcUId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddMedicationPatientAllFragment.newInstance(nfcUID,sdlocID, wardName)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddMedicationPatientAllFragment.newInstance(wardID, nfcUID,sdlocID, wardName)).commit();
         }
 
     }
