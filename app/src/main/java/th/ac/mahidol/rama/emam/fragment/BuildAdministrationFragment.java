@@ -49,7 +49,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
     private Button btnLogin;
     private BuildAdministrationAdapter buildAdministrationAdapter;
     private Date datetoDay;
-    private boolean found;
+    private boolean found = false;
     private ListPatientDataDao dao;
 
     public BuildAdministrationFragment() {
@@ -241,7 +241,6 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), TimelineActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
@@ -352,12 +351,6 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                     Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
                 }
             }
-//            RFID = dao.getRFID();
-//            firstName = dao.getFirstName();
-//            lastName = dao.getLastName();
-//            tvUserName.setText("บริหารยาโดย  " + firstName + " " + lastName);
-//            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-//            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override

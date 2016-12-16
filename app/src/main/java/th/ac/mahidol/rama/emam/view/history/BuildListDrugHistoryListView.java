@@ -84,7 +84,7 @@ public class BuildListDrugHistoryListView extends BaseCustomViewGroup {
 
     public void setDrug(DrugCardDao dao, String drugId) {
         if (dao.getDrugID().equals(drugId)){
-            tvAdmintime.setText("Admin Time " + dao.getAdminTime() + ":00");
+            tvAdmintime.setText("Admin Time " + dao.getActivityHour() + ":00");
             if (dao.getComplete() != null) {
                 if (dao.getComplete().equals("1")) {
                     tvCheckstatus.setText("เตรียมยา");

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -252,7 +253,11 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-//           new listDrugCardDao for set DrugCardDao, show list med not consains.
+
+            ///////////////////
+            //new listDrugCardDao for set DrugCardDao, show list med not consains.
+            ///////////////////
+
             for(DrugCardDao d : dao.getListDrugCardDao()){
                 if(!listDrugId.contains(d.getDrugID())){
                     listDrugId.add(d.getDrugID());
@@ -274,10 +279,13 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
                     tvDosage = (TextView) dialogView.findViewById(R.id.tvDosage);
 
                     tvDrugName.setText(listDrugCardDao.getListDrugCardDao().get(position).getTradeName());
-                    tvRoute.setText("Route: " + listDrugCardDao.getListDrugCardDao().get(position).getRoute());
-                    tvDosage.setText("Dosage: " + listDrugCardDao.getListDrugCardDao().get(position).getDose() +" "+ listDrugCardDao.getListDrugCardDao().get(position).getUnit());
+                    tvRoute.setText(Html.fromHtml("<b>Route:</b> " + listDrugCardDao.getListDrugCardDao().get(position).getRoute()));
+                    tvDosage.setText(Html.fromHtml("<b>Dosage:</b> " + listDrugCardDao.getListDrugCardDao().get(position).getDose() +" "+ listDrugCardDao.getListDrugCardDao().get(position).getUnit()));
 
-//                    dao show list med all.;
+                    ///////////////////
+                    //dao show list med all.
+                    ///////////////////
+
                     List<DrugCardDao> drugId = new ArrayList<DrugCardDao>();
                     ListDrugCardDao daoListDrug = new ListDrugCardDao();
                     for(DrugCardDao d : dao.getListDrugCardDao()){

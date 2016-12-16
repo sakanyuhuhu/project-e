@@ -37,11 +37,26 @@ public class BuildListDrugHistoryAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
 
-        BuildListDrugHistoryListView buildListDrugHistoryListView = new BuildListDrugHistoryListView(viewGroup.getContext());
-        buildListDrugHistoryListView.setDrug(dao.getListDrugCardDao().get(position), drugId);
+//        BuildListDrugHistoryListView buildListDrugHistoryListView = new BuildListDrugHistoryListView(viewGroup.getContext());
+//        buildListDrugHistoryListView.setDrug(dao.getListDrugCardDao().get(position), drugId);
+//
+//        return buildListDrugHistoryListView;
 
+        ///////////////////////////
+        //test memory.
+        //////////////////////////
+
+        BuildListDrugHistoryListView buildListDrugHistoryListView;
+
+        if(convertView != null)
+            buildListDrugHistoryListView = (BuildListDrugHistoryListView) convertView;
+        else {
+            buildListDrugHistoryListView = new BuildListDrugHistoryListView(viewGroup.getContext());
+            buildListDrugHistoryListView.setDrug(dao.getListDrugCardDao().get(position), drugId);
+        }
         return buildListDrugHistoryListView;
+
     }
 }

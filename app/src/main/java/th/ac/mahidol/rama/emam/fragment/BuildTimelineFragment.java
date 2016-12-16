@@ -130,7 +130,6 @@ public class BuildTimelineFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), MainSelectMenuActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
@@ -182,7 +181,6 @@ public class BuildTimelineFragment extends Fragment {
             listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
                     final TimelineDao newTimelineDao = new TimelineDao();
                     List<MrnTimelineDao> mrnTimelineDaoList = new ArrayList<MrnTimelineDao>();
                     mrnTimelineDaoList.add(in.getTimelineDao().get(position));
@@ -195,6 +193,7 @@ public class BuildTimelineFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
                             intent.putExtra("wardId", wardID);
+                            intent.putExtra("nfcUId", nfcUID);
                             intent.putExtra("sdlocId", sdlocID);
                             intent.putExtra("wardname", wardName);
                             intent.putExtra("position", position);

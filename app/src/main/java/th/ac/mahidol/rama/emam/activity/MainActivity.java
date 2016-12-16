@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -129,6 +131,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
+        String json = new Gson().toJson(checkPersonWardDao);
+        SharedPreferences prefs = this.getSharedPreferences("checkpersonlogin", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("checkpersonlogin",json);
+        editor.apply();
+    }
+
+
     private void loadPersonWard(String nfcUID, String sdlocID){
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
@@ -142,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             CheckPersonWardDao dao = response.body();
             if(dao != null) {
                 if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                    saveCachePersonWard(dao);
                     Intent intent = new Intent(MainActivity.this, MainSelectMenuActivity.class);
                     intent.putExtra("wardId", wardID);
                     intent.putExtra("nfcUId", nfcUID);

@@ -103,9 +103,4 @@ public class BuildHistoryListView extends BaseCustomViewGroup {
             imgvNote.setVisibility(VISIBLE);
         }
     }
-
-    public  ImageView imageViewNote(){
-        return (ImageView) findViewById(R.id.imgvNote);
-    }
-
 }

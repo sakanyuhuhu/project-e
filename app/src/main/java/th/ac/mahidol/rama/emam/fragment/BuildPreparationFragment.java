@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,6 +49,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private Button btnLogin;
     private Date datetoDay;
     private ListPatientDataDao dao;
+    private ProgressDialog progressDialog;
 
     public BuildPreparationFragment() {
         super();
@@ -95,6 +97,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         prn = getArguments().getString("prn");
         tricker = getArguments().getString("save");
 
+//        Log.d("check", "BuildPreparationFragment wardID = "+wardID+" /nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName+" /timeposition = "+timeposition+" /time = "+time+" /prn = "+prn+" /tricker = "+tricker);
+
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
@@ -122,6 +126,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         tomorrowDateCheck = sdfForCheckDate.format(c.getTime());
 
         checkType = "First Check";
+        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
 
         if (nfcUID != null & tricker == null) {
             loadPersonWard(nfcUID, sdlocID);
@@ -163,6 +168,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             if(dao.getPatientDao().size() != 0) {
                 buildPreparationAdapter.setDao(dao);
                 listView.setAdapter(buildPreparationAdapter);
+                progressDialog.dismiss();
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -260,7 +266,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), TimelineActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
@@ -293,6 +298,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     saveCachePatientData(dao);
                     buildPreparationAdapter.setDao(dao);
                     listView.setAdapter(buildPreparationAdapter);
+                    progressDialog.dismiss();
                     if(tricker != null) {
                         if(tricker.equals("save"))
                             loadCacheDao();
@@ -311,7 +317,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     listView.setVisibility(View.INVISIBLE);
                 }
             } else {
-//                Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
                 tvNoPatient.setText("ไม่มีผู้ป่วย");
                 tvNoPatient.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.INVISIBLE);
@@ -343,13 +348,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
                 }
             }
-//            saveCachePersonWard(dao);
-//            RFID = dao.getRFID();
-//            firstName = dao.getFirstName();
-//            lastName = dao.getLastName();
-//            tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
-//            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-//            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override

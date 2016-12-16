@@ -80,18 +80,20 @@ public class BuildAddPatientAllPRNListView extends BaseCustomViewGroup {
         Bundle bundle = ss.getBundle();
     }
 
-    public void setPatient(PatientDataDao dao, TimelineDao timelineDao){
-        for (MrnTimelineDao m : timelineDao.getTimelineDao()) {
-            for (String s : m.getMrn()) {
-                if (dao.getMRN().equals(s)) {
-                    bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-                    tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
-                    tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
-                    tvMrn.setText("HN: " + dao.getMRN());
-                } else {
-                    tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
-                    tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
-                    tvMrn.setText("HN: " + dao.getMRN());
+    public void setPatient(PatientDataDao dao, TimelineDao timelineDao) {
+        if (timelineDao != null){
+            for (MrnTimelineDao m : timelineDao.getTimelineDao()) {
+                for (String s : m.getMrn()) {
+                    if (dao.getMRN().equals(s)) {
+                        bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                        tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
+                        tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+                        tvMrn.setText("HN: " + dao.getMRN());
+                    } else {
+                        tvPatient.setText(dao.getFirstName() + " " + dao.getLastName());
+                        tvBedNo.setText("เลขที่เตียง/ห้อง: " + dao.getBedID());
+                        tvMrn.setText("HN: " + dao.getMRN());
+                    }
                 }
             }
         }

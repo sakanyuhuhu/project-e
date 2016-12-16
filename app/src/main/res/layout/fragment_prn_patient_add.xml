@@ -31,14 +31,14 @@
             android:layout_height="40dp"
             android:background="@color/colorGray"
             android:gravity="center"
-            android:text="แตะ Smart Card ก่อนการเตรียมยา PRN"
-            android:textColor="@color/colorRed"
+            android:text="จัดเตรียมยาโดย"
+            android:textColor="@color/colorBlack"
             android:textSize="20sp" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="770dp">
+        android:layout_height="820dp">
         <ListView
             android:id="@+id/lvPatientAdapter"
             android:layout_width="match_parent"
@@ -57,30 +57,5 @@
             android:layout_gravity="center"
             android:visibility="invisible"/>
     </FrameLayout>
-
-
-    <!--<ListView-->
-        <!--android:id="@+id/lvPatientAdapter"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="100"-->
-        <!--android:textSize="50sp" />-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="@color/colorBlack"
-            android:gravity="center"
-            android:text="ลงชื่อเพื่อเตรียมยาด้วย Username และ Password"
-            android:textColor="@color/colorWhite"
-            android:textSize="16sp" />
-    </LinearLayout>
 
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -274,8 +275,8 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
                     tvDosage = (TextView) dialogView.findViewById(R.id.tvDosage);
 
                     tvDrugName.setText(dao.getListDrugCardDao().get(position).getTradeName());
-                    tvRoute.setText("Route: " + dao.getListDrugCardDao().get(position).getRoute());
-                    tvDosage.setText("Dosage: " + dao.getListDrugCardDao().get(position).getDose() +" "+ dao.getListDrugCardDao().get(position).getUnit());
+                    tvRoute.setText(Html.fromHtml("<b>Route:</b> " + dao.getListDrugCardDao().get(position).getRoute()));
+                    tvDosage.setText(Html.fromHtml("<b>Dosage:</b> " + dao.getListDrugCardDao().get(position).getDose() +" "+ dao.getListDrugCardDao().get(position).getUnit()));
                     buildDrugHistoryAdapter.setDao(dao.getListDrugCardDao().get(position), time);
                     lvMedHistory.setAdapter(buildDrugHistoryAdapter);
 

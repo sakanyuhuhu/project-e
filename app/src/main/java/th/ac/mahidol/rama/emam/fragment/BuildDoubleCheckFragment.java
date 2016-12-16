@@ -267,6 +267,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), TimelineActivity.class);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
@@ -343,12 +344,6 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
                 }
             }
-//            RFIDouble = dao.getRFID();
-//            firstName = dao.getFirstName();
-//            lastName = dao.getLastName();
-//            tvUserName.setText("ตรวจสอบยาโดย  " + firstName + " " + lastName);
-//            tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-//            Toast.makeText(getActivity(), "" + firstName + " " + lastName, Toast.LENGTH_LONG).show();
         }
 
         @Override
