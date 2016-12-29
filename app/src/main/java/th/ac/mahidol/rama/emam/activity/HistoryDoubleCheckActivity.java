@@ -9,7 +9,7 @@ import th.ac.mahidol.rama.emam.fragment.BuildHistoryDoubleCheckFragment;
 
 
 public class HistoryDoubleCheckActivity extends AppCompatActivity {
-    private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID;
+    private String nfcUID, wardID, sdlocID, wardName, time, firstName, lastName, RFID;
     private int position, timeposition;
     private PatientDataDao patientDouble;
 
@@ -17,7 +17,9 @@ public class HistoryDoubleCheckActivity extends AppCompatActivity {
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_management_history);
+
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         RFID = getIntent().getExtras().getString("RFID");
@@ -29,7 +31,7 @@ public class HistoryDoubleCheckActivity extends AppCompatActivity {
         time = getIntent().getExtras().getString("time");
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildHistoryDoubleCheckFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientDouble, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildHistoryDoubleCheckFragment.newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientDouble, time)).commit();
         }
     }
 }

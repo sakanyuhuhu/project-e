@@ -19,7 +19,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
 
-    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
+    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite, tvComplete;
     private ImageView imgvNote;
     private LinearLayout bg;
 
@@ -63,6 +63,7 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
         tvRoute = (TextView) findViewById(R.id.tvRoute);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         tvSite = (TextView) findViewById(R.id.tvSite);
+        tvComplete = (TextView) findViewById(R.id.tvComplete);
         imgvNote = (ImageView) findViewById(R.id.imgvNote);
     }
 
@@ -89,7 +90,22 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
 
     }
 
-    public void setDrugName(DrugCardDao dao){
+    public void setDrugName(DrugCardDao dao, String statusPatient){
+        /////////////////////
+        //start
+        ////////////////////
+        if (dao.getComplete() != null & statusPatient != null) {
+            if (dao.getComplete().equals("1")) {
+                tvComplete.setText("เตรียมยาสมบูรณ์");
+                tvComplete.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                tvComplete.setText("เตรียมยาไม่ได้");
+                tvComplete.setTextColor(getResources().getColor(R.color.colorRed));
+            }
+        }
+        /////////////////////
+        //stop
+        ////////////////////
         if(dao.getRoute().equals("PO") & dao.getPrn().equals("0")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
@@ -116,19 +132,6 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
             tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
         }
-//        else if(dao.getPrn().equals("1")){
-//            bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-//            tvDrugName.setText(String.valueOf(dao.getTradeName()));
-//            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit())+"</b>"));
-//            if (dao.getAdminType().equals("C")) {
-//                tvType.setText("Type: Continue");
-//            } else {
-//                tvType.setText("Type: One day");
-//            }
-//            tvRoute.setText("Route: " + dao.getRoute());
-//            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
-//            tvSite.setText("Site: " + dao.getSite());
-//        }
         else {
             bg.setBackgroundColor(getResources().getColor(R.color.colorBluesky));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
@@ -148,13 +151,41 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
         return (CheckBox)findViewById(R.id.chkCheckDrug);
     }
 
-    public ImageView imageViewNote(){
-        return (ImageView) findViewById(R.id.imgvNote);
+    public ImageView imageViewNote(String statusPatient, String getComplete){
+        /////////////////////
+        //start
+        ////////////////////
+        if (statusPatient != null & getComplete != null) {
+            if (statusPatient.equals("1") & getComplete.equals("1")) {
+                imgvNote.setEnabled(false);
+            } else if (statusPatient.equals("0") & getComplete.equals("1")) {
+                imgvNote.setEnabled(false);
+            } else {
+                imgvNote.setImageResource(R.drawable.notechange);
+            }
+        }
+        /////////////////////
+        //stop
+        ////////////////////
+        return imgvNote;
     }
 
-    public void setChangeNote(){
-        Log.d("check", "setChangeNote");
-        imgvNote.setImageResource(R.drawable.notechange);
+    public ImageView setChangeNote(String checkNote){
+        /////////////////////
+        //start
+        ////////////////////
+        Log.d("check", "checkNote = "+checkNote);
+        if(checkNote != null) {
+            if (checkNote.equals("0"))
+                imgvNote.setImageResource(R.drawable.note);
+            else if (checkNote.equals("1"))
+                imgvNote.setImageResource(R.drawable.notechange);
+        }
+        /////////////////////
+        //stop
+        ////////////////////
+
+        return imgvNote;
 
     }
 

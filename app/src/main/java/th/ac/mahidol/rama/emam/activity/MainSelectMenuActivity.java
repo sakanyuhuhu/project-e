@@ -13,20 +13,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.fragment.MainSelectMenuFragment;
+import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class MainSelectMenuActivity extends AppCompatActivity {
     private int save = -1;
@@ -57,19 +63,25 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         tvWard = (TextView) findViewById(R.id.tvWard);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
 
-        SharedPreferences prefs = this.getSharedPreferences("checkpersonlogin", Context.MODE_PRIVATE);
-        String data = prefs.getString("checkpersonlogin", null);
-        if (data != null) {
-            CheckPersonWardDao dao = new Gson().fromJson(data, CheckPersonWardDao.class);
-            if(dao != null) {
-                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
-                    nfcUID = dao.getNfcUId();
-                    RFID = dao.getRFID();
-                    firstName = dao.getFirstName();
-                    lastName = dao.getLastName();
-                    tvName.setText(firstName + " " + lastName);
-                    tvRFID.setText("RFID : " + RFID);
-                    tvWard.setText("Ward : " + wardName);
+
+        if(nfcUID != null) {
+            loadPersonWard(nfcUID,sdlocID);
+        }
+        else {
+            SharedPreferences prefs = this.getSharedPreferences("checkpersonlogin", Context.MODE_PRIVATE);
+            String data = prefs.getString("checkpersonlogin", null);
+            if (data != null) {
+                CheckPersonWardDao dao = new Gson().fromJson(data, CheckPersonWardDao.class);
+                if (dao != null) {
+                    if (Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                        nfcUID = dao.getNfcUId();
+                        RFID = dao.getRFID();
+                        firstName = dao.getFirstName();
+                        lastName = dao.getLastName();
+                        tvName.setText(firstName + " " + lastName);
+                        tvRFID.setText("RFID : " + RFID);
+                        tvWard.setText("Ward : " + wardName);
+                    }
                 }
             }
         }
@@ -174,6 +186,48 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         if(actionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
+        String json = new Gson().toJson(checkPersonWardDao);
+        SharedPreferences prefs = this.getSharedPreferences("checkpersonlogin", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("checkpersonlogin",json);
+        editor.apply();
+    }
+
+    private void loadPersonWard(String nfcUID, String sdlocID){
+        Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
+        call.enqueue(new PersonWardLoadCallback());
+
+    }
+
+    class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
+
+        @Override
+        public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
+            CheckPersonWardDao dao = response.body();
+            if(dao != null) {
+                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                    saveCachePersonWard(dao);
+                    nfcUID = dao.getNfcUId();
+                    RFID = dao.getRFID();
+                    firstName = dao.getFirstName();
+                    lastName = dao.getLastName();
+                    tvName.setText(firstName + " " + lastName);
+                    tvRFID.setText("RFID : " + RFID);
+                    tvWard.setText("Ward : " + wardName);
+                }
+                else{
+                    Toast.makeText(MainSelectMenuActivity.this, "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
+        }
     }
     
 }

@@ -32,7 +32,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AdministrationForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.CameraScanActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
-import th.ac.mahidol.rama.emam.activity.LoginAdministrationActivity;
+import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAdministrationAdapter;
@@ -275,12 +275,13 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             getActivity().startActivity(intent);
             getActivity().finish();
         } else if (view.getId() == R.id.btnLogin) {
-            Intent intent = new Intent(getContext(), LoginAdministrationActivity.class);
+            Intent intent = new Intent(getContext(), LoginCenterActivity.class);
             intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
+            intent.putExtra("login", "Administration");
             getActivity().startActivity(intent);
             getActivity().finish();
         }

@@ -61,14 +61,26 @@ public class LoginUserActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            Intent intent = new Intent(getApplicationContext(), MainSelectMenuActivity.class);
-            intent.putExtra("nfcUId", dao.getNfcUId());
-            intent.putExtra("wardId", wardID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getApplicationContext().startActivity(intent);
-            finish();
+            if (Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                Intent intent = new Intent(getApplicationContext(), MainSelectMenuActivity.class);
+                intent.putExtra("nfcUId", dao.getNfcUId());
+                intent.putExtra("wardId", wardID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+                finish();
+            }
+            else{
+                Toast.makeText(LoginUserActivity.this, "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra("wardId", wardID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+                finish();
+            }
         }
 
         @Override
@@ -82,9 +94,21 @@ public class LoginUserActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<CheckLoginDao> checkLoginDaos) {
             super.onPostExecute(checkLoginDaos);
-            if (checkLoginDaos.get(0).getRole() != null & checkLoginDaos.get(0).getName() != null) { // check leave in rama
-                loadPersonWard(username, sdlocID);
-            } else {
+            if(checkLoginDaos.get(0).getName() != null) {
+                if (!checkLoginDaos.get(0).getName().equals("")) { // check leave in rama
+                    loadPersonWard(username, sdlocID);
+                } else {
+                    Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent.putExtra("wardId", wardID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApplicationContext().startActivity(intent);
+                    finish();
+                }
+            }
+            else {
                 Toast.makeText(getApplicationContext(), "กรุณาตรวจสอบ Username และ Password หรือติดต่อผู้ดูแลระบบ", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.putExtra("wardId", wardID);
@@ -100,7 +124,6 @@ public class LoginUserActivity extends AppCompatActivity {
         protected List<CheckLoginDao> doInBackground(Void... params) {
             List<CheckLoginDao> itemsList = new ArrayList<CheckLoginDao>();
             SoapManager soapManager = new SoapManager();
-
             if (username != null & password != null) {
                 itemsList = parseXML(soapManager.getLogin("Get_staff_detail", username, password));
             }

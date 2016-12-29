@@ -18,7 +18,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.StringReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -35,13 +38,14 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
 public class BuildCurrentMedFragment extends Fragment {
-    private String nfcUID, wardID, sdlocID, wardName, mrn;
+    private String nfcUID, wardID, sdlocID, wardName, toDayDate;
     private int position;
     private ListView listView;
     private Spinner spinner1;
     private BuildCurrentMedAdapter buildCurrentMedAdapter;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private PatientDataDao patient;
+    private Date datetoDay;
 
 
     public BuildCurrentMedFragment() {
@@ -97,6 +101,10 @@ public class BuildCurrentMedFragment extends Fragment {
 
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
         buildCurrentMedAdapter = new BuildCurrentMedAdapter();
+
+        datetoDay = new Date();
+        SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        toDayDate = sdfForDrugUseDate.format(datetoDay);
 
         if(patient != null){
             buildHistoryHeaderPatientDataView.setData(patient, position);
@@ -178,12 +186,27 @@ public class BuildCurrentMedFragment extends Fragment {
             Log.d("check", "*****CurrentMedDao onPostExecute = " + currentMedDaos.size());
             ListCurrentMedDao listCurrentMedDao = new ListCurrentMedDao();
             List<CurrentMedDao> medDaoList = new ArrayList<CurrentMedDao>();
+            Date dateStart, dateStop;
+            SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             for (CurrentMedDao c : currentMedDaos) {
-//                Log.d("check", i + " Route = (" + c.getRoute() + ") ***** OFF = ('" + c.getOffdt() + "')***** PRN = " + c.isPrn() + " ***** type = " + c.getTakeaction());
-                i++;
-                medDaoList.add(c);
+                if(!c.getTakeaction().trim().equals("O")| c.getOffpid().equals("")){
+                    try {
+                        dateStart = sdfForDrugUseDate.parse(c.getStartdt()+" "+c.getStarttm());
+                        dateStop = sdfForDrugUseDate.parse(c.getStopdt()+" "+c.getStoptm());
+                        datetoDay = sdfForDrugUseDate.parse(toDayDate);
+                        if(datetoDay.compareTo(dateStart) > 0 & datetoDay.compareTo(dateStop) > 0){
+                            Log.d("check", "datetoDay = "+datetoDay+"    dateStart = "+dateStart+"    dateStop = "+dateStop);
+//                            Log.d("check", "drug name = "+c.getName()+"  /takeaction = "+c.getTakeaction()+"  /tstamp = "+c.getTstamp() + "  /offpid = "+c.getOffpid()
+//                                    +"  /start = "+c.getStartdt()+c.getStarttm() + "  /stop = "+c.getStopdt()+c.getStoptm()+" /specday = "+c.getSpecday()+"  /spectime = "+c.getSpectime());
+                                medDaoList.add(c);
+                        }
+                    } catch (ParseException e) {
+                        e.getStackTrace();
+                    }
+                }
             }
             listCurrentMedDao.setCurrentMedDaoList(medDaoList);
+            Log.d("check", "*****CurrentMedDao medDaoList = " + medDaoList.size());
             buildCurrentMedAdapter.setDao(listCurrentMedDao);
             listView.setAdapter(buildCurrentMedAdapter);
         }
@@ -214,9 +237,9 @@ public class BuildCurrentMedFragment extends Fragment {
                 xmlReader.parse(inStream);
                 itemsList = searchCurrentMedXMLHandler.getItemsList();
 
-                Log.w("AndroidParseXMLActivity", "Done");
+//                Log.w("AndroidParseXMLActivity", "Done");
             } catch (Exception e) {
-                Log.w("AndroidParseXMLActivity", e);
+//                Log.w("AndroidParseXMLActivity", e);
             }
 
             return (ArrayList<CurrentMedDao>) itemsList;

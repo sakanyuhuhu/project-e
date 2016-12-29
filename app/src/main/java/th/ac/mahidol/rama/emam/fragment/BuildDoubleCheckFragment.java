@@ -31,7 +31,7 @@ import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckForPatientActivity;
-import th.ac.mahidol.rama.emam.activity.LoginDoubleCheckActivity;
+import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildDoubleCheckAdapter;
@@ -246,12 +246,13 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             getActivity().startActivity(intent);
             getActivity().finish();
         } else if (view.getId() == R.id.btnLogin) {
-            Intent intent = new Intent(getContext(), LoginDoubleCheckActivity.class);
+            Intent intent = new Intent(getContext(), LoginCenterActivity.class);
             intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
+            intent.putExtra("login", "DoubleCheck");
             getActivity().startActivity(intent);
             getActivity().finish();
         }
@@ -370,6 +371,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                 if (!RFIDPrepare.equals(RFIDouble)) {
                     Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     intent.putExtra("RFID", RFIDouble);

@@ -1,5 +1,7 @@
 package th.ac.mahidol.rama.emam.manager.http;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -7,6 +9,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CheckLastPRNListDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildListWard.WardCollectionDao;
@@ -68,6 +71,13 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("DrugHistory")
     Call<ListDrugCardDao> getMedicalHistory(@Field("mrn") String mrn, @Field("checkType") String checkType, @Field("startDate") String startDate);
+
+    @GET("ListHADService")
+    Call<List<String>> getListHAD();
+
+    @FormUrlEncoded
+    @POST("CheckLastPRNbyMRNDrugIDService")
+    Call<CheckLastPRNListDao> getCheckLastPRNbyMRNDrugID(@Field("mrn") String mrn, @Field("drugID") String DrugID);
 
 
 }

@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
 //            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
             nfcUID = nfcTagID;
-
             if(sdlocID != null & wardName != null & wardID != null){
                 loadPersonWard(nfcUID,sdlocID);
             }
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_LONG).show();
                 }
             }
         }

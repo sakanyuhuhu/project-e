@@ -1,6 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -11,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +56,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView;
 
 public class BuildDoubleCheckForPatientFragment extends Fragment implements View.OnClickListener {
-    private String nfcUID, sdlocID, wardName, mrn, toDayDate, tomorrowDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tricker;
+    private String nfcUID, wardID, sdlocID, wardName, mrn, toDayDate, tomorrowDate, dateFortvDate, dateActualAdmin, time, firstName, lastName, RFID, tricker;
     private int position, timeposition;
     private ListView listView, listViewAdr;
     private TextView tvDate, tvTime, tvDrugAdr, tvHistory, tvNumAdr;
@@ -75,10 +75,11 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
+    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
         BuildDoubleCheckForPatientFragment fragment = new BuildDoubleCheckForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putString("RFID", RFID);
@@ -116,6 +117,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         RFID = getArguments().getString("RFID");
@@ -200,6 +202,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         call.enqueue(new SaveDrugDataCallback());
     }
 
+
     private void getOnClickSpinner() {
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -208,19 +211,19 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
                 if (selectedItem.equals("ทั้งหมด") & dao != null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + dao.getListDrugCardDao().size() + ")");
-                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll());
+                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoAll(), patientDouble.getStatus());
                     listView.setAdapter(buildDoubleCheckForPatientAdapter);
                 } else if (selectedItem.equals("กิน") & dao != null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + buildDrugCardListManager.getDaoPO().getListDrugCardDao().size() + ")");
-                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO());
+                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoPO(), patientDouble.getStatus());
                     listView.setAdapter(buildDoubleCheckForPatientAdapter);
                 } else if (selectedItem.equals("ฉีด") & dao != null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + buildDrugCardListManager.getDaoIV().getListDrugCardDao().size() + ")");
-                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV());
+                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoIV(), patientDouble.getStatus());
                     listView.setAdapter(buildDoubleCheckForPatientAdapter);
                 } else if (selectedItem.equals("อื่นๆ") & dao != null) {
                     tvDate.setText(dateFortvDate + " (จำนวนยา " + buildDrugCardListManager.getDaoOTHER().getListDrugCardDao().size() + ")");
-                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoOTHER());
+                    buildDoubleCheckForPatientAdapter.setDao(getContext(), buildDrugCardListManager.getDaoOTHER(), patientDouble.getStatus());
                     listView.setAdapter(buildDoubleCheckForPatientAdapter);
                 }
             }
@@ -235,77 +238,93 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnSave) {
-            Boolean checkNull = true;
-            for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
-                if (d.getComplete() == null & d.getCheckNote() == null) {
-                    d.setComplete("0");
-                    d.setCheckNote("0");
-                } else if (d.getComplete().equals("1") & d.getCheckNote() == null) {
-                    d.setCheckNote("0");
-                    d.setComplete("1");
-                } else if (d.getComplete() == null & d.getCheckNote() != null) {
-                    d.setComplete("0");
-                    if (d.getCheckNote().equals("0"))
-                        d.setCheckNote("0");
-                    else
-                        d.setCheckNote("1");
-                } else if (d.getComplete().equals("0") & d.getCheckNote() == null) {
-                    d.setComplete("0");
-                    d.setCheckNote("1");
-                } else if (d.getComplete() == null & d.getCheckNote().equals("0")) {
-                    d.setComplete("1");
-                    d.setCheckNote("0");
-                }
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("คุณต้องการจะบันทึกข้อมูลใช่หรือไม่?");
+            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Boolean checkNull = true;
+                    for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
+                        if (d.getComplete() == null & d.getCheckNote() == null) {
+                            d.setComplete("0");
+                            d.setCheckNote("0");
+                        } else if (d.getComplete().equals("1") & d.getCheckNote() == null) {
+                            d.setCheckNote("0");
+                            d.setComplete("1");
+                        } else if (d.getComplete() == null & d.getCheckNote() != null) {
+                            d.setComplete("0");
+                            if (d.getCheckNote().equals("0"))
+                                d.setCheckNote("0");
+                            else
+                                d.setCheckNote("1");
+                        } else if (d.getComplete().equals("0") & d.getCheckNote() == null) {
+                            d.setComplete("0");
+                            if (d.getStrType() != null | d.getStrSize() != null | d.getStrForget() != null | !(d.getDescription().equals("")))
+                                d.setCheckNote("1");
+                            else
+                                d.setCheckNote("0");
+                        } else if (d.getComplete() == null & d.getCheckNote().equals("0")) {
+                            d.setComplete("1");
+                            d.setCheckNote("0");
+                        }
 
-                if (d.getComplete().equals("0") & d.getCheckNote().equals("0"))
-                    checkNull = false;
+                        if (d.getComplete().equals("0") & d.getCheckNote().equals("0"))
+                            checkNull = false;
 
-            }
-            if (checkNull) {
-                for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
-                    if (d.getStrType() != null & d.getStrSize() != null & d.getStrForget() != null) {
-                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ผิดขนาด:" + d.getStrSize() + ",ลืมจัด:" + d.getStrForget());
-                    } else if (d.getStrType() == null & d.getStrSize() == null & d.getStrForget() != null) {
-                        d.setDescriptionTemplate("ลืมจัด:" + d.getStrForget());
-                    } else if (d.getStrType() == null & d.getStrSize() != null & d.getStrForget() != null) {
-                        d.setDescriptionTemplate("ผิดขนาด:" + d.getStrSize() + ",ลืมจัด:" + d.getStrForget());
-                    } else if (d.getStrType() == null & d.getStrSize() != null & d.getStrForget() == null) {
-                        d.setDescriptionTemplate("ผิดขนาด:" + d.getStrSize());
-                    } else if (d.getStrType() != null & d.getStrSize() == null & d.getStrForget() == null) {
-                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType());
-                    } else if (d.getStrType() != null & d.getStrSize() != null & d.getStrForget() == null) {
-                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ผิดขนาด:" + d.getStrSize());
-                    } else if (d.getStrType() != null & d.getStrSize() == null & d.getStrForget() != null) {
-                        d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ลืมจัด:" + d.getStrForget());
-                    } else if (d.getStrType() == null & d.getStrSize() == null & d.getStrForget() == null) {
-                        d.setDescriptionTemplate("");
                     }
+                    if (checkNull) {
+                        for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
+                            if (d.getStrType() != null & d.getStrSize() != null & d.getStrForget() != null) {
+                                d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ผิดขนาด:" + d.getStrSize() + ",ลืมจัด:" + d.getStrForget());
+                            } else if (d.getStrType() == null & d.getStrSize() == null & d.getStrForget() != null) {
+                                d.setDescriptionTemplate("ลืมจัด:" + d.getStrForget());
+                            } else if (d.getStrType() == null & d.getStrSize() != null & d.getStrForget() != null) {
+                                d.setDescriptionTemplate("ผิดขนาด:" + d.getStrSize() + ",ลืมจัด:" + d.getStrForget());
+                            } else if (d.getStrType() == null & d.getStrSize() != null & d.getStrForget() == null) {
+                                d.setDescriptionTemplate("ผิดขนาด:" + d.getStrSize());
+                            } else if (d.getStrType() != null & d.getStrSize() == null & d.getStrForget() == null) {
+                                d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType());
+                            } else if (d.getStrType() != null & d.getStrSize() != null & d.getStrForget() == null) {
+                                d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ผิดขนาด:" + d.getStrSize());
+                            } else if (d.getStrType() != null & d.getStrSize() == null & d.getStrForget() != null) {
+                                d.setDescriptionTemplate("ผิดชนิด:" + d.getStrType() + ",ลืมจัด:" + d.getStrForget());
+                            } else if (d.getStrType() == null & d.getStrSize() == null & d.getStrForget() == null) {
+                                d.setDescriptionTemplate("");
+                            }
 
-                    d.setRFID(RFID);
-                    d.setFirstName(firstName);
-                    d.setLastName(lastName);
-                    d.setWardName(wardName);
-                    d.setActualAdmin(dateActualAdmin);
-                    d.setActivityHour(time);
+                            d.setRFID(RFID);
+                            d.setFirstName(firstName);
+                            d.setLastName(lastName);
+                            d.setWardName(wardName);
+                            d.setActualAdmin(dateActualAdmin);
+                            d.setActivityHour(time);
+                        }
+
+                        updateDrugData(buildDrugCardListManager.getDaoAll());
+                        tricker = "save";
+                        Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("position", timeposition);
+                        intent.putExtra("time", time);
+                        intent.putExtra("save", tricker);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
+                    }
                 }
+            });
+            builder.setNegativeButton("ไม่ใช่", null);
+            builder.create();
+            builder.show();
 
-                updateDrugData(buildDrugCardListManager.getDaoAll());
-                tricker = "save";
-                Toast.makeText(getContext(), "บันทึกเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
-                intent.putExtra("nfcUId", nfcUID);
-                intent.putExtra("sdlocId", sdlocID);
-                intent.putExtra("wardname", wardName);
-                intent.putExtra("position", timeposition);
-                intent.putExtra("time", time);
-                intent.putExtra("save", tricker);
-                getActivity().startActivity(intent);
-                getActivity().finish();
-            } else {
-                Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
-            }
         } else if (view.getId() == R.id.tvHistory) {
             Intent intent = new Intent(getContext(), HistoryDoubleCheckActivity.class);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("RFID", RFID);
@@ -318,16 +337,26 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             getActivity().startActivity(intent);
             getActivity().finish();
         } else if (view.getId() == R.id.btnCancel) {
-            Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            intent.putExtra("position", timeposition);
-            intent.putExtra("time", time);
-            getActivity().startActivity(intent);
-            getActivity().finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("position", timeposition);
+                    intent.putExtra("time", time);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            builder.setNegativeButton("ไม่ใช่", null);
+            builder.create();
+            builder.show();
         }
-
     }
 
     @Override
@@ -341,6 +370,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
                     Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
                     intent.putExtra("wardname", wardName);
                     intent.putExtra("position", timeposition);
@@ -348,7 +378,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                     getActivity().startActivity(intent);
                     getActivity().finish();
                     return true;
-
                 }
                 return false;
             }
@@ -363,9 +392,12 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             dao = response.body();
             for (DrugCardDao d : dao.getListDrugCardDao()) {
                 if (d.getCheckType().equals("First Check")) {
-                    if ((d.getComplete().equals("1")))
+                    if (d.getComplete().equals("1") | d.getComplete().equals("0")) {
                         d.setComplete(null);
-                    else {
+                        d.setDescription(null);
+                        d.setDescriptionTemplate(null);
+                    } else {
+                        d.setComplete(null);
                         d.setDescription(null);
                         d.setDescriptionTemplate(null);
                     }
@@ -501,7 +533,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "DrugLoadCallback Failure " + t);
         }
     }
 
@@ -514,7 +545,6 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "SaveDrugLoadCallback Failure " + t);
         }
     }
 
@@ -590,9 +620,9 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 xmlReader.parse(inStream);
                 itemsList = searchDrugAdrXMLHandler.getItemsList();
 
-                Log.w("AndroidParseXMLActivity", "Done");
+//                Log.w("AndroidParseXMLActivity", "Done");
             } catch (Exception e) {
-                Log.w("AndroidParseXMLActivity", e);
+//                Log.w("AndroidParseXMLActivity", e);
             }
 
             return (ArrayList<DrugAdrDao>) itemsList;

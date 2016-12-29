@@ -51,12 +51,8 @@
         <activity android:name=".activity.AddDrugPatientPRNActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.LoginUserActivity" />
-        <activity android:name=".activity.LoginUserPrepareActivity" />
-        <activity android:name=".activity.LoginPreparationActivity" />
-        <activity android:name=".activity.LoginDoubleCheckActivity" />
-        <activity android:name=".activity.LoginUserDoubleCheckActivity" />
-        <activity android:name=".activity.LoginAdministrationActivity" />
-        <activity android:name=".activity.LoginUserAdministrationActivity" />
+        <activity android:name=".activity.LoginUserCenterActivity" />
+        <activity android:name=".activity.LoginCenterActivity" />
         <activity android:name=".activity.AddDrugNotPrepareActivity" />
 
         <!--History-->

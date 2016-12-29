@@ -58,7 +58,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataHisView;
 
 public class BuildHistoryDoubleCheckFragment extends Fragment implements View.OnClickListener {
-    private String nfcUID, sdlocID, wardName, time, firstName, lastName, RFID, startDate, mrn, newDateStart;
+    private String nfcUID, wardID, sdlocID, wardName, time, firstName, lastName, RFID, startDate, mrn, newDateStart;
     private int position, timeposition;
     private ListView listView, listViewAdr, lvMedHistory;
     private String[] admintime;
@@ -78,10 +78,11 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         super();
     }
 
-    public static BuildHistoryDoubleCheckFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
+    public static BuildHistoryDoubleCheckFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
         BuildHistoryDoubleCheckFragment fragment = new BuildHistoryDoubleCheckFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putString("RFID", RFID);
@@ -119,6 +120,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         RFID = getArguments().getString("RFID");
@@ -178,6 +180,7 @@ public class BuildHistoryDoubleCheckFragment extends Fragment implements View.On
         if (view.getId() == R.id.tvDoublecheck) {
             Intent intent = new Intent(getContext(), DoubleCheckForPatientActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("RFID", RFID);

@@ -70,7 +70,6 @@ public class BuildSelectWardFragment extends Fragment {
     private void initInstances(final View rootView, Bundle savedInstanceState) {
 
         listView = (ListView) rootView.findViewById(R.id.listViewAdapter);
-
         loadSelectWard();
     }
 
@@ -84,8 +83,8 @@ public class BuildSelectWardFragment extends Fragment {
 
     }
 
-    private void setListWardName(final List<String> wardName){
-        arrayAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_single_choice, wardName);
+    private void setListWardName(final List<String> wardName) {
+        arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_single_choice, wardName);
         listView.setAdapter(arrayAdapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -115,26 +114,24 @@ public class BuildSelectWardFragment extends Fragment {
         });
     }
 
-    private void loadSelectWard(){
+    private void loadSelectWard() {
         Call<WardCollectionDao> call = HttpManager.getInstance().getService().getListWard();
         call.enqueue(new SelectWardLoadCallback());
     }
 
 
-
-    class SelectWardLoadCallback implements Callback<WardCollectionDao>{
+    class SelectWardLoadCallback implements Callback<WardCollectionDao> {
 
         @Override
         public void onResponse(Call<WardCollectionDao> call, Response<WardCollectionDao> response) {
             dao = response.body();
-            if(dao != null) {
+            if (dao != null) {
                 wardName = new ArrayList<String>();
                 for (WardDao wardDao : dao.getListwardBean()) {
                     wardName.add(wardDao.getWardName());
                 }
                 setListWardName(wardName);
             }
-
         }
 
         @Override

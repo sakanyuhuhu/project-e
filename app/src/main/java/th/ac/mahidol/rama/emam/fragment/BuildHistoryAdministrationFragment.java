@@ -58,7 +58,7 @@ import th.ac.mahidol.rama.emam.manager.SoapManager;
 import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataHisView;
 
 public class BuildHistoryAdministrationFragment extends Fragment implements View.OnClickListener{
-    private String  nfcUID, sdlocID, wardName, time, firstName, lastName, RFID, newDateStart, mrn, startDate;
+    private String  nfcUID, wardID, sdlocID, wardName, time, firstName, lastName, RFID, newDateStart, mrn, startDate;
     private int position, timeposition;
     private String[] admintime;
     private ListView listView, listViewAdr, lvMedHistory;
@@ -78,10 +78,11 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
         super();
     }
 
-    public static BuildHistoryAdministrationFragment newInstance(String nfcUID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientAdmin, String time) {
+    public static BuildHistoryAdministrationFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientAdmin, String time) {
         BuildHistoryAdministrationFragment fragment = new BuildHistoryAdministrationFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
+        args.putString("wardId", wardID);
         args.putString("sdlocId", sdlocID);
         args.putString("wardname", wardName);
         args.putString("RFID", RFID);
@@ -119,6 +120,7 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
     private void initInstances(View rootView, Bundle savedInstanceState) {
         new getADRForPatient().execute();
         nfcUID = getArguments().getString("nfcUId");
+        wardID = getArguments().getString("wardId");
         sdlocID = getArguments().getString("sdlocId");
         wardName = getArguments().getString("wardname");
         RFID = getArguments().getString("RFID");
@@ -179,6 +181,7 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
         if(view.getId() == R.id.tvAdministration){
             Intent intent = new Intent(getContext(), AdministrationForPatientActivity.class);
             intent.putExtra("nfcUId", nfcUID);
+            intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("RFID", RFID);

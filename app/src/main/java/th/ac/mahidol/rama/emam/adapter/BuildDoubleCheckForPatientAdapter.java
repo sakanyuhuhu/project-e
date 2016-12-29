@@ -23,13 +23,15 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
     private ListDrugCardDao dao;
     private EditText txtStatus, txtStatusSize, txtStatusForget, txtStatusType;
     private CheckBox chkSize, chkForget, chkType;
-    private TextView tvDrugName;
+    private TextView tvDrugName, tvCancel, tvSave;
+    private String statusPatient;
     private BuildDoubleCheckForPatientListView buildDoubleCheckForPatientListView;
 
 
-    public void setDao(Context context, ListDrugCardDao dao){
+    public void setDao(Context context, ListDrugCardDao dao, String statusPatient){
         this.dao = dao;
         this.context = context;
+        this.statusPatient = statusPatient;
     }
 
     @Override
@@ -54,13 +56,46 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         buildDoubleCheckForPatientListView = new BuildDoubleCheckForPatientListView(viewGroup.getContext());
-        buildDoubleCheckForPatientListView.setDrugName(dao.getListDrugCardDao().get(position));
+        buildDoubleCheckForPatientListView.setDrugName(dao.getListDrugCardDao().get(position), statusPatient);
 
         CheckBox checkBox = buildDoubleCheckForPatientListView.isCheck();
+
+        /////////////////////
+        //start
+        ////////////////////
+        if(statusPatient != null){
+            if(statusPatient.equals("1")){
+                dao.getListDrugCardDao().get(position).setComplete("1");
+                checkBox.isChecked();
+                checkBox.setEnabled(false);
+            }
+            else{
+                if(dao.getListDrugCardDao().get(position).getComplete() != null){
+                    if(dao.getListDrugCardDao().get(position).getComplete().equals("1")){
+                        dao.getListDrugCardDao().get(position).setComplete("1");
+                        checkBox.isChecked();
+                        checkBox.setEnabled(false);
+                    }
+                }
+            }
+        }
+        /////////////////////
+        //stop
+        ////////////////////
+
         checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete()!= null ? dao.getListDrugCardDao().get(position).getComplete().equals("1")?true : false : false);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                /////////////////////
+                //start
+                ////////////////////
+                if(isChecked == true){
+                    buildDoubleCheckForPatientListView.setChangeNote("0");
+                }
+                /////////////////////
+                //stop
+                ////////////////////
                 dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1":"0");
                 dao.getListDrugCardDao().get(position).setStatus("normal");
                 dao.getListDrugCardDao().get(position).setCheckNote("0");
@@ -74,7 +109,7 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
             }
         });
 
-        ImageView imageViewNote = buildDoubleCheckForPatientListView.imageViewNote();
+        ImageView imageViewNote = buildDoubleCheckForPatientListView.imageViewNote(statusPatient,dao.getListDrugCardDao().get(position).getComplete());
         imageViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,10 +123,10 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
 
     private void drugNoteDialog(final int position) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog mainClose;
+        AlertDialog.Builder mainBuilder = new AlertDialog.Builder(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View dialogView = inflater.inflate(R.layout.custom_dialog_doublecheck, null);
-        dialogView.setBackgroundResource(R.color.colorLemonChiffon);
 
         tvDrugName = (TextView) dialogView.findViewById(R.id.tvDrugName);
         chkSize = (CheckBox) dialogView.findViewById(R.id.chkSize);
@@ -101,6 +136,8 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
         txtStatusForget = (EditText) dialogView.findViewById(R.id.txtStatusForget);
         txtStatusType = (EditText) dialogView.findViewById(R.id.txtStatusType);
         txtStatus = (EditText) dialogView.findViewById(R.id.txtStatus);
+        tvCancel = (TextView) dialogView.findViewById(R.id.tvCancel);
+        tvSave = (TextView) dialogView.findViewById(R.id.tvSave);
 
         tvDrugName.setText(" " + dao.getListDrugCardDao().get(position).getTradeName() +
                 " " + dao.getListDrugCardDao().get(position).getDose() +
@@ -143,6 +180,43 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
             }
         });
 
+
+        /////////////////////
+        //start
+        ////////////////////
+
+        if(statusPatient != null & dao.getListDrugCardDao().get(position).getComplete() != null){
+            if(statusPatient.equals("1") & dao.getListDrugCardDao().get(position).getComplete().equals("1")){
+                dao.getListDrugCardDao().get(position).setComplete("1");
+                chkType.setEnabled(false);
+                chkForget.setEnabled(false);
+                chkSize.setEnabled(false);
+                txtStatusType.setEnabled(false);
+                txtStatusForget.setEnabled(false);
+                txtStatusSize.setEnabled(false);
+                txtStatus.setEnabled(false);
+                tvSave.setEnabled(false);
+            }
+            else{
+                if(statusPatient.equals("0") & dao.getListDrugCardDao().get(position).getComplete().equals("1")){
+                    dao.getListDrugCardDao().get(position).setComplete("1");
+                    chkType.setEnabled(false);
+                    chkForget.setEnabled(false);
+                    chkSize.setEnabled(false);
+                    txtStatusType.setEnabled(false);
+                    txtStatusForget.setEnabled(false);
+                    txtStatusSize.setEnabled(false);
+                    txtStatus.setEnabled(false);
+                    tvSave.setEnabled(false);
+                }
+            }
+        }
+
+        /////////////////////
+        //stop
+        ////////////////////
+
+
         if(dao.getListDrugCardDao().get(position).getStatus() != null){
             if(dao.getListDrugCardDao().get(position).getStrType() != null){
                 chkType.setChecked(true);
@@ -166,55 +240,82 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
             txtStatus.setText(dao.getListDrugCardDao().get(position).getDescription());
         }
 
-        builder.setView(dialogView);
-        builder.setTitle("บันทึกข้อความสำหรับตรวจสอบยา");
-        builder.setPositiveButton("บันทึก", new DialogInterface.OnClickListener() {
+        mainBuilder.setView(dialogView);
+        mainBuilder.create();
+        mainClose = mainBuilder.show();
+
+        tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dao.getListDrugCardDao().get(position).setDescription(txtStatus.getText().toString());
-                dao.getListDrugCardDao().get(position).setCheckType("Second Check");
-                if(chkType.isChecked() == true){
-                    dao.getListDrugCardDao().get(position).setStrType(txtStatusType.getText().toString());
-                    dao.getListDrugCardDao().get(position).setComplete("0");
-                    dao.getListDrugCardDao().get(position).setStatus("normal");
-                    dao.getListDrugCardDao().get(position).setCheckNote("1");
-                }
-                if(chkSize.isChecked() == true){
-                    dao.getListDrugCardDao().get(position).setStrSize(txtStatusSize.getText().toString());
-                    dao.getListDrugCardDao().get(position).setComplete("0");
-                    dao.getListDrugCardDao().get(position).setStatus("normal");
-                    dao.getListDrugCardDao().get(position).setCheckNote("1");
-                }
-                if(chkForget.isChecked() == true){
-                    dao.getListDrugCardDao().get(position).setStrForget(txtStatusForget.getText().toString());
-                    dao.getListDrugCardDao().get(position).setComplete("0");
-                    dao.getListDrugCardDao().get(position).setStatus("normal");
-                    dao.getListDrugCardDao().get(position).setCheckNote("1");
-                }
-                if(chkType.isChecked() == false)
-                    dao.getListDrugCardDao().get(position).setStrType(null);
-
-                if(chkSize.isChecked() == false)
-                    dao.getListDrugCardDao().get(position).setStrSize(null);
-
-                if(chkForget.isChecked() == false)
-                    dao.getListDrugCardDao().get(position).setStrForget(null);
-
-                if(!dao.getListDrugCardDao().get(position).getDescription().equals("")){
-                    dao.getListDrugCardDao().get(position).setCheckNote("1");
-                    dao.getListDrugCardDao().get(position).setStatus("normal");
-                    dao.getListDrugCardDao().get(position).setComplete("0");
-                }
-                if((chkType.isChecked() == false)&(chkSize.isChecked() == false)&(chkForget.isChecked() == false) & dao.getListDrugCardDao().get(position).getDescription().equals("")){
-                    dao.getListDrugCardDao().get(position).setCheckNote("0");
-                    dao.getListDrugCardDao().get(position).setStatus("normal");
-                    dao.getListDrugCardDao().get(position).setComplete("1");
-                }
-                notifyDataSetChanged();
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+                builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mainClose.dismiss();
+                    }
+                });
+                builder.setNegativeButton("ไม่ใช่", null);
+                builder.create();
+                builder.show();
             }
         });
-        builder.setNegativeButton("ยกเลิก",null);
-        builder.create();
-        builder.show().getWindow().setLayout(1200,1250);
+
+        tvSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("คุณต้องการจะบันทึกข้อมูลใช่หรือไม่?");
+                builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dao.getListDrugCardDao().get(position).setDescription(txtStatus.getText().toString());
+                        dao.getListDrugCardDao().get(position).setCheckType("Second Check");
+                        if(chkType.isChecked() == true){
+                            dao.getListDrugCardDao().get(position).setStrType(txtStatusType.getText().toString());
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setStatus("normal");
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                        }
+                        if(chkSize.isChecked() == true){
+                            dao.getListDrugCardDao().get(position).setStrSize(txtStatusSize.getText().toString());
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setStatus("normal");
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                        }
+                        if(chkForget.isChecked() == true){
+                            dao.getListDrugCardDao().get(position).setStrForget(txtStatusForget.getText().toString());
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                            dao.getListDrugCardDao().get(position).setStatus("normal");
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                        }
+                        if(chkType.isChecked() == false)
+                            dao.getListDrugCardDao().get(position).setStrType(null);
+
+                        if(chkSize.isChecked() == false)
+                            dao.getListDrugCardDao().get(position).setStrSize(null);
+
+                        if(chkForget.isChecked() == false)
+                            dao.getListDrugCardDao().get(position).setStrForget(null);
+
+                        if(!dao.getListDrugCardDao().get(position).getDescription().equals("")){
+                            dao.getListDrugCardDao().get(position).setCheckNote("1");
+                            dao.getListDrugCardDao().get(position).setStatus("normal");
+                            dao.getListDrugCardDao().get(position).setComplete("0");
+                        }
+                        if((chkType.isChecked() == false)&(chkSize.isChecked() == false)&(chkForget.isChecked() == false) & dao.getListDrugCardDao().get(position).getDescription().equals("")){
+                            dao.getListDrugCardDao().get(position).setCheckNote("0");
+                            dao.getListDrugCardDao().get(position).setStatus("normal");
+                            dao.getListDrugCardDao().get(position).setComplete("1");
+                        }
+                        mainClose.dismiss();
+                        notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("ไม่ใช่", null);
+                builder.create();
+                builder.show();
+            }
+        });
     }
 }

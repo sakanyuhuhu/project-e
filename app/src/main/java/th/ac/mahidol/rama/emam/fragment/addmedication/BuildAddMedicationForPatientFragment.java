@@ -32,15 +32,15 @@ import th.ac.mahidol.rama.emam.manager.AdminTimeSelectionSpinner;
 import th.ac.mahidol.rama.emam.view.history.BuildHistoryHeaderPatientDataView;
 
 public class BuildAddMedicationForPatientFragment extends Fragment implements View.OnClickListener {
-    private String nfcUID, wardID, sdlocID, wardName, mrn, selectedItem, dateSelect, toDayDate;
+    private String nfcUID, wardID, sdlocID, wardName, mrn, selectedItem, dateSelectStart, dateSelectEnd, toDayDate;
     private int position;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private PatientDataDao patient;
     private Button btnCancel, btnAdd;
     private Spinner spinnerRoute;
     private EditText edtDrugName, edtDrugID, edtDosage, edtUnit, edtFrequency, edtMedthod;
-    private TextView tvDate;
-    private ImageView imgCalendar;
+    private TextView tvStartDate, tvEndDate;
+    private ImageView imgCalendarStart, imgCalendarEnd;
     private Date datetoDay;
     long startMillis = 0;
     long endMillis = 0;
@@ -93,8 +93,10 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         spinnerRoute = (Spinner) rootView.findViewById(R.id.spinnerRoute);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
         btnAdd = (Button) rootView.findViewById(R.id.btnAdd);
-        tvDate = (TextView) rootView.findViewById(R.id.tvDate);
-        imgCalendar = (ImageView) rootView.findViewById(R.id.imgCalendar) ;
+        tvStartDate = (TextView) rootView.findViewById(R.id.tvStartDate);
+        tvEndDate = (TextView) rootView.findViewById(R.id.tvEndDate);
+        imgCalendarStart = (ImageView) rootView.findViewById(R.id.imgCalendarStart);
+        imgCalendarEnd = (ImageView) rootView.findViewById(R.id.imgCalendarEnd) ;
 
         adminTimeSelectionSpinner = (AdminTimeSelectionSpinner) rootView.findViewById(R.id.adminTimeSpinner);
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
@@ -105,8 +107,10 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("dd/MM/yyyy");
         toDayDate = sdfForDrugUseDate.format(datetoDay);
-        dateSelect = toDayDate;
-        tvDate.setText(dateSelect);
+        dateSelectStart = toDayDate;
+        dateSelectEnd = toDayDate;
+        tvStartDate.setText(dateSelectStart);
+        tvEndDate.setText(dateSelectEnd);
 
         if (patient != null) {
             buildHistoryHeaderPatientDataView.setData(patient, position);
@@ -115,7 +119,8 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         getSpinnerRoute();
         btnCancel.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
-        imgCalendar.setOnClickListener(this);
+        imgCalendarStart.setOnClickListener(this);
+        imgCalendarEnd.setOnClickListener(this);
 
     }
 
@@ -147,11 +152,9 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         else if(view.getId() == R.id.btnAdd){
             if(edtDrugName.getText().toString().equals(""))
                 Toast.makeText(getActivity(), "กรุณาใส่ชื่อยา", Toast.LENGTH_LONG).show();
-
-            if(edtDosage.getText().toString().equals(""))
+            else if(edtDosage.getText().toString().equals(""))
                 Toast.makeText(getActivity(), "กรุณาใส่ Dosage", Toast.LENGTH_LONG).show();
-
-            if(edtUnit.getText().toString().equals(""))
+            else if(edtUnit.getText().toString().equals(""))
                 Toast.makeText(getActivity(), "กรุณาใส่ Unit", Toast.LENGTH_LONG).show();
 
             String getTimeItems = adminTimeSelectionSpinner.get_items().toString();
@@ -167,10 +170,11 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
             Log.d("check", "Drug name = "+edtDrugName.getText().toString());
             Log.d("check", "Dosage = "+edtDosage.getText().toString());
             Log.d("check", "Unit = "+edtUnit.getText().toString());
-            Log.d("check", "Date = "+tvDate.getText().toString());
+            Log.d("check", "DateStart = "+tvStartDate.getText().toString());
+            Log.d("check", "DateEnd = "+tvEndDate.getText().toString());
 
         }
-        else if(view.getId() == R.id.imgCalendar){
+        else if(view.getId() == R.id.imgCalendarStart){
             final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
             final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 
@@ -189,8 +193,8 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
                                 pickDay = datePicker.getDayOfMonth(),
                                 pickHour = timePicker.getHour(),
                                 pickMinute = timePicker.getMinute());
-                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
-                        tvDate.setText(dateSelect);
+                        dateSelectStart = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        tvStartDate.setText(dateSelectStart);
                     } else {
                         calendar = new GregorianCalendar(
                                 pickYear = datePicker.getYear(),
@@ -198,8 +202,50 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
                                 pickDay = datePicker.getDayOfMonth(),
                                 pickHour = timePicker.getCurrentHour(),
                                 pickMinute = timePicker.getCurrentMinute());
-                        dateSelect = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
-                        tvDate.setText(dateSelect);
+                        dateSelectStart = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        tvStartDate.setText(dateSelectStart);
+                    }
+
+                    Calendar timePick = Calendar.getInstance();
+                    timePick.set(pickYear, pickMonth, pickDay, pickHour, pickMinute);
+                    startMillis = timePick.getTimeInMillis();
+                    endMillis = startMillis + 60 * 60 * 1000;
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.setView(dialogViewDate);
+            alertDialog.show();
+        }
+        else if(view.getId() == R.id.imgCalendarEnd){
+            final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
+            final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+            dialogViewDate.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatePicker datePicker = (DatePicker) dialogViewDate.findViewById(R.id.date_picker);
+                    TimePicker timePicker = (TimePicker) dialogViewDate.findViewById(R.id.time_picker);
+
+                    int pickYear, pickMonth, pickDay, pickHour = 0, pickMinute = 0;
+                    Calendar calendar = null;
+                    if (android.os.Build.VERSION.SDK_INT >= 23) {
+                        calendar = new GregorianCalendar(
+                                pickYear = datePicker.getYear(),
+                                pickMonth = datePicker.getMonth(),
+                                pickDay = datePicker.getDayOfMonth(),
+                                pickHour = timePicker.getHour(),
+                                pickMinute = timePicker.getMinute());
+                        dateSelectEnd = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        tvEndDate.setText(dateSelectEnd);
+                    } else {
+                        calendar = new GregorianCalendar(
+                                pickYear = datePicker.getYear(),
+                                pickMonth = datePicker.getMonth(),
+                                pickDay = datePicker.getDayOfMonth(),
+                                pickHour = timePicker.getCurrentHour(),
+                                pickMinute = timePicker.getCurrentMinute());
+                        dateSelectEnd = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                        tvEndDate.setText(dateSelectEnd);
                     }
 
                     Calendar timePick = Calendar.getInstance();

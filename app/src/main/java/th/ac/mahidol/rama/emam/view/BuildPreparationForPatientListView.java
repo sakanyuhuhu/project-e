@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
@@ -19,7 +21,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
 
-    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
+    private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite, tvComplete;
     private CheckBox chkCheckDrug;
     private ImageView imgvNote;
     private LinearLayout bg;
@@ -66,6 +68,7 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
         tvSite = (TextView) findViewById(R.id.tvSite);
         chkCheckDrug = (CheckBox) findViewById(R.id.chkCheckDrug);
         imgvNote = (ImageView) findViewById(R.id.imgvNote);
+        tvComplete = (TextView) findViewById(R.id.tvComplete);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -91,11 +94,33 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
 
     }
 
-    public void setDrugName(DrugCardDao dao){
-        if(dao.getRoute().equals("PO")){// & dao.getPrn().equals("0")) {
+    public void setDrugName(DrugCardDao dao, String statusPatient, List<String> listHAD) {
+        /////////////////////
+        //start
+        ////////////////////
+        if (dao.getComplete() != null & statusPatient != null) {
+            if (dao.getComplete().equals("1")) {
+                tvComplete.setText("เตรียมยาสมบูรณ์");
+                tvComplete.setTextColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                tvComplete.setText("เตรียมยาไม่ได้");
+                tvComplete.setTextColor(getResources().getColor(R.color.colorRed));
+            }
+        }
+
+        for(String s : listHAD) {
+            if (dao.getDrugID().equals(s)) {
+                tvDrugName.setText(String.valueOf(dao.getTradeName()));
+                tvDrugName.setTextColor(getResources().getColor(R.color.colorRed));
+            }
+        }
+        /////////////////////
+        //stop
+        ////////////////////
+        if (dao.getRoute().equals("PO")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
-            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit())+"</b>"));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             if (dao.getAdminType().equals("C")) {
                 tvType.setText("Type: Continue");
             } else {
@@ -104,11 +129,10 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
             tvRoute.setText("Route: " + dao.getRoute());
             tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
-        }
-        else if(dao.getRoute().equals("IV")){//& dao.getPrn().equals("0")){
+        } else if (dao.getRoute().equals("IV")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorPink));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
-            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit())+"</b>"));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             if (dao.getAdminType().equals("C")) {
                 tvType.setText("Type: Continue");
             } else {
@@ -117,24 +141,10 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
             tvRoute.setText("Route: " + dao.getRoute());
             tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
-        }
-//        else if(dao.getPrn().equals("1")){
-//            bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-//            tvDrugName.setText(String.valueOf(dao.getTradeName()));
-//            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit())+"</b>"));
-//            if (dao.getAdminType().equals("C")) {
-//                tvType.setText("Type: Continue");
-//            } else {
-//                tvType.setText("Type: One day");
-//            }
-//            tvRoute.setText("Route: " + dao.getRoute());
-//            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
-//            tvSite.setText("Site: " + dao.getSite());
-//        }
-        else {
+        } else {
             bg.setBackgroundColor(getResources().getColor(R.color.colorBluesky));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
-            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit())+"</b>"));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             if (dao.getAdminType().equals("C")) {
                 tvType.setText("Type: Continue");
             } else {
@@ -146,17 +156,45 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
         }
     }
 
-    public CheckBox isCheck(){
-        return (CheckBox)findViewById(R.id.chkCheckDrug);
+    public CheckBox isCheck() {
+        return (CheckBox) findViewById(R.id.chkCheckDrug);
     }
 
-    public ImageView imageViewNote(){
-        return (ImageView) findViewById(R.id.imgvNote);
+    public ImageView imageViewNote(String statusPatient, String getComplete) {
+        /////////////////////
+        //start
+        ////////////////////
+        if (statusPatient != null & getComplete != null) {
+            if (statusPatient.equals("1") & getComplete.equals("1")) {
+                imgvNote.setEnabled(false);
+            } else if (statusPatient.equals("0") & getComplete.equals("1")) {
+                imgvNote.setEnabled(false);
+            } else {
+                imgvNote.setImageResource(R.drawable.notechange);
+            }
+        }
+        /////////////////////
+        //stop
+        ////////////////////
+        return imgvNote;
     }
 
-    public void setChangeNote(){
-        imgvNote.setImageResource(R.drawable.notechange);
-        Log.d("check", "setChangeNote");
+    public ImageView setChangeNote(String checkNote) {
+        /////////////////////
+        //start
+        ////////////////////
+        Log.d("check", "checkNote = " + checkNote);
+        if (checkNote != null) {
+            if (checkNote.equals("0")) {
+                imgvNote.setImageResource(R.drawable.note);
+            } else if (checkNote.equals("1")) {
+                imgvNote.setImageResource(R.drawable.notechange);
+            }
+        }
+        /////////////////////
+        //stop
+        ////////////////////
+        return imgvNote;
 
     }
 

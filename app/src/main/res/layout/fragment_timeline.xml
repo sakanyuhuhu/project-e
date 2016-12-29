@@ -11,20 +11,54 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="match_parent"
+            android:paddingLeft="20dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:src="@drawable/ic_time" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
+        <LinearLayout
             android:layout_weight="1"
-            android:src="@drawable/ic_person" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_person" />
+
+            <LinearLayout
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="Exclude"
+                    android:textSize="20sp"
+                    android:gravity="center|right"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:text="(Include)"
+                    android:textSize="20sp"
+                    android:paddingLeft="10dp"
+                    android:gravity="center|left"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <ListView
         android:id="@+id/lvTimelineAdapter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
+
 </LinearLayout>

@@ -1,6 +1,5 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +30,7 @@ import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AdministrationActivity;
 import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
-import th.ac.mahidol.rama.emam.activity.LoginPreparationActivity;
+import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
@@ -49,7 +48,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private Button btnLogin;
     private Date datetoDay;
     private ListPatientDataDao dao;
-    private ProgressDialog progressDialog;
 
     public BuildPreparationFragment() {
         super();
@@ -126,7 +124,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         tomorrowDateCheck = sdfForCheckDate.format(c.getTime());
 
         checkType = "First Check";
-        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
 
         if (nfcUID != null & tricker == null) {
             loadPersonWard(nfcUID, sdlocID);
@@ -165,10 +162,9 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         String data = prefs.getString("patientindata", null);
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
-            if(dao.getPatientDao().size() != 0) {
+            if (dao.getPatientDao().size() != 0) {
                 buildPreparationAdapter.setDao(dao);
                 listView.setAdapter(buildPreparationAdapter);
-                progressDialog.dismiss();
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -188,8 +184,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                         getActivity().startActivity(intent);
                     }
                 });
-            }
-            else{
+            } else {
                 tvNoPatient.setText("ไม่มีผู้ป่วย");
                 tvNoPatient.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.INVISIBLE);
@@ -245,12 +240,13 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
             getActivity().startActivity(intent);
             getActivity().finish();
         } else if (view.getId() == R.id.btnLogin) {
-            Intent intent = new Intent(getContext(), LoginPreparationActivity.class);
+            Intent intent = new Intent(getContext(), LoginCenterActivity.class);
             intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
             intent.putExtra("position", timeposition);
             intent.putExtra("time", time);
+            intent.putExtra("login", "Preparation");
             getActivity().startActivity(intent);
             getActivity().finish();
         }
@@ -298,12 +294,10 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     saveCachePatientData(dao);
                     buildPreparationAdapter.setDao(dao);
                     listView.setAdapter(buildPreparationAdapter);
-                    progressDialog.dismiss();
-                    if(tricker != null) {
-                        if(tricker.equals("save"))
+                    if (tricker != null) {
+                        if (tricker.equals("save"))
                             loadCacheDao();
-                    }
-                    else {
+                    } else {
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -335,17 +329,16 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
-            if(dao != null) {
-                if(Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+            if (dao != null) {
+                if (Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
                     saveCachePersonWard(dao);
                     RFID = dao.getRFID();
                     firstName = dao.getFirstName();
                     lastName = dao.getLastName();
                     tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
                     tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-                }
-                else{
-                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_LONG).show();
                 }
             }
         }

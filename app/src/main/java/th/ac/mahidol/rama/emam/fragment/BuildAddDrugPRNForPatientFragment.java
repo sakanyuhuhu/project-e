@@ -1,12 +1,14 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -43,6 +45,7 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddDrugPRNForPatientAdapter;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CheckLastPRNListDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
@@ -66,6 +69,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     private Date datetoDay;
     private Button btnAdd, btnCancel;
     private PatientDataDao patientDao;
+    private CheckLastPRNListDao checkLastPRNListDao;
     private BuildAddPRNPatientManager buildAddPRNPatientManager = new BuildAddPRNPatientManager();
 
     public BuildAddDrugPRNForPatientFragment() {
@@ -210,91 +214,112 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnAdd){
-            Boolean checkNull = false;
-            for (DrugCardDao d : dao.getListDrugCardDao()) {
-                if(d.getComplete() == null)
-                    d.setComplete("0");
-                if(d.getComplete().equals("1"))
-                    checkNull = true;
-            }
-            if(checkNull) {
-                listPatientDataDao = new ListPatientDataDao();
-                List<PatientDataDao> patientDataDaoList = new ArrayList<>();
-                if(patientDao != null) {
-                    patientDao.setTime(time);
-                    if (timeposition <= 23) {
-                        patientDao.setDate(toDayDate);
-                        patientDataDaoList.add(patientDao);
-                    } else {
-                        patientDao.setDate(tomorrowDate);
-                        patientDataDaoList.add(patientDao);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("คุณต้องการเพิ่มยา PRN ใช่หรือไม่?");
+            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Boolean checkNull = false;
+                    for (DrugCardDao d : dao.getListDrugCardDao()) {
+                        if(d.getComplete() == null)
+                            d.setComplete("0");
+                        if(d.getComplete().equals("1"))
+                            checkNull = true;
                     }
-                }
-                listPatientDataDao.setPatientDao(patientDataDaoList);
-                saveCachePatientData(listPatientDataDao);
-                buildAddPRNPatientManager.appendPatientDao(listPatientDataDao);//add new data to patientindata
+                    if(checkNull) {
+                        listPatientDataDao = new ListPatientDataDao();
+                        List<PatientDataDao> patientDataDaoList = new ArrayList<>();
+                        if(patientDao != null) {
+                            patientDao.setTime(time);
+                            if (timeposition <= 23) {
+                                patientDao.setDate(toDayDate);
+                                patientDataDaoList.add(patientDao);
+                            } else {
+                                patientDao.setDate(tomorrowDate);
+                                patientDataDaoList.add(patientDao);
+                            }
+                        }
+                        listPatientDataDao.setPatientDao(patientDataDaoList);
+                        saveCachePatientData(listPatientDataDao);
+                        buildAddPRNPatientManager.appendPatientDao(listPatientDataDao);//add new data to patientindata
 
-                listDrugCardDao = new ListDrugCardDao();
-                List<DrugCardDao> listDaoPRN = new ArrayList<>();
-                for(DrugCardDao d : dao.getListDrugCardDao()){
-                    if(d.getComplete().equals("1")){
-                        d.setActivityHour(time);
-                        d.setWardName(wardName);
-                        d.setRFID(RFID);
-                        d.setFirstName(firstName);
-                        d.setLastName(lastName);
-                        listDaoPRN.add(d);
+                        listDrugCardDao = new ListDrugCardDao();
+                        List<DrugCardDao> listDaoPRN = new ArrayList<>();
+                        for(DrugCardDao d : dao.getListDrugCardDao()){
+                            if(d.getComplete().equals("1")){
+                                d.setActivityHour(time);
+                                d.setWardName(wardName);
+                                d.setRFID(RFID);
+                                d.setFirstName(firstName);
+                                d.setLastName(lastName);
+                                listDaoPRN.add(d);
+                            }
+                        }
+                        listDrugCardDao.setListDrugCardDao(listDaoPRN);
+                        Toast.makeText(getContext(), "เพิ่มยาเรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        intent.putExtra("dao",listDrugCardDao);
+                        intent.putExtra("patientDao", patientDao);
+                        intent.putExtra("prn", prn);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
                     }
+                    else
+                        Toast.makeText(getContext(), "กรุณาใส่เครื่องหมายถูกให้ยาที่จะเพิ่ม", Toast.LENGTH_LONG).show();
                 }
-                listDrugCardDao.setListDrugCardDao(listDaoPRN);
-                Toast.makeText(getContext(), "เพิ่มยาเรียบร้อยแล้ว", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                intent.putExtra("nfcUId", nfcUID);
-                intent.putExtra("wardId", wardID);
-                intent.putExtra("sdlocId", sdlocID);
-                intent.putExtra("wardname", wardName);
-                intent.putExtra("RFID", RFID);
-                intent.putExtra("firstname", firstName);
-                intent.putExtra("lastname", lastName);
-                intent.putExtra("timeposition", timeposition);
-                intent.putExtra("position", position);
-                intent.putExtra("time", time);
-                intent.putExtra("dao",listDrugCardDao);
-                intent.putExtra("patientDao", patientDao);
-                intent.putExtra("prn", prn);
-                getActivity().startActivity(intent);
-                getActivity().finish();
-            }
-            else
-                Toast.makeText(getContext(), "กรุณาใส่เครื่องหมายถูกให้ยาที่จะเพิ่ม", Toast.LENGTH_LONG).show();
+            });
+            builder.setNegativeButton("ไม่ใช่", null);
+            builder.create();
+            builder.show();
+
         }
         else if(view.getId() == R.id.btnCancel){
-            if(prn.equals("prepare")){
-                Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                intent.putExtra("nfcUId", nfcUID);
-                intent.putExtra("wardId", wardID);
-                intent.putExtra("sdlocId", sdlocID);
-                intent.putExtra("wardname", wardName);
-                intent.putExtra("RFID", RFID);
-                intent.putExtra("firstname", firstName);
-                intent.putExtra("lastname", lastName);
-                intent.putExtra("timeposition", timeposition);
-                intent.putExtra("position", position);
-                intent.putExtra("time", time);
-                intent.putExtra("prn", prn);
-                getActivity().startActivity(intent);
-            }
-            else {
-                Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
-                intent.putExtra("nfcUId", nfcUID);
-                intent.putExtra("wardId", wardID);
-                intent.putExtra("sdlocId", sdlocID);
-                intent.putExtra("wardname", wardName);
-                intent.putExtra("position", position);
-                intent.putExtra("time", time);
-                getActivity().startActivity(intent);
-                getActivity().finish();
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
+            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(prn.equals("prepare")){
+                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("RFID", RFID);
+                        intent.putExtra("firstname", firstName);
+                        intent.putExtra("lastname", lastName);
+                        intent.putExtra("timeposition", timeposition);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        intent.putExtra("prn", prn);
+                        getActivity().startActivity(intent);
+                    }
+                    else {
+                        Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
+                        intent.putExtra("nfcUId", nfcUID);
+                        intent.putExtra("wardId", wardID);
+                        intent.putExtra("sdlocId", sdlocID);
+                        intent.putExtra("wardname", wardName);
+                        intent.putExtra("position", position);
+                        intent.putExtra("time", time);
+                        getActivity().startActivity(intent);
+                        getActivity().finish();
+                    }
+                }
+            });
+            builder.setNegativeButton("ไม่ใช่", null);
+            builder.create();
+            builder.show();
         }
     }
 
@@ -351,13 +376,13 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
-            buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao);
+            buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao, patientDao.getMRN());
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);
         }
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "DrugLoadCallback Failure " + t);
+//            Log.d("check", "DrugLoadCallback Failure " + t);
         }
     }
 

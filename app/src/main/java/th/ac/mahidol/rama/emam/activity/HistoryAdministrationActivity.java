@@ -8,7 +8,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.fragment.BuildHistoryAdministrationFragment;
 
 public class HistoryAdministrationActivity extends AppCompatActivity {
-    private String nfcUID,sdlocID, wardName, time, firstName, lastName, RFID;
+    private String nfcUID, wardID, sdlocID, wardName, time, firstName, lastName, RFID;
     private int position, timeposition;
     private PatientDataDao patientAdmin;
 
@@ -16,7 +16,9 @@ public class HistoryAdministrationActivity extends AppCompatActivity {
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_management_history);
+
         nfcUID = getIntent().getExtras().getString("nfcUId");
+        wardID = getIntent().getExtras().getString("wardId");
         sdlocID = getIntent().getExtras().getString("sdlocId");
         wardName = getIntent().getExtras().getString("wardname");
         RFID = getIntent().getExtras().getString("RFID");
@@ -28,7 +30,7 @@ public class HistoryAdministrationActivity extends AppCompatActivity {
         time = getIntent().getExtras().getString("time");
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildHistoryAdministrationFragment.newInstance(nfcUID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientAdmin, time)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildHistoryAdministrationFragment.newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, patientAdmin, time)).commit();
         }
     }
 }
