@@ -93,7 +93,7 @@ public class BuildAddDrugPRNForPatientAdapter extends BaseAdapter {
                     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View dialogView = inflater.inflate(R.layout.custom_dialog_lastprn, null);
                     tvDrugName = (TextView) dialogView.findViewById(R.id.tvDrugName);
-                    tvDrugName.setText(Html.fromHtml("<b>"+dao.getListDrugCardDao().get(drugPosition).getTradeName()+"</b><br> มีการเตรียมยาล่าสุดวันที่: <b>"+chPRNLast.getDrugUseDate()+"</b><br> เวลาล่าสุด: <b>"+chPRNLast.getActivityHour()+".00"+
+                    tvDrugName.setText(Html.fromHtml("<b>"+dao.getListDrugCardDao().get(drugPosition).getTradeName()+"</b><br> มีการเตรียมยาล่าสุดวันที่: <b>"+chPRNLast.getDrugUseDate()+"</b><br> เวลาล่าสุด: <b>"+chPRNLast.getActivityHour()+":00 น."+
                             "</b><br>"+"  โดย: <b>"+chPRNLast.getFirstName()+" "+chPRNLast.getLastName()+"</b>"));
                     builder.setView(dialogView);
                     builder.create();

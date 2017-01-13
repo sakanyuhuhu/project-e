@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/tvDrugName"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Drug Name"
             android:textColor="@color/colorPrimary"
@@ -100,15 +100,6 @@
                     android:gravity="center_vertical"
                     android:text=" Frequency:OD"
                     android:textSize="20sp" />
-
-                <!--<TextView-->
-                    <!--android:id="@+id/tvSite"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:text=" Site : "-->
-                    <!--android:textSize="20sp" />-->
             </LinearLayout>
 
             <LinearLayout

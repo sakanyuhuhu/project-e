@@ -1,9 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,7 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +25,7 @@ import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllPRNAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
@@ -112,7 +112,6 @@ public class BuildAddPatientPRNFragment extends Fragment {
 
     }
 
-
     private void loadPatientData(MrnTimelineDao mrnTimelineDao) {
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientData(mrnTimelineDao);
         call.enqueue(new PatientPRNDataLoadCallback());
@@ -127,14 +126,6 @@ public class BuildAddPatientPRNFragment extends Fragment {
     private void loadPatientPRN(String sdlocID) {
         Call<MrnTimelineDao> call = HttpManager.getInstance().getService().getPatientPRN(sdlocID);
         call.enqueue(new PatientPRNLoadCallback());
-    }
-
-    private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao) {
-        String json = new Gson().toJson(checkPersonWardDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("checkperson", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("checkperson", json);
-        editor.apply();
     }
 
     @Override
@@ -178,10 +169,15 @@ public class BuildAddPatientPRNFragment extends Fragment {
         @Override
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             dao = response.body();
+            List<PatientDataDao> patientDao = new ArrayList<>();
             if (dao.getPatientDao().size() != 0) {
+                for (PatientDataDao p : dao.getPatientDao()) {
+                    p.setLink(BuildPreparationFragment.getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
+                    patientDao.add(p);
+                }
+                dao.setPatientDao(patientDao);
                 buildPatientAllAdapter.setDao(dao, timelineDao);
                 listView.setAdapter(buildPatientAllAdapter);
-                progressDialog.dismiss();
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -198,6 +194,7 @@ public class BuildAddPatientPRNFragment extends Fragment {
                         intent.putExtra("time", time);
                         intent.putExtra("patientPRN", dao.getPatientDao().get(position));
                         intent.putExtra("prn", prn);
+                        intent.putExtra("include", timelineDao);
                         getActivity().startActivity(intent);
                         getActivity().finish();
                     }
@@ -207,6 +204,7 @@ public class BuildAddPatientPRNFragment extends Fragment {
                 tvNoPatient.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.INVISIBLE);
             }
+            progressDialog.dismiss();
         }
 
         @Override
@@ -223,7 +221,6 @@ public class BuildAddPatientPRNFragment extends Fragment {
             CheckPersonWardDao dao = response.body();
             if (dao != null) {
                 if (Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
-                    saveCachePersonWard(dao);
                     RFID = dao.getRFID();
                     firstName = dao.getFirstName();
                     lastName = dao.getLastName();

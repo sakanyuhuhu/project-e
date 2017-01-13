@@ -9,6 +9,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.ListCheckPersonWardBedDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CheckLastPRNListDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
@@ -21,9 +22,10 @@ import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 
 public interface ApiService {
 
-//    @FormUrlEncoded
-//    @POST("EmamTimelineService")
-//    Call<TimelineDao> getTimeline(@Field("sdlocId") String sdlocId);
+    @FormUrlEncoded
+    @POST("EmamTimelineService")
+    Call<TimelineDao> getTimeline(@Field("sdlocId") String sdlocId);
+
 
     @POST("EmamPatientData")
     Call<ListPatientDataDao> getPatientData(@Body MrnTimelineDao mrn);
@@ -78,6 +80,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("CheckLastPRNbyMRNDrugIDService")
     Call<CheckLastPRNListDao> getCheckLastPRNbyMRNDrugID(@Field("mrn") String mrn, @Field("drugID") String DrugID);
+
+    @FormUrlEncoded
+    @POST("CheckPersonWardBedService")
+    Call<ListCheckPersonWardBedDao> getCheckPersonWardBed(@Field("nfcUId") String nfcUId, @Field("wardId") String wardId);
 
 
 }

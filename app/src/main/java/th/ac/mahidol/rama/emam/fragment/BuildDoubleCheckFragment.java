@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,6 +54,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
     private Date datetoDay;
     private ListPatientDataDao dao;
     private ListDrugCardDao listDrugCardDao;
+    private ProgressDialog progressDialog;
 
 
     public BuildDoubleCheckFragment() {
@@ -135,6 +137,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
             loadPersonWard(nfcUID, sdlocID);
             loadCacheDao();
         } else {
+            progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
             if (nfcUID != null & tricker != null) {
                 if (tricker.equals("save")) {
                     loadPersonWard(nfcUID, sdlocID);
@@ -192,6 +195,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                         }
                     }
                 });
+
             }
             else{
                 tvNoPatient.setText("ไม่มีผู้ป่วย");
@@ -216,6 +220,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getDrugData(drugCardDao);
         call.enqueue(new DrugLoadCallback());
     }
+
 
     private void saveCacheDoubleCheckData(ListPatientDataDao patientDataDao) {
         String json = new Gson().toJson(patientDataDao);
@@ -294,6 +299,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     for (PatientDataDao p : dao.getPatientDao()) {
                         if (!listMrn.contains(p.getMRN())) {
                             listMrn.add(p.getMRN());
+                            p.setLink(BuildPreparationFragment.getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
                             patientDao.add(p);
                         }
                     }
@@ -309,7 +315,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการตรวจสอบยา", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการตรวจสอบยา", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -319,11 +325,11 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     listView.setVisibility(View.INVISIBLE);
                 }
             }
+            progressDialog.dismiss();
         }
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "Double PatientLoadCallback Failure " + t);
         }
     }
 
@@ -342,14 +348,13 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
                 }
                 else{
-                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_SHORT).show();
                 }
             }
         }
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "Double PersonWardLoadCallback Failure " + t);
         }
     }
 
@@ -383,14 +388,30 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
                     intent.putExtra("time", time);
                     getActivity().startActivity(intent);
                 } else {
-                    Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "ผู้ตรวจสอบยาไม่ควรเป็นคนเดียวกับผู้จัดเตรียมยา", Toast.LENGTH_SHORT).show();
                 }
             }
         }
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
-            Log.d("check", "DrugLoadCallback Failure " + t);
+        }
+    }
+
+    static class NewDrugLoadCallback implements Callback<ListDrugCardDao>{
+
+        @Override
+        public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
+            ListDrugCardDao listDrug = new ListDrugCardDao();
+            listDrug = response.body();
+            for (DrugCardDao d : listDrug.getListDrugCardDao()) {
+                Log.d("check", "getTradeName = "+d.getTradeName());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ListDrugCardDao> call, Throwable t) {
+
         }
     }
 }

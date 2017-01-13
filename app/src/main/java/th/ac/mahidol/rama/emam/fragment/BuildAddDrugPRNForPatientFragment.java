@@ -1,9 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -51,6 +48,7 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.manager.BuildAddPRNPatientManager;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 import th.ac.mahidol.rama.emam.manager.SearchDrugAdrManager;
@@ -66,6 +64,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     private BuildAddDrugPRNForPatientAdapter buildAddDrugPRNForPatientAdapter;
     private ListDrugCardDao dao, listDrugCardDao;
     private ListPatientDataDao listPatientDataDao;
+    private TimelineDao timelineDao;
     private Date datetoDay;
     private Button btnAdd, btnCancel;
     private PatientDataDao patientDao;
@@ -76,7 +75,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         super();
     }
 
-    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, PatientDataDao patientDao, String prn) {
+    public static BuildAddDrugPRNForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, PatientDataDao patientDao, String prn, TimelineDao timelineDao) {
         BuildAddDrugPRNForPatientFragment fragment = new BuildAddDrugPRNForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -91,6 +90,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         args.putString("time", time);
         args.putParcelable("patientPRN", patientDao);
         args.putString("prn", prn);
+        args.putParcelable("include", timelineDao);
         fragment.setArguments(args);
         return fragment;
     }
@@ -129,6 +129,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         time = getArguments().getString("time");
         patientDao = getArguments().getParcelable("patientPRN");
         prn = getArguments().getString("prn");
+        timelineDao = getArguments().getParcelable("include");
 
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataWhiteView = (BuildHeaderPatientDataWhiteView)rootView.findViewById(R.id.headerPatientAdapter);
@@ -198,14 +199,6 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
     }
 
-    private void saveCachePatientData(ListPatientDataDao patientDataDao){
-        String json = new Gson().toJson(patientDataDao);
-        SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("patientprn",json);
-        editor.apply();
-    }
-
     private void loadDrugPRNData(DrugCardDao drugCardDao){
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getCompareDrug(drugCardDao);
         call.enqueue(new DrugLoadCallback());
@@ -240,7 +233,6 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                             }
                         }
                         listPatientDataDao.setPatientDao(patientDataDaoList);
-                        saveCachePatientData(listPatientDataDao);
                         buildAddPRNPatientManager.appendPatientDao(listPatientDataDao);//add new data to patientindata
 
                         listDrugCardDao = new ListDrugCardDao();
@@ -312,6 +304,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("position", position);
                         intent.putExtra("time", time);
+                        intent.putExtra("include", timelineDao);
                         getActivity().startActivity(intent);
                         getActivity().finish();
                     }
@@ -356,6 +349,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                         intent.putExtra("wardname", wardName);
                         intent.putExtra("position", position);
                         intent.putExtra("time", time);
+                        intent.putExtra("include", timelineDao);
                         getActivity().startActivity(intent);
                         getActivity().finish();
                         return true;
@@ -375,6 +369,9 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
+            for(DrugCardDao d : dao.getListDrugCardDao()){
+                Log.d("check", "DrugID = ["+d.getDrugID()+"] / Name = "+d.getTradeName());
+            }
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
             buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao, patientDao.getMRN());
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);

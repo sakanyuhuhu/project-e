@@ -368,15 +368,25 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
-                    Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("wardId", wardID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("position", timeposition);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+                            intent.putExtra("nfcUId", nfcUID);
+                            intent.putExtra("wardId", wardID);
+                            intent.putExtra("sdlocId", sdlocID);
+                            intent.putExtra("wardname", wardName);
+                            intent.putExtra("position", timeposition);
+                            intent.putExtra("time", time);
+                            getActivity().startActivity(intent);
+                            getActivity().finish();
+                        }
+                    });
+                    builder.setNegativeButton("ไม่ใช่", null);
+                    builder.create();
+                    builder.show();
                     return true;
                 }
                 return false;

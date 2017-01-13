@@ -2,11 +2,17 @@ package th.ac.mahidol.rama.emam.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -19,6 +25,7 @@ public class BuildAddPatientAllPRNListView extends BaseCustomViewGroup {
 
     private TextView tvPatient, tvBedNo, tvMrn;
     private LinearLayout bg;
+    private ImageView imgPhotoPatient;
 
     public BuildAddPatientAllPRNListView(Context context) {
         super(context);
@@ -57,6 +64,7 @@ public class BuildAddPatientAllPRNListView extends BaseCustomViewGroup {
         tvPatient = (TextView) findViewById(R.id.tvPatient);
         tvBedNo = (TextView) findViewById(R.id.tvBedNo);
         tvMrn = (TextView) findViewById(R.id.tvMrn);
+        imgPhotoPatient = (ImageView) findViewById(R.id.imgPhotoPatient);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -81,6 +89,24 @@ public class BuildAddPatientAllPRNListView extends BaseCustomViewGroup {
     }
 
     public void setPatient(PatientDataDao dao, TimelineDao timelineDao) {
+        /////////
+        //start test call link photo
+        /////////
+        URL url = null;
+        try {
+            url = new URL(dao.getLink());
+            try {
+                imgPhotoPatient.setImageBitmap(BitmapFactory.decodeStream(url.openConnection() .getInputStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        /////////
+        //end
+        /////////
+
         if (timelineDao != null){
             for (MrnTimelineDao m : timelineDao.getTimelineDao()) {
                 for (String s : m.getMrn()) {

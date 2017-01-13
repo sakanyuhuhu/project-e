@@ -108,12 +108,19 @@ public class BuildPreparationForPatientListView extends BaseCustomViewGroup {
             }
         }
 
-        for(String s : listHAD) {
-            if (dao.getDrugID().equals(s)) {
-                tvDrugName.setText(String.valueOf(dao.getTradeName()));
-                tvDrugName.setTextColor(getResources().getColor(R.color.colorRed));
+        if(listHAD != null) {
+            for (String s : listHAD) {
+                if (dao.getDrugID().equals(s)) {
+                    tvDrugName.setText(String.valueOf(dao.getTradeName()));
+                    tvDrugName.setTextColor(getResources().getColor(R.color.colorRed));
+                }
             }
         }
+
+
+//        if(dao.getDrugID().equals()){
+//
+//        }
         /////////////////////
         //stop
         ////////////////////

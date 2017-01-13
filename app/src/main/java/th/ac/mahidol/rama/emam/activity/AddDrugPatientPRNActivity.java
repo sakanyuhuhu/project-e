@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.fragment.BuildAddDrugPRNForPatientFragment;
 
 public class AddDrugPatientPRNActivity extends AppCompatActivity {
     private String nfcUID, wardID, sdlocID, wardName, time, RFID, firstName, lastName, prn;
     private int position, timeposition;
     private PatientDataDao patientDao;
+    private TimelineDao timelineDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +35,10 @@ public class AddDrugPatientPRNActivity extends AppCompatActivity {
         time = getIntent().getExtras().getString("time");
         patientDao = getIntent().getParcelableExtra("patientPRN");
         prn = getIntent().getExtras().getString("prn");
+        timelineDao = getIntent().getParcelableExtra("include");
 
         if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddDrugPRNForPatientFragment.newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, patientDao, prn)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAddDrugPRNForPatientFragment.newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, patientDao, prn, timelineDao)).commit();
         }
 
     }

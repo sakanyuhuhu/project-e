@@ -30,6 +30,7 @@ public class PatientDataDao implements Parcelable {
     private String complete;
     private String status;
     private String RFID;
+    private String link;
 
 
     public PatientDataDao(){
@@ -54,6 +55,7 @@ public class PatientDataDao implements Parcelable {
         complete = in.readString();
         status = in.readString();
         RFID = in.readString();
+        link = in.readString();
     }
 
     @Override
@@ -75,6 +77,7 @@ public class PatientDataDao implements Parcelable {
         dest.writeString(complete);
         dest.writeString(status);
         dest.writeString(RFID);
+        dest.writeString(link);
     }
 
     @Override
@@ -228,5 +231,13 @@ public class PatientDataDao implements Parcelable {
 
     public void setRFID(String RFID) {
         this.RFID = RFID;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.manager;
 
+import android.os.StrictMode;
 import android.util.Log;
 
 import org.ksoap2.SoapEnvelope;
@@ -15,10 +16,12 @@ public class SoapManager {
 //    private String URL = "http://devfox_ws.rama.mahidol.ac.th/webservice/IMP_Web_Services.WSDL";
     private String NAME_SPACE = "http://tempuri.org/patientservice/message/";
     private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/patientservice.WSDL"; // connected but no data(empty) in devfox_ws
-//    private String URL = "http://appcenter.rama.mahidol.ac.th/webservice/patientservice.WSDL"; // use wifi can't connect
     private String SOAP_ACTION;
     private SoapPrimitive resultString;
 
+    private String NAME_SPACEPHOTO = "http://tempuri.org/PatPhotoService/message/";
+    private String URLPHOTO = "http://appcenter.rama.mahidol.ac.th/Webservice/PatPhotoService.WSDL";
+    private String resultLinkPhoto = null;
 
     public SoapManager() {
 
@@ -42,7 +45,7 @@ public class SoapManager {
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
 
         } catch (Exception ex) {
-            Log.e("check", "Error: " + ex.getMessage());
+//            Log.e("check", "Error: " + ex.getMessage());
         }
 
         return String.valueOf(resultString);
@@ -69,7 +72,7 @@ public class SoapManager {
 
 
         } catch (Exception ex) {
-            Log.e("check", "Error: " + ex.getMessage());
+//            Log.e("check", "Error: " + ex.getMessage());
         }
         return String.valueOf(resultString);
     }
@@ -121,9 +124,46 @@ public class SoapManager {
 
 
         } catch (Exception ex) {
-            Log.e("check", "Error: " + ex.getMessage());
+//            Log.e("check", "Error: " + ex.getMessage());
         }
         return String.valueOf(resultString);
+    }
+
+    public String getLinkPhoto(String methodName, String idCardNo){
+
+        SOAP_ACTION = "http://tempuri.org/PatPhotoService/action/PatPhotoService."+ methodName;
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        try {
+
+            Log.d("check", "methodName = "+methodName+"   idCardNo = "+idCardNo);
+            SoapObject request = new SoapObject(NAME_SPACEPHOTO, methodName);
+            request.addProperty("mId_Card", idCardNo);
+
+
+            SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            soapEnvelope.setOutputSoapObject(request);
+
+            HttpTransportSE transport = new HttpTransportSE(URLPHOTO);
+            transport.call(SOAP_ACTION, soapEnvelope);
+
+            resultLinkPhoto = (String) soapEnvelope.getResponse();
+            Log.d("check", "resultLinkPhoto = "+ resultLinkPhoto);
+
+
+        } catch (Exception ex) {
+            Log.e("check", "getLinkPhoto Error: " + ex.getMessage());
+            for(int i=0; i< ex.getStackTrace().length;i++){
+                Log.e("check", "getStackTrace Error: " + ex.getStackTrace()[i]);
+            }
+
+
+
+        }
+        return resultLinkPhoto;
     }
 
 }

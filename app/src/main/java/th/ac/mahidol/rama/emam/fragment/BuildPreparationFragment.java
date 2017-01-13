@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,10 +35,13 @@ import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardBedDao;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
+import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.ListCheckPersonWardBedDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
+import th.ac.mahidol.rama.emam.manager.SoapManager;
 
 public class BuildPreparationFragment extends Fragment implements View.OnClickListener {
     private String wardID, sdlocID, nfcUID, wardName, time, firstName, lastName, RFID, toDayDate, checkType, tomorrowDate, prn, toDayDateCheck, tomorrowDateCheck, tricker;
@@ -48,6 +52,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private Button btnLogin;
     private Date datetoDay;
     private ListPatientDataDao dao;
+    private ProgressDialog progressDialog;
 
     public BuildPreparationFragment() {
         super();
@@ -104,8 +109,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
         tvNoPatient = (TextView) rootView.findViewById(R.id.tvNoPatient);
 
-        tvTime.setText(time);
         btnLogin.setOnClickListener(this);
+        tvTime.setText(time);
         tvDoublecheck.setOnClickListener(this);
         tvAdministration.setOnClickListener(this);
 
@@ -128,10 +133,29 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         if (nfcUID != null & tricker == null) {
             loadPersonWard(nfcUID, sdlocID);
             loadCacheDao();
+
+            /////////
+            //start 12-01-2017 check person ward bed
+            /////////
+//            loadPersonWard(nfcUID, wardID);
+//            loadCacheDao();
+            /////////
+            //end
+            /////////
         } else {
+            progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
             if (nfcUID != null & tricker != null) {
                 if (tricker.equals("save")) {
                     loadPersonWard(nfcUID, sdlocID);
+                    /////////
+                    //start 12-01-2017 check person ward bed
+                    /////////
+//                    loadPersonWard(nfcUID, wardID);
+//                    loadCacheDao();
+                    /////////
+                    //end
+                    /////////
+
                     if (timeposition <= 23)
                         loadPatientData(sdlocID, time, checkType, toDayDate);
                     else
@@ -195,11 +219,22 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private void loadPatientData(String sdlocID, String time, String checkType, String dayDate) {
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientInfo(sdlocID, time, checkType, dayDate);
         call.enqueue(new PatientLoadCallback());
+
+
     }
 
-    private void loadPersonWard(String nfcUID, String sdlocID) {
+    private void loadPersonWard(String nfcUID, String wardID) {
         Call<CheckPersonWardDao> call = HttpManager.getInstance().getService().getPersonWard(nfcUID, sdlocID);
         call.enqueue(new PersonWardLoadCallback());
+        /////////
+        //start 12-01-2017 check person ward bed
+        /////////
+//        Call<ListCheckPersonWardBedDao> call = HttpManager.getInstance().getService().getCheckPersonWardBed(nfcUID, wardID);
+//        call.enqueue(new CheckPersonWardLoadCallback());
+        /////////
+        //end
+        /////////
+
 
     }
 
@@ -287,6 +322,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     for (PatientDataDao p : dao.getPatientDao()) {
                         if (!listMrn.contains(p.getMRN())) {
                             listMrn.add(p.getMRN());
+                            p.setLink(getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
                             patientDao.add(p);
                         }
                     }
@@ -301,7 +337,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการเตรียมยา", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการเตรียมยา", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -315,12 +351,15 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                 tvNoPatient.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.INVISIBLE);
             }
+            progressDialog.dismiss();
         }
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "Prepare PatientLoadCallback Failure " + t);
+
         }
+
+
     }
 
 
@@ -337,16 +376,65 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     lastName = dao.getLastName();
                     tvUserName.setText("จัดเตรียมยาโดย  " + firstName + " " + lastName);
                     tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
-                } else {
-                    Toast.makeText(getActivity(), "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_LONG).show();
-                }
+                } else
+                    Toast.makeText(getActivity(), "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
         }
     }
+
+    ///////////
+    //start 12-01-2017 check person ward bed
+    //////////
+    class CheckPersonWardLoadCallback implements Callback<ListCheckPersonWardBedDao> {
+
+        @Override
+        public void onResponse(Call<ListCheckPersonWardBedDao> call, Response<ListCheckPersonWardBedDao> response) {
+            ListCheckPersonWardBedDao dao = response.body();
+            Log.d("check", "ListCheckPersonWardBedDao = "+dao.getCheckPersonWardBedDaoList().size());
+            if (dao != null) {
+                for(CheckPersonWardBedDao ch : dao.getCheckPersonWardBedDaoList()) {
+                    Log.d("check", "wardId = "+ ch.getBedID() + "   name = "+ch.getFirstName()+" "+ch.getLastName());
+                    if (Integer.parseInt(wardID) == ch.getWardID()) {
+                        SharedPreferences prefs = getContext().getSharedPreferences("patientindata", Context.MODE_PRIVATE);
+                        String data = prefs.getString("patientindata", null);
+                        if (data != null) {
+                            ListPatientDataDao daoPatient = new Gson().fromJson(data, ListPatientDataDao.class);
+                            if (daoPatient.getPatientDao().size() != 0) {
+                                for (PatientDataDao p : daoPatient.getPatientDao()) {
+                                    if (ch.getBedID().equals(p.getBedID())) {
+                                            Log.d("check", "MRN = " + p.getMRN());
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ListCheckPersonWardBedDao> call, Throwable t) {
+
+        }
+    }
+
+    //////////
+    //end
+    //////////
+
+    public static class getPhotoForPatient{
+        public static String getCheckPhotoLinkDao(String getIdCardNo) {
+            SoapManager soapManager = new SoapManager();
+            String link = soapManager.getLinkPhoto("GETPATPHOTO", getIdCardNo);
+            return link.replace("GW3", "GW3.rama.mahidol.ac.th");
+        }
+    }
+
 
 }

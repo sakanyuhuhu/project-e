@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,7 +28,9 @@ import th.ac.mahidol.rama.emam.activity.MainSelectMenuActivity;
 import th.ac.mahidol.rama.emam.activity.history.HistoryActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddPatientAllAdapter;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
+import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.MrnTimelineDao;
+import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPatientAllFragment extends Fragment{
@@ -168,10 +173,16 @@ public class BuildPatientAllFragment extends Fragment{
         public void onResponse(Call<ListPatientDataDao> call, Response<ListPatientDataDao> response) {
             dao = response.body();
             saveCachePatientData(dao);
+            List<PatientDataDao> patientDao = new ArrayList<>();
             if(dao.getPatientDao().size() != 0) {
+                for (PatientDataDao p : dao.getPatientDao()) {
+                    p.setLink(BuildPreparationFragment.getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
+                    patientDao.add(p);
+                }
+                dao.setPatientDao(patientDao);
+                saveCachePatientData(dao);
                 buildPatientAllAdapter.setDao(dao);
                 listView.setAdapter(buildPatientAllAdapter);
-                progressDialog.dismiss();
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -189,6 +200,7 @@ public class BuildPatientAllFragment extends Fragment{
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
+            progressDialog.dismiss();
         }
 
         @Override

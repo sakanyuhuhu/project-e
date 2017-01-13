@@ -4,7 +4,6 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,15 +71,15 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
         /////////////////////
         //start
         ////////////////////
-        if(statusPatient != null){
-            if(statusPatient.equals("1")){
+
+        if (statusPatient != null) {
+            if (statusPatient.equals("1")) {
                 dao.getListDrugCardDao().get(position).setComplete("1");
                 checkBox.isChecked();
                 checkBox.setEnabled(false);
-            }
-            else{
-                if(dao.getListDrugCardDao().get(position).getComplete() != null){
-                    if(dao.getListDrugCardDao().get(position).getComplete().equals("1")){
+            } else {
+                if (dao.getListDrugCardDao().get(position).getComplete() != null) {
+                    if (dao.getListDrugCardDao().get(position).getComplete().equals("1")) {
                         dao.getListDrugCardDao().get(position).setComplete("1");
                         checkBox.isChecked();
                         checkBox.setEnabled(false);
@@ -169,7 +168,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
         /////////////////////
         //start
         ////////////////////
-        Log.d("check", "statusPatient = "+statusPatient + "    getComplete = "+dao.getListDrugCardDao().get(position).getComplete());
         if(statusPatient != null & dao.getListDrugCardDao().get(position).getComplete() != null){
             if(statusPatient.equals("1") & dao.getListDrugCardDao().get(position).getComplete().equals("1")){
                 chkHold.setEnabled(false);
@@ -197,7 +195,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                 }
             }
         }
-
         /////////////////////
         //stop
         ////////////////////

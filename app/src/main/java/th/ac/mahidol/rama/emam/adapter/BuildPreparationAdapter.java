@@ -13,6 +13,7 @@ public class BuildPreparationAdapter extends BaseAdapter {
 
     public void setDao(ListPatientDataDao dao){
         this.dao = dao;
+
     }
 
     @Override

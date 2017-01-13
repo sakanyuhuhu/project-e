@@ -433,7 +433,41 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     public void saveAdministration() {
         Boolean checkNull = true;
         for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
-            Log.d("check", "getComplete = " + d.getComplete() + "    getchecknote = " + d.getCheckNote());
+//            if (d.getComplete() == null & d.getCheckNote() == null) {
+//                d.setComplete("0");
+//                d.setCheckNote("0");
+//            } else if (d.getComplete().equals("1") & d.getCheckNote() == null) {
+//                d.setCheckNote("0");
+//                d.setComplete("1");
+//            } else if (d.getComplete() == null & d.getCheckNote() != null) {
+//                d.setComplete("0");
+//                if (d.getCheckNote().equals("0"))
+//                    d.setCheckNote("0");
+//                else
+//                    d.setCheckNote("1");
+//            } else if (d.getComplete().equals("0") & d.getCheckNote() == null) {
+//                d.setComplete("0");
+//                if (d.getStrRadio() != null) {
+////                    if (d.getStrRadio().equals("NPO") | d.getStrRadio().equals("ไม่มียา") | d.getStrRadio().equals("คนไข้ปฏิเสธ") |
+////                            d.getStrRadio().equals("คนไข้มีอาการคลื่นไส้อาเจียน") | d.getStrRadio().equals("แทงเส้นเลือดไม่ได้") | d.getStrRadio().equals("แพทย์สั่ง off ณ เวลานั้น") |
+////                            d.getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
+//                    if (!d.getStrRadio().equals(""))
+//                        d.setCheckNote("1");
+//                    else
+//                        d.setCheckNote("0");
+//                } else
+//                    d.setCheckNote("0");
+//            } else if (d.getComplete() == null & d.getCheckNote().equals("0")) {
+//                d.setComplete("1");
+//                d.setCheckNote("0");
+//            }
+//
+//            if (d.getComplete().equals("0") & d.getCheckNote().equals("0"))
+//                checkNull = false;
+
+            //////////
+            //start
+            /////////
             if (d.getComplete() == null & d.getCheckNote() == null) {
                 d.setComplete("0");
                 d.setCheckNote("0");
@@ -449,9 +483,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             } else if (d.getComplete().equals("0") & d.getCheckNote() == null) {
                 d.setComplete("0");
                 if (d.getStrRadio() != null) {
-//                    if (d.getStrRadio().equals("NPO") | d.getStrRadio().equals("ไม่มียา") | d.getStrRadio().equals("คนไข้ปฏิเสธ") |
-//                            d.getStrRadio().equals("คนไข้มีอาการคลื่นไส้อาเจียน") | d.getStrRadio().equals("แทงเส้นเลือดไม่ได้") | d.getStrRadio().equals("แพทย์สั่ง off ณ เวลานั้น") |
-//                            d.getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
                     if (!d.getStrRadio().equals(""))
                         d.setCheckNote("1");
                     else
@@ -459,12 +490,15 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 } else
                     d.setCheckNote("0");
             } else if (d.getComplete() == null & d.getCheckNote().equals("0")) {
-                d.setComplete("1");
+                d.setComplete("0");
                 d.setCheckNote("0");
             }
 
             if (d.getComplete().equals("0") & d.getCheckNote().equals("0"))
                 checkNull = false;
+            /////////
+            //end
+            ////////
         }
         if (checkNull) {
             for (DrugCardDao d : buildDrugCardListManager.getDaoAll().getListDrugCardDao()) {
@@ -491,7 +525,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 d.setWardName(wardName);
                 d.setActualAdmin(dateActualAdmin);
                 d.setActivityHour(time);
-                if (d.getDescription() != null) {
+                if (d.getDescription() != null & !d.getDescription().equals("")) {
                     d.setComplete("0");
                     if (!d.getDescription().equals("") & txtstatus != null) {
                         d.setDescription(d.getDescription() + " " + txtstatus);
@@ -518,32 +552,6 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             getActivity().finish();
         } else
             Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
-                    Intent intent = new Intent(getContext(), AdministrationActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("wardId", wardID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("position", timeposition);
-                    intent.putExtra("time", time);
-                    intent.putExtra("save", tricker);
-                    getActivity().startActivity(intent);
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
     @Override
@@ -599,6 +607,41 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             builder.create();
             builder.show();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
+                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getContext(), AdministrationActivity.class);
+                            intent.putExtra("nfcUId", nfcUID);
+                            intent.putExtra("wardId", wardID);
+                            intent.putExtra("sdlocId", sdlocID);
+                            intent.putExtra("wardname", wardName);
+                            intent.putExtra("position", timeposition);
+                            intent.putExtra("time", time);
+                            intent.putExtra("save", tricker);
+                            getActivity().startActivity(intent);
+                        }
+                    });
+                    builder.setNegativeButton("ไม่ใช่", null);
+                    builder.create();
+                    builder.show();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 

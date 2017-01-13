@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +79,8 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, String time, ListDrugCardDao listDrugCardDao, PatientDataDao patientDao, String prn) {
+    public static BuildPreparationForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName,
+                                                                 int timeposition, int position, String time, ListDrugCardDao listDrugCardDao, PatientDataDao patientDao, String prn) {
         BuildPreparationForPatientFragment fragment = new BuildPreparationForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -218,7 +220,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         call.enqueue(new SaveDrugDataCallback());
     }
 
-    private void getListHAD(){
+    private void getListHAD() {
         Call<List<String>> call = HttpManager.getInstance().getService().getListHAD();
         call.enqueue(new ListHADCallback());
     }
@@ -371,9 +373,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         } else if (d.getComplete().equals("0") & d.getCheckNote() == null) {
                             d.setComplete("0");
                             if (d.getStrRadio() != null) {
-//                                if (d.getStrRadio().equals("NPO") | d.getStrRadio().equals("ไม่มียา") | d.getStrRadio().equals("ห้องยาส่งยาผิด") |
-//                                        d.getStrRadio().equals("ยาตก/แตก") | d.getStrRadio().equals("ผู้ป่วยไปทำหัตการ"))
-                                if(!d.getStrRadio().equals(""))
+                                if (!d.getStrRadio().equals(""))
                                     d.setCheckNote("1");
                                 else
                                     d.setCheckNote("0");
@@ -488,35 +488,44 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
-                    if (prn.equals("prepare")) {
-                        Intent intent = new Intent(getContext(), PreparationActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("wardId", wardID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("position", timeposition);
-                        intent.putExtra("time", time);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-                        return true;
-                    } else {
-                        Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("wardId", wardID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("RFID", RFID);
-                        intent.putExtra("firstname", firstName);
-                        intent.putExtra("lastname", lastName);
-                        intent.putExtra("timeposition", timeposition);
-                        intent.putExtra("position", positionPrepare);
-                        intent.putExtra("time", time);
-                        intent.putExtra("prn", prn);
-                        intent.putExtra("patientPRN", patientDao);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-                        return true;
-                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (prn.equals("prepare")) {
+                                Intent intent = new Intent(getContext(), PreparationActivity.class);
+                                intent.putExtra("nfcUId", nfcUID);
+                                intent.putExtra("wardId", wardID);
+                                intent.putExtra("sdlocId", sdlocID);
+                                intent.putExtra("wardname", wardName);
+                                intent.putExtra("position", timeposition);
+                                intent.putExtra("time", time);
+                                getActivity().startActivity(intent);
+                                getActivity().finish();
+                            } else {
+                                Intent intent = new Intent(getContext(), AddDrugPatientPRNActivity.class);
+                                intent.putExtra("nfcUId", nfcUID);
+                                intent.putExtra("wardId", wardID);
+                                intent.putExtra("sdlocId", sdlocID);
+                                intent.putExtra("wardname", wardName);
+                                intent.putExtra("RFID", RFID);
+                                intent.putExtra("firstname", firstName);
+                                intent.putExtra("lastname", lastName);
+                                intent.putExtra("timeposition", timeposition);
+                                intent.putExtra("position", positionPrepare);
+                                intent.putExtra("time", time);
+                                intent.putExtra("prn", prn);
+                                intent.putExtra("patientPRN", patientDao);
+                                getActivity().startActivity(intent);
+                                getActivity().finish();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("ไม่ใช่", null);
+                    builder.create();
+                    builder.show();
+                    return true;
                 }
                 return false;
             }
@@ -524,9 +533,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     }
 
 
-
-
-    class ListHADCallback implements Callback<List<String>>{
+    class ListHADCallback implements Callback<List<String>> {
 
         @Override
         public void onResponse(Call<List<String>> call, Response<List<String>> response) {
@@ -601,6 +608,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     daoDrug = new ListDrugCardDao();
                     List<DrugCardDao> listDaoNoPRN = new ArrayList<>();
                     for (DrugCardDao d : dao.getListDrugCardDao()) {
+                        Log.d("check", "DrugID = "+ d.getDrugID());
                         if (d.getPrn().equals("0")) {
                             listDaoNoPRN.add(d);
                         }

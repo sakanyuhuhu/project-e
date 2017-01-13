@@ -37,14 +37,20 @@ public class PreparationActivity extends AppCompatActivity {
         tricker = getIntent().getExtras().getString("save");
 
 
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
         }
 
+        //////////////////
+        //start view pager
+        //////////////////////
 //        if (savedInstanceState == null) {
 //            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildMedicationManagementFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
 //        }
-
+        ///////////////////////
+        //end view pager
+        //////////////////////
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
@@ -66,7 +72,16 @@ public class PreparationActivity extends AppCompatActivity {
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
             getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
+
+            ///////////////////////
+            //start view pager
+            //////////////////////
+
 //            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildMedicationManagementFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
+
+            ///////////////////////
+            //end view pager
+            //////////////////////
         }
         super.onNewIntent(intent);
     }

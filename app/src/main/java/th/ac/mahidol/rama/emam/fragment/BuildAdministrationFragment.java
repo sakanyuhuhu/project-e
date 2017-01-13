@@ -1,12 +1,12 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +51,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
     private Date datetoDay;
     private boolean found = false;
     private ListPatientDataDao dao;
+    private ProgressDialog progressDialog;
 
     public BuildAdministrationFragment() {
         super();
@@ -128,6 +129,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
             loadPersonWard(nfcUID, sdlocID);
             loadCacheDao();
         } else {
+            progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
             if (nfcUID != null & tricker != null) {
                 if (tricker.equals("save")) {
                     loadPersonWard(nfcUID, sdlocID);
@@ -224,7 +226,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                         getActivity().startActivity(intent);
                     } else {
                         found = false;
-                        Toast.makeText(getActivity(), "Not found!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Not found!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -300,6 +302,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                     for (PatientDataDao p : dao.getPatientDao()) {
                         if (!listMrn.contains(p.getMRN())) {
                             listMrn.add(p.getMRN());
+                            p.setLink(BuildPreparationFragment.getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
                             patientDao.add(p);
                         }
                     }
@@ -315,7 +318,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการบริหารยา", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "แตะ Smart Card ก่อนการบริหารยา", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -326,11 +329,11 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                     listView.setVisibility(View.INVISIBLE);
                 }
             }
+            progressDialog.dismiss();
         }
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "Admin PatientLoadCallback Failure " + t);
         }
     }
 
@@ -349,14 +352,13 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                     tvUserName.setTextColor(getResources().getColor(R.color.colorBlack));
                 }
                 else{
-                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "ผู้ใช้ไม่ได้อยู่ใน Ward นี้", Toast.LENGTH_SHORT).show();
                 }
             }
         }
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "Admin PersonWardLoadCallback Failure " + t);
         }
     }
 }

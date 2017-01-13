@@ -18,6 +18,7 @@ public class BuildMedicationManagementFragment extends Fragment{
     private ViewPager viewPager;
     private String wardID, sdlocID, nfcUID, wardName, time, prn, tricker;
     private int timeposition;
+    static int currentPage;
 
     public BuildMedicationManagementFragment() {
         super();
@@ -79,16 +80,31 @@ public class BuildMedicationManagementFragment extends Fragment{
         viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                switch (position){
-                    case 0:
-                        return BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, prn, tricker);
-                    case 1:
-                        return BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
-                    case 2:
-                        return BuildAdministrationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
-                    default:
-                        return null;
+                currentPage = position;
+//                switch (position){
+//                    case 0:
+//                        return BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, prn, tricker);
+//                    case 1:
+//                        return BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
+//                    case 2:
+//                        return BuildAdministrationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
+//                    default:
+//                        return null;
+//                }
+
+                if(currentPage == 0){
+                    Log.d("check", "0 currentPage = "+currentPage);
+                    return BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, prn, tricker);
                 }
+                else if(currentPage == 1){
+                    Log.d("check", "1 currentPage = "+currentPage);
+                        return BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
+                }
+                else if(currentPage == 2){
+                    Log.d("check", "2 currentPage = "+currentPage);
+                    return BuildAdministrationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
+                }
+                return null;
             }
 
             @Override

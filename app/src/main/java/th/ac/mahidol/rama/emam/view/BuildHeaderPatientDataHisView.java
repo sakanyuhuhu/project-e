@@ -2,10 +2,16 @@ package th.ac.mahidol.rama.emam.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -13,6 +19,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 public class BuildHeaderPatientDataHisView extends BaseCustomViewGroup {
     private TextView tvBedNo, tvPatientName, tvPatientID, tvHN, tvBirth, tvAge, tvSex, tvStatus;
+    private ImageView imgPhotoPatient;
 
     public BuildHeaderPatientDataHisView(Context context) {
         super(context);
@@ -55,6 +62,7 @@ public class BuildHeaderPatientDataHisView extends BaseCustomViewGroup {
         tvAge = (TextView) findViewById(R.id.tvAge);
         tvSex = (TextView) findViewById(R.id.tvSex);
         tvStatus = (TextView) findViewById(R.id.tvStatus);
+        imgPhotoPatient = (ImageView) findViewById(R.id.imgPhotoPatient);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -78,6 +86,18 @@ public class BuildHeaderPatientDataHisView extends BaseCustomViewGroup {
     }
 
     public void setData(PatientDataDao patientDao){
+        URL url = null;
+        try {
+            url = new URL(patientDao.getLink());
+            try {
+                imgPhotoPatient.setImageBitmap(BitmapFactory.decodeStream(url.openConnection() .getInputStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         tvBedNo.setText("เลขที่เตียง/ห้อง: " + patientDao.getBedID());
         tvPatientName.setText(patientDao.getInitialName()+ patientDao.getFirstName()+" "+patientDao.getLastName());
         tvPatientID.setText(patientDao.getIdCardNo());

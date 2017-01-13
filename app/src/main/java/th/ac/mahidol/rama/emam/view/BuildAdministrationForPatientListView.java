@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -98,6 +97,25 @@ public class BuildAdministrationForPatientListView extends BaseCustomViewGroup {
         /////////////////////
         //start
         ////////////////////
+//        if (dao.getComplete() != null & statusPatient != null) {
+//            if (dao.getComplete().equals("1")) {
+//                tvComplete.setText("เตรียมยาสมบูรณ์");
+//                tvComplete.setTextColor(getResources().getColor(R.color.colorPrimary));
+//            } else {
+//                tvComplete.setText("เตรียมยาไม่ได้");
+//                tvComplete.setTextColor(getResources().getColor(R.color.colorRed));
+//            }
+//        }
+//
+//        if(listHAD != null) {
+//            for (String s : listHAD) {
+//                if (dao.getDrugID().equals(s)) {
+//                    tvDrugName.setText(String.valueOf(dao.getTradeName()));
+//                    tvDrugName.setTextColor(getResources().getColor(R.color.colorRed));
+//                }
+//            }
+//        }
+
         if (dao.getComplete() != null & statusPatient != null) {
             if (dao.getComplete().equals("1")) {
                 tvComplete.setText("เตรียมยาสมบูรณ์");
@@ -108,13 +126,15 @@ public class BuildAdministrationForPatientListView extends BaseCustomViewGroup {
             }
         }
 
-
-        for(String s : listHAD) {
-            if (dao.getDrugID().equals(s)) {
-                tvDrugName.setText(String.valueOf(dao.getTradeName()));
-                tvDrugName.setTextColor(getResources().getColor(R.color.colorRed));
+        if(listHAD != null) {
+            for (String s : listHAD) {
+                if (dao.getDrugID().equals(s)) {
+                    tvDrugName.setText(String.valueOf(dao.getTradeName()));
+                    tvDrugName.setTextColor(getResources().getColor(R.color.colorRed));
+                }
             }
         }
+
         /////////////////////
         //stop
         ////////////////////
@@ -186,7 +206,6 @@ public class BuildAdministrationForPatientListView extends BaseCustomViewGroup {
         /////////////////////
         //start
         ////////////////////
-        Log.d("check", "checkNote = "+checkNote);
         if(checkNote != null) {
             if (checkNote.equals("0"))
                 imgvNote.setImageResource(R.drawable.note);
