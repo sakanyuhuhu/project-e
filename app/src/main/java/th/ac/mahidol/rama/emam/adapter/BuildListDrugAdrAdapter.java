@@ -4,14 +4,18 @@ package th.ac.mahidol.rama.emam.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.view.BuildDrugAdrListView;
 
 public class BuildListDrugAdrAdapter extends BaseAdapter {
     private ListDrugAdrDao dao;
     private Context context;
+    int lastPosition = -1;
 
     public void setDao(Context context, ListDrugAdrDao dao){
         this.dao = dao;
@@ -42,6 +46,13 @@ public class BuildListDrugAdrAdapter extends BaseAdapter {
         BuildDrugAdrListView buildDrugAdrListView;
         buildDrugAdrListView = new BuildDrugAdrListView(viewGroup.getContext());
         buildDrugAdrListView.setDrugAdr(dao.getDrugAdrDaoList().get(position));
+
+        if(position > lastPosition) {
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildDrugAdrListView.startAnimation(anim);
+            lastPosition = position;
+        }
 
         return buildDrugAdrListView;
     }

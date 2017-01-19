@@ -67,6 +67,10 @@
         <activity android:name=".activity.alarm.PatientOnTimeActivity" />
         <receiver android:name=".activity.alarm.AlarmBroadcastReceiver" />
         <activity android:name=".activity.alarm.PatientMedOnTimeActivity" />
+
+        <!--Glide-->
+        <meta-data android:name="th.ac.mahidol.rama.emam.configuration.GlideConfiguration"
+            android:value="GlideModule"/>
     </application>
 
 </manifest>

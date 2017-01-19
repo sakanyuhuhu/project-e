@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ListDrugCardDao implements Parcelable{
-    @SerializedName("drugCard") private List<DrugCardDao> listDrugCardDao;
+    @SerializedName("drugCardListBean") private List<DrugCardDao> listDrugCardDao;
 
     public ListDrugCardDao() {
     }

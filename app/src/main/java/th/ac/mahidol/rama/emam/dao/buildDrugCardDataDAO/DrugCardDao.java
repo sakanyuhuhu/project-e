@@ -51,6 +51,7 @@ public class DrugCardDao implements Parcelable{
     private String strBP;
     private String strHR;
     private String strCBG;
+    private String link;
 
     public DrugCardDao() {
     }
@@ -100,6 +101,7 @@ public class DrugCardDao implements Parcelable{
         strBP = in.readString();
         strHR = in.readString();
         strCBG = in.readString();
+        link = in.readString();
     }
 
     public static final Creator<DrugCardDao> CREATOR = new Creator<DrugCardDao>() {
@@ -466,6 +468,14 @@ public class DrugCardDao implements Parcelable{
         this.idRadio = idRadio;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -517,5 +527,6 @@ public class DrugCardDao implements Parcelable{
         dest.writeString(strBP);
         dest.writeString(strHR);
         dest.writeString(strCBG);
+        dest.writeString(link);
     }
 }

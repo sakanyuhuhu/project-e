@@ -3,8 +3,11 @@ package th.ac.mahidol.rama.emam.adapter.history;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.view.history.BuildListDrugHistoryListView;
 
@@ -56,6 +59,11 @@ public class BuildListDrugHistoryAdapter extends BaseAdapter {
             buildListDrugHistoryListView = new BuildListDrugHistoryListView(viewGroup.getContext());
             buildListDrugHistoryListView.setDrug(dao.getListDrugCardDao().get(position), drugId);
         }
+
+        Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                R.anim.up_from_bottom);
+        buildListDrugHistoryListView.startAnimation(anim);
+
         return buildListDrugHistoryListView;
 
     }

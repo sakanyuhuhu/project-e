@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -110,29 +109,29 @@ public class BuildCurrentMedFragment extends Fragment {
             buildHistoryHeaderPatientDataView.setData(patient, position);
         }
 
-        getOnClickSpinner();
+//        getOnClickSpinner();
     }
 
-    private void getOnClickSpinner() {
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = parent.getItemAtPosition(position).toString();
-                if (selectedItem.equals("All")) {
-                    Log.d("check", "All");
-                } else if (selectedItem.equals("Active")) {
-                    Log.d("check", "Active");
-                } else if (selectedItem.equals("Discontinue")) {
-                    Log.d("check", "Discontinue");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
+//    private void getOnClickSpinner() {
+//        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String selectedItem = parent.getItemAtPosition(position).toString();
+//                if (selectedItem.equals("All")) {
+//                    Log.d("check", "All");
+//                } else if (selectedItem.equals("Active")) {
+//                    Log.d("check", "Active");
+//                } else if (selectedItem.equals("Discontinue")) {
+//                    Log.d("check", "Discontinue");
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onStart() {

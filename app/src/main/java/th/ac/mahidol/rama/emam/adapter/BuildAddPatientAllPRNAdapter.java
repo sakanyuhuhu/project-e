@@ -3,8 +3,11 @@ package th.ac.mahidol.rama.emam.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildTimelineDAO.TimelineDao;
 import th.ac.mahidol.rama.emam.view.BuildAddPatientAllPRNListView;
@@ -12,6 +15,7 @@ import th.ac.mahidol.rama.emam.view.BuildAddPatientAllPRNListView;
 public class BuildAddPatientAllPRNAdapter extends BaseAdapter {
     private ListPatientDataDao dao;
     private TimelineDao timelineDao;
+    int lastPosition = -1;
 
     public void setDao(ListPatientDataDao dao, TimelineDao timelineDao){
         this.dao = dao;
@@ -44,6 +48,13 @@ public class BuildAddPatientAllPRNAdapter extends BaseAdapter {
         BuildAddPatientAllPRNListView patientListView;
         patientListView = new BuildAddPatientAllPRNListView(viewGroup.getContext());
         patientListView.setPatient(dao.getPatientDao().get(position), timelineDao);
+
+        if(position > lastPosition) {
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            patientListView.startAnimation(anim);
+            lastPosition = position;
+        }
 
         return patientListView;
     }

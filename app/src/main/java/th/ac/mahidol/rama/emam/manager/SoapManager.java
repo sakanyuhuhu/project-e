@@ -132,6 +132,7 @@ public class SoapManager {
     public String getLinkPhoto(String methodName, String idCardNo){
 
         SOAP_ACTION = "http://tempuri.org/PatPhotoService/action/PatPhotoService."+ methodName;
+
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -139,7 +140,6 @@ public class SoapManager {
 
         try {
 
-            Log.d("check", "methodName = "+methodName+"   idCardNo = "+idCardNo);
             SoapObject request = new SoapObject(NAME_SPACEPHOTO, methodName);
             request.addProperty("mId_Card", idCardNo);
 
@@ -151,17 +151,14 @@ public class SoapManager {
             transport.call(SOAP_ACTION, soapEnvelope);
 
             resultLinkPhoto = (String) soapEnvelope.getResponse();
-            Log.d("check", "resultLinkPhoto = "+ resultLinkPhoto);
+//            Log.d("check", "resultLinkPhoto = "+ resultLinkPhoto);
 
 
         } catch (Exception ex) {
-            Log.e("check", "getLinkPhoto Error: " + ex.getMessage());
-            for(int i=0; i< ex.getStackTrace().length;i++){
-                Log.e("check", "getStackTrace Error: " + ex.getStackTrace()[i]);
-            }
-
-
-
+//            Log.e("check", "getLinkPhoto Error: " + ex.getMessage());
+//            for(int i=0; i< ex.getStackTrace().length;i++){
+//                Log.e("check", "getStackTrace Error: " + ex.getStackTrace()[i]);
+//            }
         }
         return resultLinkPhoto;
     }

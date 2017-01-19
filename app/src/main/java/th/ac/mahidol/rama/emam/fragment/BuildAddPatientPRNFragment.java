@@ -1,10 +1,11 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +115,16 @@ public class BuildAddPatientPRNFragment extends Fragment {
 
     }
 
+    private void saveCache(ListPatientDataDao dao){
+        String json = new Gson().toJson(dao);
+        SharedPreferences prefs = getContext().getSharedPreferences("patientprn", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("patientprn", json);
+        editor.apply();
+
+    }
+
+
     private void loadPatientData(MrnTimelineDao mrnTimelineDao) {
         Call<ListPatientDataDao> call = HttpManager.getInstance().getService().getPatientData(mrnTimelineDao);
         call.enqueue(new PatientPRNDataLoadCallback());
@@ -155,12 +168,14 @@ public class BuildAddPatientPRNFragment extends Fragment {
         @Override
         public void onResponse(Call<MrnTimelineDao> call, Response<MrnTimelineDao> response) {
             MrnTimelineDao dao = response.body();
+            for(String s : dao.getMrn()) {
+            }
             loadPatientData(dao);
         }
 
         @Override
         public void onFailure(Call<MrnTimelineDao> call, Throwable t) {
-            Log.d("check", "PatientPRNLoadCallback onFailure = " + t);
+//            Log.d("check", "PatientPRNLoadCallback onFailure = " + t);
         }
     }
 
@@ -176,6 +191,7 @@ public class BuildAddPatientPRNFragment extends Fragment {
                     patientDao.add(p);
                 }
                 dao.setPatientDao(patientDao);
+                saveCache(dao);
                 buildPatientAllAdapter.setDao(dao, timelineDao);
                 listView.setAdapter(buildPatientAllAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -209,7 +225,7 @@ public class BuildAddPatientPRNFragment extends Fragment {
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-            Log.d("check", "PatientPRNDataLoadCallback onFailure = " + t);
+//            Log.d("check", "PatientPRNDataLoadCallback onFailure = " + t);
         }
     }
 
@@ -232,7 +248,7 @@ public class BuildAddPatientPRNFragment extends Fragment {
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "PatientAll PersonWardLoadCallback Failure " + t);
+//            Log.d("check", "PatientAll PersonWardLoadCallback Failure " + t);
         }
     }
 }

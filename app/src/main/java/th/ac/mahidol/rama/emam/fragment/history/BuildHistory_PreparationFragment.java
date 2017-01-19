@@ -146,6 +146,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
 
 
     private void getDrugPraration(String mrn, String checkType, String startDate) {
+        Log.d("check", "mrn = "+mrn+" checkType "+checkType+" startDate "+startDate);
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getMedicalHistory(mrn, checkType, startDate);
         call.enqueue(new DrugHistoryLoadCallback());
     }

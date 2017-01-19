@@ -7,6 +7,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,6 +32,7 @@ public class BuildAddDrugPRNForPatientAdapter extends BaseAdapter {
     private TextView tvDrugName;
     private CheckLastPRNListDao checkLastPRNListDao;
     private BuildAddDrugPRNForPatientListView buildAddDrugPRNForPatientListView;
+    int lastPosition = -1;
 
 
     public void setDao(Context context, ListDrugCardDao dao, String mrn){
@@ -68,11 +71,20 @@ public class BuildAddDrugPRNForPatientAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1":"0");
-                checkLastPRNbyMRNDrugID(position);
+                if(dao.getListDrugCardDao().get(position).getComplete().equals("1")) {
+                    checkLastPRNbyMRNDrugID(position);
+                }
             }
         });
 
         notifyDataSetChanged();
+
+        if(position > lastPosition) {
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildAddDrugPRNForPatientListView.startAnimation(anim);
+            lastPosition = position;
+        }
         return buildAddDrugPRNForPatientListView;
     }
 

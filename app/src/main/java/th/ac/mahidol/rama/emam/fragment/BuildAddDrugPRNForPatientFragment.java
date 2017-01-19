@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -369,9 +367,10 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-            for(DrugCardDao d : dao.getListDrugCardDao()){
-                Log.d("check", "DrugID = ["+d.getDrugID()+"] / Name = "+d.getTradeName());
-            }
+//            Log.d("check", "dao PRN = "+dao.getListDrugCardDao());
+//            for(DrugCardDao d : dao.getListDrugCardDao()){
+//                Log.d("check", "DrugID = ["+d.getDrugID()+"] / Name = "+d.getTradeName());
+//            }
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
             buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao, patientDao.getMRN());
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);
@@ -432,9 +431,9 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 xmlReader.parse(inStream);
                 itemsList = searchDrugAdrXMLHandler.getItemsList();
 
-                Log.w("AndroidParseXMLActivity", "Done");
+//                Log.w("AndroidParseXMLActivity", "Done");
             } catch (Exception e) {
-                Log.w("AndroidParseXMLActivity", e);
+//                Log.w("AndroidParseXMLActivity", e);
             }
 
             return (ArrayList<DrugAdrDao>) itemsList;

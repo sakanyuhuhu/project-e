@@ -3,8 +3,11 @@ package th.ac.mahidol.rama.emam.adapter.alarm;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.view.alarm.BuildPatientMedOnTimeListView;
 
@@ -39,6 +42,11 @@ public class BuildPatientMedOnTimeAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
         BuildPatientMedOnTimeListView buildPatientMedOnTimeListView = new BuildPatientMedOnTimeListView(viewGroup.getContext());
         buildPatientMedOnTimeListView.setDrugName(dao.getListDrugCardDao().get(position));
+
+        Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                R.anim.up_from_bottom);
+        buildPatientMedOnTimeListView.startAnimation(anim);
+
         return buildPatientMedOnTimeListView;
     }
 }

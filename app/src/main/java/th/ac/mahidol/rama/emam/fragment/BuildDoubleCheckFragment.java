@@ -35,7 +35,7 @@ import th.ac.mahidol.rama.emam.activity.DoubleCheckForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
-import th.ac.mahidol.rama.emam.adapter.BuildDoubleCheckAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
@@ -48,7 +48,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
     private String wardID, nfcUID, sdlocID, wardName, time, RFIDouble, RFIDPrepare, firstName, lastName, toDayDate, checkType, tomorrowDate, tricker, todayDateDrug, tomorrowDateDrug;
     private ListView listView;
     private TextView tvPreparation, tvAdministration, tvUserName, tvTime, tvNoPatient;
-    private BuildDoubleCheckAdapter buildDoubleCheckAdapter;
+    private BuildPatientAdapter buildPatientAdapter;
     private int timeposition, positionPatient;
     private Button btnLogin;
     private Date datetoDay;
@@ -118,7 +118,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         btnLogin.setOnClickListener(this);
 
         listView = (ListView) rootView.findViewById(R.id.lvDoubleCheckAdapter);
-        buildDoubleCheckAdapter = new BuildDoubleCheckAdapter();
+        buildPatientAdapter = new BuildPatientAdapter();
 
         datetoDay = new Date();
         SimpleDateFormat sdfForPatientUseDate = new SimpleDateFormat("MM/dd/yyyy");
@@ -182,8 +182,8 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
             if(dao.getPatientDao().size() != 0) {
-                buildDoubleCheckAdapter.setDao(dao);
-                listView.setAdapter(buildDoubleCheckAdapter);
+                buildPatientAdapter.setDao(dao);
+                listView.setAdapter(buildPatientAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -306,8 +306,8 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
 
                     dao.setPatientDao(patientDao);
                     saveCacheDoubleCheckData(dao);
-                    buildDoubleCheckAdapter.setDao(dao);
-                    listView.setAdapter(buildDoubleCheckAdapter);
+                    buildPatientAdapter.setDao(dao);
+                    listView.setAdapter(buildPatientAdapter);
                     if (tricker != null) {
                         if (tricker.equals("save"))
                             loadCacheDao();

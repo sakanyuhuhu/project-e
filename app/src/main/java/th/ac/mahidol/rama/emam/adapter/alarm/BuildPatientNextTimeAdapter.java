@@ -3,8 +3,11 @@ package th.ac.mahidol.rama.emam.adapter.alarm;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.view.alarm.BuildPatientOnTimeListView;
 
@@ -41,6 +44,10 @@ public class BuildPatientNextTimeAdapter extends BaseAdapter {
         BuildPatientOnTimeListView patientListView;
         patientListView = new BuildPatientOnTimeListView(viewGroup.getContext());
         patientListView.setPatient(dao.getPatientDao().get(position));
+
+        Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                R.anim.up_from_bottom);
+        patientListView.startAnimation(anim);
 
         return patientListView;
     }

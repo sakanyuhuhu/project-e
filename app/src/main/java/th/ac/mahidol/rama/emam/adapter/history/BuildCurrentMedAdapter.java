@@ -3,8 +3,11 @@ package th.ac.mahidol.rama.emam.adapter.history;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 
+import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListCurrentMedDao;
 import th.ac.mahidol.rama.emam.view.history.BuildCurrentMedListView;
 import th.ac.mahidol.rama.emam.view.history.BuildCurrentMedTodayListView;
@@ -43,18 +46,33 @@ public class BuildCurrentMedAdapter extends BaseAdapter {
             BuildCurrentMedTodayListView buildCurrentMedTodayListView;
             buildCurrentMedTodayListView = new BuildCurrentMedTodayListView(viewGroup.getContext());
             buildCurrentMedTodayListView.setDrugName(dao.getCurrentMedDaoList().get(position));
+
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildCurrentMedTodayListView.startAnimation(anim);
+
             return buildCurrentMedTodayListView;
         }
         else if (position == 24){
             BuildCurrentMedTomorrowListView buildCurrentMedTomorrowListView;
             buildCurrentMedTomorrowListView = new BuildCurrentMedTomorrowListView(viewGroup.getContext());
             buildCurrentMedTomorrowListView.setDrugName(dao.getCurrentMedDaoList().get(position));
+
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildCurrentMedTomorrowListView.startAnimation(anim);
+
             return buildCurrentMedTomorrowListView;
         }
         else {
             BuildCurrentMedListView buildCurrentMedListView;
             buildCurrentMedListView = new BuildCurrentMedListView(viewGroup.getContext());
             buildCurrentMedListView.setDrugName(dao.getCurrentMedDaoList().get(position));
+
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildCurrentMedListView.startAnimation(anim);
+
             return buildCurrentMedListView;
         }
     }

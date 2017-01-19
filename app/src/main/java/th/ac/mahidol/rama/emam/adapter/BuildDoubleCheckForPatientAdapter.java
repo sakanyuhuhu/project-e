@@ -7,6 +7,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -26,6 +28,7 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
     private TextView tvDrugName, tvCancel, tvSave;
     private String statusPatient;
     private BuildDoubleCheckForPatientListView buildDoubleCheckForPatientListView;
+    int lastPosition = -1;
 
 
     public void setDao(Context context, ListDrugCardDao dao, String statusPatient){
@@ -117,6 +120,12 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
             }
         });
 
+        if(position > lastPosition) {
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildDoubleCheckForPatientListView.startAnimation(anim);
+            lastPosition = position;
+        }
 
         return buildDoubleCheckForPatientListView;
     }

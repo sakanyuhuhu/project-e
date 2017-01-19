@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,7 +23,7 @@ import java.util.List;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.view.BuildPreparationForPatientListView;
+import th.ac.mahidol.rama.emam.view.BuildDrugForPatientListView;
 
 public class BuildPreparationForPatientAdapter extends BaseAdapter {
     private Context context;
@@ -33,7 +35,8 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
     private TextView tvDrugName, tvCancel, tvSave;
     private String statusPatient;
     private List<String> listHAD;
-    private BuildPreparationForPatientListView buildPreparationForPatientListView;
+    private BuildDrugForPatientListView buildDrugForPatientListView;
+    int lastPosition = -1;
 
 
     public void setDao(Context context, ListDrugCardDao dao, String statusPatient, List<String> listHAD) {
@@ -64,10 +67,10 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        buildPreparationForPatientListView = new BuildPreparationForPatientListView(viewGroup.getContext());
-        buildPreparationForPatientListView.setDrugName(dao.getListDrugCardDao().get(position), statusPatient, listHAD);
+        buildDrugForPatientListView = new BuildDrugForPatientListView(viewGroup.getContext());
+        buildDrugForPatientListView.setDrugName(dao.getListDrugCardDao().get(position), statusPatient, listHAD);
 
-        CheckBox checkBox = buildPreparationForPatientListView.isCheck();
+        CheckBox checkBox = buildDrugForPatientListView.isCheck();
 
         /////////////////////
         //start
@@ -99,7 +102,7 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                 //start
                 ////////////////////
                 if (isChecked == true) {
-                    buildPreparationForPatientListView.setChangeNote("0");
+                    buildDrugForPatientListView.setChangeNote("0");
                 }
                 /////////////////////
                 //stop
@@ -115,16 +118,23 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
             }
         });
 
-        ImageView imageViewNote = buildPreparationForPatientListView.imageViewNote(statusPatient, dao.getListDrugCardDao().get(position).getComplete());
+        ImageView imageViewNote = buildDrugForPatientListView.imageViewNote(statusPatient, dao.getListDrugCardDao().get(position).getComplete());
         imageViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buildPreparationForPatientListView.imageViewNote(statusPatient, dao.getListDrugCardDao().get(position).getComplete());
+                buildDrugForPatientListView.imageViewNote(statusPatient, dao.getListDrugCardDao().get(position).getComplete());
                 drugNoteDialog(position);
             }
         });
 
-        return buildPreparationForPatientListView;
+        if(position > lastPosition) {
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
+                    R.anim.up_from_bottom);
+            buildDrugForPatientListView.startAnimation(anim);
+            lastPosition = position;
+        }
+
+        return buildDrugForPatientListView;
     }
 
     private void drugNoteDialog(final int position) {
@@ -252,7 +262,7 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                         dao.getListDrugCardDao().get(position).setDescription(txtStatus.getText().toString());
                         dao.getListDrugCardDao().get(position).setCheckType("First Check");
                         if (chkHold.isChecked() == true) {
-                            ImageView viewNote = buildPreparationForPatientListView.setChangeNote("1");
+                            ImageView viewNote = buildDrugForPatientListView.setChangeNote("1");
                             viewNote.setImageResource(R.drawable.notechange);
                             dao.getListDrugCardDao().get(position).setComplete("0");
                             dao.getListDrugCardDao().get(position).setStatus("hold");
@@ -290,31 +300,31 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                                     dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                                     dao.getListDrugCardDao().get(position).setStrRadio("");
                                 } else if (radioButton.getId() == R.id.rdb2) {
-                                    buildPreparationForPatientListView.setChangeNote("1");
+                                    buildDrugForPatientListView.setChangeNote("1");
                                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                                     dao.getListDrugCardDao().get(position).setComplete("0");
                                     dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                                     dao.getListDrugCardDao().get(position).setStrRadio("NPO");
                                 } else if (radioButton.getId() == R.id.rdb3) {
-                                    buildPreparationForPatientListView.setChangeNote("1");
+                                    buildDrugForPatientListView.setChangeNote("1");
                                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                                     dao.getListDrugCardDao().get(position).setComplete("0");
                                     dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                                     dao.getListDrugCardDao().get(position).setStrRadio("ไม่มียา");
                                 } else if (radioButton.getId() == R.id.rdb4) {
-                                    buildPreparationForPatientListView.setChangeNote("1");
+                                    buildDrugForPatientListView.setChangeNote("1");
                                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                                     dao.getListDrugCardDao().get(position).setComplete("0");
                                     dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                                     dao.getListDrugCardDao().get(position).setStrRadio("ห้องยาส่งยาผิด");
                                 } else if (radioButton.getId() == R.id.rdb5) {
-                                    buildPreparationForPatientListView.setChangeNote("1");
+                                    buildDrugForPatientListView.setChangeNote("1");
                                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                                     dao.getListDrugCardDao().get(position).setComplete("0");
                                     dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
                                     dao.getListDrugCardDao().get(position).setStrRadio("ยาตก/แตก");
                                 } else {
-                                    buildPreparationForPatientListView.setChangeNote("1");
+                                    buildDrugForPatientListView.setChangeNote("1");
                                     dao.getListDrugCardDao().get(position).setCheckNote("1");
                                     dao.getListDrugCardDao().get(position).setComplete("0");
                                     dao.getListDrugCardDao().get(position).setIdRadio(radioButton.getId());
@@ -322,7 +332,7 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                                 }
                             }
                             if (!dao.getListDrugCardDao().get(position).getDescription().equals("")) {
-                                buildPreparationForPatientListView.setChangeNote("1");
+                                buildDrugForPatientListView.setChangeNote("1");
                                 dao.getListDrugCardDao().get(position).setCheckNote("1");
                                 dao.getListDrugCardDao().get(position).setStatus("normal");
                                 dao.getListDrugCardDao().get(position).setComplete("0");

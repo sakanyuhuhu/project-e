@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="72edd6aeaccf8dc7b434310be58ffc6697b9d691">
+        sha1="7601957b574295d5bd513dafdd57bc3085b2b161">
         <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_479045edd8c8137055375314554191bfe36ab68d/classes.dex" />
     </item>
     <item
@@ -79,7 +79,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="d423b7624974d44975be9981e55feb8c229d00b5">
+        sha1="f14e4719d75de5262c928dd7cbd46a6d2a47aad2">
         <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_611dbcd25483e1bc13427cc565989b3025db39a2/classes.dex" />
     </item>
     <item
@@ -126,6 +126,15 @@
         revision="23.0.2"
         sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
         <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/retrofit-2.1.0_3b4a1d615f6c09102fc1f63141782e604c0d940a/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.7.0/9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4/glide-3.7.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
+        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/glide-3.7.0_296d29e18ea52b3e0700285e3d917194ce638e3c/classes.dex" />
     </item>
     <item
         is-multidex="true"

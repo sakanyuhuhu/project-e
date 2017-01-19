@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class ListPatientDataDao implements Parcelable {
-    @SerializedName("patient")  private List<PatientDataDao> patientDao;
+    @SerializedName("patientDataListBean")  private List<PatientDataDao> patientDao;
 
     protected ListPatientDataDao(Parcel in) {
         patientDao = in.createTypedArrayList(PatientDataDao.CREATOR);

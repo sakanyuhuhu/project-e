@@ -9,7 +9,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if(mNfcAdapter == null){
-            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_SHORT).show();
             finish();
         }else{
             if(!mNfcAdapter.isEnabled()){
@@ -73,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
         if(NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)){
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
-//            Toast.makeText(this, nfcTagID, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, nfcTagID, Toast.LENGTH_SHORT).show();
             nfcUID = nfcTagID;
+
             if(sdlocID != null & wardName != null & wardID != null){
                 loadPersonWard(nfcUID,sdlocID);
             }
@@ -162,14 +162,14 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
                 }
             }
         }
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
-            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
+//            Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
         }
     }
 

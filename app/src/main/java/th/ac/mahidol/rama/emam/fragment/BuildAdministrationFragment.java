@@ -35,7 +35,7 @@ import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
-import th.ac.mahidol.rama.emam.adapter.BuildAdministrationAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -47,7 +47,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvPreparation, tvNoPatient;
     private Button btnLogin;
-    private BuildAdministrationAdapter buildAdministrationAdapter;
+    private BuildPatientAdapter buildPatientAdapter;
     private Date datetoDay;
     private boolean found = false;
     private ListPatientDataDao dao;
@@ -114,7 +114,7 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         btnLogin.setOnClickListener(this);
 
         listView = (ListView) rootView.findViewById(R.id.lvAdministrationAdapter);
-        buildAdministrationAdapter = new BuildAdministrationAdapter();
+        buildPatientAdapter = new BuildPatientAdapter();
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
         toDayDate = sdfForDrugUseDate.format(datetoDay);
@@ -162,8 +162,8 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
             if(dao.getPatientDao().size() != 0) {
-                buildAdministrationAdapter.setDao(dao);
-                listView.setAdapter(buildAdministrationAdapter);
+                buildPatientAdapter.setDao(dao);
+                listView.setAdapter(buildPatientAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -308,8 +308,8 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
                     }
                     dao.setPatientDao(patientDao);
                     saveCachePatientAdminData(dao);
-                    buildAdministrationAdapter.setDao(dao);
-                    listView.setAdapter(buildAdministrationAdapter);
+                    buildPatientAdapter.setDao(dao);
+                    listView.setAdapter(buildPatientAdapter);
                     if(tricker != null) {
                         if(tricker.equals("save"))
                             loadCacheDao();

@@ -34,7 +34,7 @@ import th.ac.mahidol.rama.emam.activity.DoubleCheckActivity;
 import th.ac.mahidol.rama.emam.activity.LoginCenterActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
-import th.ac.mahidol.rama.emam.adapter.BuildPreparationAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildPatientAdapter;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardBedDao;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.ListCheckPersonWardBedDao;
@@ -48,7 +48,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
     private int timeposition;
     private ListView listView;
     private TextView tvUserName, tvTime, tvDoublecheck, tvAdministration, tvNoPatient;
-    private BuildPreparationAdapter buildPreparationAdapter;
+    private BuildPatientAdapter buildPatientAdapter;
     private Button btnLogin;
     private Date datetoDay;
     private ListPatientDataDao dao;
@@ -115,7 +115,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         tvAdministration.setOnClickListener(this);
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
-        buildPreparationAdapter = new BuildPreparationAdapter();
+        buildPatientAdapter = new BuildPatientAdapter();
 
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
@@ -187,8 +187,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         if (data != null) {
             final ListPatientDataDao dao = new Gson().fromJson(data, ListPatientDataDao.class);
             if (dao.getPatientDao().size() != 0) {
-                buildPreparationAdapter.setDao(dao);
-                listView.setAdapter(buildPreparationAdapter);
+                buildPatientAdapter.setDao(dao);
+                listView.setAdapter(buildPatientAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -234,7 +234,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         /////////
         //end
         /////////
-
 
     }
 
@@ -328,8 +327,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                     }
                     dao.setPatientDao(patientDao);
                     saveCachePatientData(dao);
-                    buildPreparationAdapter.setDao(dao);
-                    listView.setAdapter(buildPreparationAdapter);
+                    buildPatientAdapter.setDao(dao);
+                    listView.setAdapter(buildPatientAdapter);
                     if (tricker != null) {
                         if (tricker.equals("save"))
                             loadCacheDao();
@@ -356,7 +355,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onFailure(Call<ListPatientDataDao> call, Throwable t) {
-
+            Log.d("check", "onFailure PatientLoadCallback "+call);
         }
 
 
@@ -383,6 +382,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onFailure(Call<CheckPersonWardDao> call, Throwable t) {
+            Log.d("check", "onFailure PersonWardLoadCallback "+call);
         }
     }
 
@@ -420,7 +420,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onFailure(Call<ListCheckPersonWardBedDao> call, Throwable t) {
-
+            Log.d("check", "onFailure CheckPersonWardLoadCallback "+call);
         }
     }
 
@@ -432,6 +432,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         public static String getCheckPhotoLinkDao(String getIdCardNo) {
             SoapManager soapManager = new SoapManager();
             String link = soapManager.getLinkPhoto("GETPATPHOTO", getIdCardNo);
+//            Log.d("check", "LINK = "+link);
             return link.replace("GW3", "GW3.rama.mahidol.ac.th");
         }
     }

@@ -250,6 +250,7 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
         List<String> listDrugId = new ArrayList<String>();
         List<DrugCardDao> drugCardDaoList = new ArrayList<DrugCardDao>();
         ListDrugCardDao listDrugCardDao = new ListDrugCardDao();
+
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();

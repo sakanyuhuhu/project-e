@@ -28,11 +28,11 @@
         <item>เพิ่มบันทึกข้อความ NPO</item>
     </string-array>
 
-    <string-array name="select_arrayscurrentmed">
-        <item>All</item>
-        <item>Active</item>
-        <item>Discontinue</item>
-    </string-array>
+    <!--<string-array name="select_arrayscurrentmed">-->
+        <!--<item>All</item>-->
+        <!--<item>Active</item>-->
+        <!--<item>Discontinue</item>-->
+    <!--</string-array>-->
 
     <string-array name="select_arraysroute">
         <item>PO</item>

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TimelineDao implements Parcelable{
 
-    @SerializedName("time")
+    @SerializedName("mrn")
     private List<MrnTimelineDao> timelineDao;
 
     public TimelineDao(){
