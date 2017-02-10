@@ -7,16 +7,23 @@ import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.adapter.ManageViewPagerAdapter;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
 
 public class PreparationActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
     private String wardID, sdlocID, nfcUID, wardName, nfcTagID, time, prn = "prepare", tricker;
     private int position;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +49,6 @@ public class PreparationActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
         }
 
-        //////////////////
-        //start view pager
-        //////////////////////
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildMedicationManagementFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
-//        }
-        ///////////////////////
-        //end view pager
-        //////////////////////
-
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
@@ -61,8 +58,13 @@ public class PreparationActivity extends AppCompatActivity {
                 startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
             }
         }
-    }
 
+
+//        viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        setupViewPager(viewPager, nfcUID);
+//        tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(viewPager);
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -71,17 +73,12 @@ public class PreparationActivity extends AppCompatActivity {
             Tag nfcTag = (Tag) intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             nfcTagID = ByteArrayToHexString(nfcTag.getId());
             nfcUID = nfcTagID;
-            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
 
-            ///////////////////////
-            //start view pager
-            //////////////////////
+//            Log.d("check", String.valueOf(ManageViewPagerAdapter.position));
+//            ManageViewPagerAdapter manageViewPagerAdapter = new ManageViewPagerAdapter().getItem(ManageViewPagerAdapter.position);
+//            setupViewPager(viewPager, nfcUID);
 
-//            getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, BuildMedicationManagementFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
-
-            ///////////////////////
-            //end view pager
-            //////////////////////
         }
         super.onNewIntent(intent);
     }
@@ -99,6 +96,7 @@ public class PreparationActivity extends AppCompatActivity {
             out += hex[i];
         }
         return out;
+
     }
 
     @Override
@@ -122,6 +120,12 @@ public class PreparationActivity extends AppCompatActivity {
         IntentFilter[] intentFilters = new IntentFilter[]{};
         mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null);
 
+    }
+
+    private void setupViewPager(ViewPager viewPager, String nfcUID) {
+        ManageViewPagerAdapter adapter = new ManageViewPagerAdapter(getSupportFragmentManager(), wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker);
+        Log.d("check", "current = "+viewPager.getCurrentItem());
+        viewPager.setAdapter(adapter);
     }
 
     private void disableForegroundDispatchSystem() {

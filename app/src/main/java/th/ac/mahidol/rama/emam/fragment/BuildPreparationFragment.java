@@ -412,7 +412,8 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                             }
                         }
                     } else {
-                        Toast.makeText(getActivity(), "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "กรุณา" +
+                                "ตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -432,7 +433,6 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         public static String getCheckPhotoLinkDao(String getIdCardNo) {
             SoapManager soapManager = new SoapManager();
             String link = soapManager.getLinkPhoto("GETPATPHOTO", getIdCardNo);
-//            Log.d("check", "LINK = "+link);
             return link.replace("GW3", "GW3.rama.mahidol.ac.th");
         }
     }
