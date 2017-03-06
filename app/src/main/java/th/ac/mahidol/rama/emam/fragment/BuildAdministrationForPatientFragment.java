@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -550,6 +549,16 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             intent.putExtra("save", tricker);
             getActivity().startActivity(intent);
             getActivity().finish();
+
+//            Intent intent = new Intent(getContext(), PreparationActivity.class);
+//            intent.putExtra("nfcUId", nfcUID);
+//            intent.putExtra("wardId", wardID);
+//            intent.putExtra("sdlocId", sdlocID);
+//            intent.putExtra("wardname", wardName);
+//            intent.putExtra("position", timeposition);
+//            intent.putExtra("time", time);
+//            getActivity().startActivity(intent);
+//            getActivity().finish();
         } else
             Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
     }
@@ -587,25 +596,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             getActivity().startActivity(intent);
             getActivity().finish();
         } else if (view.getId() == R.id.btnCancel) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
-            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getContext(), AdministrationActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("wardId", wardID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("position", timeposition);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
-                }
-            });
-            builder.setNegativeButton("ไม่ใช่", null);
-            builder.create();
-            builder.show();
+            cancelAndBack();
         }
     }
 
@@ -618,30 +609,45 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
-                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getContext(), AdministrationActivity.class);
-                            intent.putExtra("nfcUId", nfcUID);
-                            intent.putExtra("wardId", wardID);
-                            intent.putExtra("sdlocId", sdlocID);
-                            intent.putExtra("wardname", wardName);
-                            intent.putExtra("position", timeposition);
-                            intent.putExtra("time", time);
-                            intent.putExtra("save", tricker);
-                            getActivity().startActivity(intent);
-                        }
-                    });
-                    builder.setNegativeButton("ไม่ใช่", null);
-                    builder.create();
-                    builder.show();
+                    cancelAndBack();
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+
+    private void cancelAndBack(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
+        builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(getContext(), AdministrationActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("wardId", wardID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", timeposition);
+                intent.putExtra("time", time);
+                intent.putExtra("save", tricker);
+                getActivity().startActivity(intent);
+
+//                Intent intent = new Intent(getContext(), PreparationActivity.class);
+//                intent.putExtra("nfcUId", nfcUID);
+//                intent.putExtra("wardId", wardID);
+//                intent.putExtra("sdlocId", sdlocID);
+//                intent.putExtra("wardname", wardName);
+//                intent.putExtra("position", timeposition);
+//                intent.putExtra("time", time);
+//                getActivity().startActivity(intent);
+//                getActivity().finish();
+            }
+        });
+        builder.setNegativeButton("ไม่ใช่", null);
+        builder.create();
+        builder.show();
     }
 
 
@@ -736,6 +742,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                         checkNote = true;
                     }
                 }
+                d.setLink("http://10.6.165.86:8080/TestLinkDrug/resources/images/"+d.getDrugID()+".jpg");
             }
             buildDrugCardListManager.setDao(dao);
             tvDate.setText(dateFortvDate + " (จำนวนยา " + dao.getListDrugCardDao().size() + ")");
@@ -772,8 +779,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
-            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+
             if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
@@ -785,6 +791,8 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
                 tvDrugAdr.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+                        List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);

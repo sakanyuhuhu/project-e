@@ -2,7 +2,6 @@ package th.ac.mahidol.rama.emam.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -10,10 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -90,25 +85,26 @@ public class BuildPatientListView extends BaseCustomViewGroup {
         // Restore State from bundle here
     }
 
-    public void setImamgeUrl(String url){
-        if(!url.equals("\\GW3\\PAT_PHOTO\\no_person.jpg"))
-            Glide.with(getContext()).load(url).into(imgPhotoPatient);
-        else
-            imgPhotoPatient.setImageResource(R.drawable.ramamahidol_hospital);
-
-    }
 
     public void setPatient(PatientDataDao dao){
-        URL url = null;
-        try {
-            url = new URL(dao.getLink());
-            try {
-                imgPhotoPatient.setImageBitmap(BitmapFactory.decodeStream(url.openConnection() .getInputStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+//        URL url = null;
+//        try {
+//            url = new URL(dao.getLink());
+//            try {
+//                Log.d("check", "url => "+url);
+//                imgPhotoPatient.setImageBitmap(BitmapFactory.decodeStream(url.openConnection() .getInputStream()));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+
+        if(!(dao.getLink().equals("\\\\GW3.rama.mahidol.ac.th\\PAT_PHOTO\\no_person.jpg"))) {
+            Glide.with(getContext()).load(dao.getLink()).into(imgPhotoPatient);
+        }else {
+
+            imgPhotoPatient.setImageResource(R.drawable.ramamahidol_hospital);
         }
 
         if(dao.getStatus() == null){

@@ -3,192 +3,30 @@
 
     <item
         is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.4.0/jars/classes.jar"
+        jar="/Developer/Android/Project/emam/project-e/app/libs/ksoap2-android-assembly-2.4-jar-with-dependencies.jar"
         jumboMode="true"
         optimize="true"
-        revision="23.0.2"
-        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-23.4.0_54b208d9ead25e21c55f23ce54c00f0bba741c4a/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/core/1.8.4/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="af8d42f1f020e936b8cd9f5cb6c75993194895a3">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/me.dm7.barcodescanner-core-1.8.4_255203ef0b7a7cd54e37da62538d351e35fcf74e/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.github.traex.calendarlistview/library/1.2.3/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="b2531394af2a992f6192726b9b338a229b493c01">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.github.traex.calendarlistview-library-1.2.3_4d4ffa479ebf9e0a87f93784f8ed1ad8cf975076/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.7/751f548c85fa49f330cecbb1875893f971b33c4e/gson-2.7.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="751f548c85fa49f330cecbb1875893f971b33c4e">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.7_27502a71604dc80812fa248d09dcdf387a025795/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="6f75c48d9d5b8b86e74a28efa65a8fd0081fa375">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_479045edd8c8137055375314554191bfe36ab68d/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.4.0_8ef80214375018ff9f3e2c9ff362238bd7d0e585/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.4.0_f2f7fd51022e7e20ef8bd374f7907689c583a2c9/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/libs/internal_impl-23.4.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.4.0_742e108bb833fb30c9d42446e6dc76916d12a745/classes.dex" />
+        revision="25.0.0"
+        sha1="e8796346a9191a019e936210a2dc50662c57594b">
+        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/2/ksoap2-android-assembly-2.4-jar-with-dependencies_1c39e83b0161d2a29a408896d9f9610f06470077/classes.dex" />
     </item>
     <item
         is-multidex="true"
         jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         optimize="true"
-        revision="23.0.2"
-        sha1="8781de7667c42eb3825fc4c8e64eb38c184cd336">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_611dbcd25483e1bc13427cc565989b3025db39a2/classes.dex" />
+        revision="25.0.0"
+        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
+        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_611dbcd25483e1bc13427cc565989b3025db39a2/classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.4.0/jars/classes.jar"
+        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
-        revision="23.0.2"
-        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.4.0_5a11869d40e25441cc18d5be461434624fb17476/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.3.0/2b802460eea20f8f2ad9c08c74e0f14718e88aa9/okhttp-3.3.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="2b802460eea20f8f2ad9c08c74e0f14718e88aa9">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-3.3.0_0078b1861e5f53c116a62dd73ec8dc08e007e5c2/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/converter-gson/2.1.0/aa557d71ead91cbf26e0c316a0f593d168303309/converter-gson-2.1.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="aa557d71ead91cbf26e0c316a0f593d168303309">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/converter-gson-2.1.0_a1f510000d95b2bc2e1ff8991e475dc5d19ec51f/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.4.0_e131083b5d7207e46843be78e5734c80c7968c6d/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/retrofit/2.1.0/2de7cd8b95b7021b1d597f049bcb422055119f2c/retrofit-2.1.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/retrofit-2.1.0_3b4a1d615f6c09102fc1f63141782e604c0d940a/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.7.0/9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4/glide-3.7.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/glide-3.7.0_296d29e18ea52b3e0700285e3d917194ce638e3c/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.2.1/2287494d4f5f9f3a9a2bb6980e3f32053721b315/core-3.2.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="2287494d4f5f9f3a9a2bb6980e3f32053721b315">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/core-3.2.1_f93817159f4e8bcc7c264fb2eb808b2617fcf920/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.8.0/5ea7af56cc7c567ed9856d99efb30740e9b17ff/okio-1.8.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/okio-1.8.0_df33a4aeb6a0820011a4ac467a2cdeabea511c4d/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/com.android.support/design/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-23.4.0_56963f500fe1a1dc29cc2762d5788468d5426df6/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/mac-mini-1/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.4.0/support-annotations-23.4.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.4.0_72cf5f049f1da75fb54c1c81423bd59c02dbf3ad/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/zxing/1.8.4/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="68ef1daf85c69fca8fddf7bbb947fc51cc9f8ca3">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10/me.dm7.barcodescanner-zxing-1.8.4_3fbe25d2ef32437322ddb4aa536d87911b2e4207/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Developer/Android/Project/emam/project-e/app/libs/ksoap2-android-assembly-2.4-jar-with-dependencies.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="e8796346a9191a019e936210a2dc50662c57594b">
-        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/2/ksoap2-android-assembly-2.4-jar-with-dependencies_1c39e83b0161d2a29a408896d9f9610f06470077/classes.dex" />
+        revision="25.0.0"
+        sha1="86d35fa37fa702367cafb4abdc6e90ea2d6bed8c">
+        <dex dex="/Developer/Android/Project/emam/project-e/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_479045edd8c8137055375314554191bfe36ab68d/classes.dex" />
     </item>
 
 </items>

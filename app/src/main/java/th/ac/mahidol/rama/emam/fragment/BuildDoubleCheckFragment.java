@@ -71,6 +71,7 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
         args.putInt("position", timeposition);
         args.putString("time", time);
         args.putString("save", tricker);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -107,8 +108,8 @@ public class BuildDoubleCheckFragment extends Fragment implements View.OnClickLi
 
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
-        tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         tvTime = (TextView) rootView.findViewById(R.id.tvTime);
+        tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
         tvNoPatient = (TextView) rootView.findViewById(R.id.tvNoPatient);
 

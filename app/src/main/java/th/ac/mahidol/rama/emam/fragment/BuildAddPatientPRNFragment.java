@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,14 +169,12 @@ public class BuildAddPatientPRNFragment extends Fragment {
         @Override
         public void onResponse(Call<MrnTimelineDao> call, Response<MrnTimelineDao> response) {
             MrnTimelineDao dao = response.body();
-            for(String s : dao.getMrn()) {
-            }
             loadPatientData(dao);
         }
 
         @Override
         public void onFailure(Call<MrnTimelineDao> call, Throwable t) {
-//            Log.d("check", "PatientPRNLoadCallback onFailure = " + t);
+            Log.d("check", "PatientPRNLoadCallback onFailure = " + t);
         }
     }
 

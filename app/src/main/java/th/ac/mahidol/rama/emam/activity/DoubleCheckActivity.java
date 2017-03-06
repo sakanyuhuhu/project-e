@@ -21,7 +21,7 @@ public class DoubleCheckActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_doublecheck);
+        setContentView(R.layout.activity_preparation);
 
         nfcUID = getIntent().getExtras().getString("nfcUId");
         wardID = getIntent().getExtras().getString("wardId");

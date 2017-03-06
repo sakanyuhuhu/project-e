@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -174,7 +173,7 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
         /////////////////////
         //start
         ////////////////////
-        Log.d("check", "checkNote = "+checkNote);
+//        Log.d("check", "checkNote = "+checkNote);
         if(checkNote != null) {
             if (checkNote.equals("0"))
                 imgvNote.setImageResource(R.drawable.note);

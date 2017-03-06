@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -127,7 +126,7 @@ public class BuildDrugForPatientListView extends BaseCustomViewGroup {
             url = new URL(dao.getLink());//("http://10.6.165.86:8080/TestLinkDrug");//resources/images/MIRX-T-.jpg");
             try {
                 if(!url.equals("")){
-                    Log.d("check", "url > "+url);
+//                    Log.d("check", "url > "+url);
                     ivPhotoMed.setImageBitmap(BitmapFactory.decodeStream(url.openConnection().getInputStream()));
                 }
             } catch (IOException e) {
@@ -206,7 +205,7 @@ public class BuildDrugForPatientListView extends BaseCustomViewGroup {
         /////////////////////
         //start
         ////////////////////
-        Log.d("check", "checkNote = " + checkNote);
+//        Log.d("check", "checkNote = " + checkNote);
         if (checkNote != null) {
             if (checkNote.equals("0")) {
                 imgvNote.setImageResource(R.drawable.note);

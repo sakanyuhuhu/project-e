@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment.addmedication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -103,7 +104,6 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
 
         adminTimeSelectionSpinner.set_items(timeArrays);
 
-
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("dd/MM/yyyy");
         toDayDate = sdfForDrugUseDate.format(datetoDay);
@@ -138,16 +138,68 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
         });
     }
 
+    private void setCalendar(){
+        final View dialogViewDate = View.inflate(getActivity(), R.layout.custom_dialog_set_date, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+
+        dialogViewDate.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePicker datePicker = (DatePicker) dialogViewDate.findViewById(R.id.date_picker);
+                TimePicker timePicker = (TimePicker) dialogViewDate.findViewById(R.id.time_picker);
+
+                int pickYear, pickMonth, pickDay, pickHour = 0, pickMinute = 0;
+                Calendar calendar = null;
+                if (android.os.Build.VERSION.SDK_INT >= 23) {
+                    calendar = new GregorianCalendar(
+                            pickYear = datePicker.getYear(),
+                            pickMonth = datePicker.getMonth(),
+                            pickDay = datePicker.getDayOfMonth(),
+                            pickHour = timePicker.getHour(),
+                            pickMinute = timePicker.getMinute());
+                    dateSelectStart = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                    tvStartDate.setText(dateSelectStart);
+                } else {
+                    calendar = new GregorianCalendar(
+                            pickYear = datePicker.getYear(),
+                            pickMonth = datePicker.getMonth(),
+                            pickDay = datePicker.getDayOfMonth(),
+                            pickHour = timePicker.getCurrentHour(),
+                            pickMinute = timePicker.getCurrentMinute());
+                    dateSelectStart = pickDay+"/"+(pickMonth+1)+"/"+pickYear;
+                    tvStartDate.setText(dateSelectStart);
+                }
+
+                Calendar timePick = Calendar.getInstance();
+                timePick.set(pickYear, pickMonth, pickDay, pickHour, pickMinute);
+                startMillis = timePick.getTimeInMillis();
+                endMillis = startMillis + 60 * 60 * 1000;
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setView(dialogViewDate);
+        alertDialog.show();
+    }
+
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btnCancel){
-            Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
-            intent.putExtra("nfcUId", nfcUID);
-            intent.putExtra("wardId", wardID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
-            getActivity().finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            builder.setNegativeButton("ไม่ใช่", null);
+            builder.create();
+            builder.show();
         }
         else if(view.getId() == R.id.btnAdd){
             if(edtDrugName.getText().toString().equals(""))
@@ -272,12 +324,22 @@ public class BuildAddMedicationForPatientFragment extends Fragment implements Vi
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
-                    Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getContext(), AddMedicationPatientAllActivity.class);
+                            intent.putExtra("nfcUId", nfcUID);
+                            intent.putExtra("sdlocId", sdlocID);
+                            intent.putExtra("wardname", wardName);
+                            getActivity().startActivity(intent);
+                            getActivity().finish();
+                        }
+                    });
+                    builder.setNegativeButton("ไม่ใช่", null);
+                    builder.create();
+                    builder.show();
                     return true;
                 }
                 return false;

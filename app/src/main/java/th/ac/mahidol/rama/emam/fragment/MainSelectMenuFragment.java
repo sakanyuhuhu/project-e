@@ -16,7 +16,6 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.MainActivity;
 import th.ac.mahidol.rama.emam.activity.TimelineActivity;
 import th.ac.mahidol.rama.emam.activity.addmedication.AddMedicationPatientAllActivity;
-import th.ac.mahidol.rama.emam.activity.alarm.AlarmActivity;
 import th.ac.mahidol.rama.emam.activity.history.PatientAllActivity;
 
 
@@ -114,11 +113,20 @@ public class MainSelectMenuFragment extends Fragment implements View.OnClickList
             getActivity().startActivity(intent);
         }
         else if(view.getId() == R.id.imgBLogout){
-            Intent intent = new Intent(getContext(), AlarmActivity.class);
-            intent.putExtra("wardId", wardID);
-            intent.putExtra("sdlocId", sdlocID);
-            intent.putExtra("wardname", wardName);
-            getActivity().startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("EMAM");
+            builder.setMessage("คุณต้องการออกจากระบบใช่หรือไม่?");
+            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getContext(), MainActivity.class);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            builder.setNegativeButton("ไม่ใช่", null);
+            builder.create();
+            builder.show();
         }
     }
 

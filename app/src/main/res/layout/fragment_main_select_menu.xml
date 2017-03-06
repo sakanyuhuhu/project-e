@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_manage"
-                android:layout_marginTop="130dp"
+                android:layout_marginTop="110dp"
                 android:layout_centerHorizontal="true"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_history"
-                android:layout_marginTop="130dp"
+                android:layout_marginTop="110dp"
                 android:layout_centerHorizontal="true"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_addmed"
-                android:layout_marginTop="130dp"
+                android:layout_marginTop="110dp"
                 android:layout_centerHorizontal="true"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -114,17 +114,17 @@
             android:layout_margin="10dp">
 
             <ImageView
-                android:id="@+id/img_alarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_alarm"
-                android:layout_marginTop="130dp"
+                android:id="@+id/imgLogout"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/logout"
+                android:layout_marginTop="120dp"
                 android:layout_centerHorizontal="true"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/img_alarm"
-                android:text="Notification"
+                android:layout_below="@+id/imgLogout"
+                android:text="Logout"
                 android:textSize="25sp"
                 android:gravity="center"
                 android:textColor="@color/colorBlack"

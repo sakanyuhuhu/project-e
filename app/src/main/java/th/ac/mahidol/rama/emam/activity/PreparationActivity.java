@@ -10,17 +10,18 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.adapter.ManageViewPagerAdapter;
+import th.ac.mahidol.rama.emam.adapter.ViewPagerAdapter;
+import th.ac.mahidol.rama.emam.fragment.BuildAdministrationFragment;
+import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckFragment;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
 
 public class PreparationActivity extends AppCompatActivity {
     private NfcAdapter mNfcAdapter;
     private String wardID, sdlocID, nfcUID, wardName, nfcTagID, time, prn = "prepare", tricker;
-    private int position;
+    private int position, positionPage;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -43,8 +44,6 @@ public class PreparationActivity extends AppCompatActivity {
         time = getIntent().getExtras().getString("time");
         tricker = getIntent().getExtras().getString("save");
 
-
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
         }
@@ -59,9 +58,8 @@ public class PreparationActivity extends AppCompatActivity {
             }
         }
 
-
 //        viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        setupViewPager(viewPager, nfcUID);
+//        setupViewPager(viewPager);
 //        tabLayout = (TabLayout) findViewById(R.id.tabs);
 //        tabLayout.setupWithViewPager(viewPager);
     }
@@ -75,9 +73,18 @@ public class PreparationActivity extends AppCompatActivity {
             nfcUID = nfcTagID;
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
 
+//            veiwpager
 //            Log.d("check", String.valueOf(ManageViewPagerAdapter.position));
-//            ManageViewPagerAdapter manageViewPagerAdapter = new ManageViewPagerAdapter().getItem(ManageViewPagerAdapter.position);
-//            setupViewPager(viewPager, nfcUID);
+//            Log.d("check", "positionPage = "+positionPage);
+//            if(positionPage == 0){
+//                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker)).commit();
+//            }
+//            else if(positionPage == 1){
+//                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, tricker)).commit();
+//            }
+//            else if(positionPage == 2){
+//                getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildAdministrationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, position, time, tricker)).commit();
+//            }
 
         }
         super.onNewIntent(intent);
@@ -122,15 +129,54 @@ public class PreparationActivity extends AppCompatActivity {
 
     }
 
-    private void setupViewPager(ViewPager viewPager, String nfcUID) {
-        ManageViewPagerAdapter adapter = new ManageViewPagerAdapter(getSupportFragmentManager(), wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker);
-        Log.d("check", "current = "+viewPager.getCurrentItem());
-        viewPager.setAdapter(adapter);
-    }
+//    private void setupViewPager(ViewPager viewPager) {
+//        ManageViewPagerAdapter adapter = new ManageViewPagerAdapter(getSupportFragmentManager(), wardID, null, sdlocID, wardName, position, time, prn, tricker);
+//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                positionPage = position;
+//            }
+//
+//            @Override cvghcv
+//            public void onPageSelected(int position) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
+//        viewPager.setAdapter(adapter);
+//    }
 
     private void disableForegroundDispatchSystem() {
         mNfcAdapter.disableForegroundDispatch(this);
     }
 
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new BuildPreparationFragment().newInstance(wardID, nfcUID, sdlocID, wardName, position, time, prn, tricker), time + "              PREPARATION");
+        adapter.addFragment(new BuildDoubleCheckFragment().newInstance(wardID, nfcUID, sdlocID, wardName, position, time, tricker), "DOUBLE CHECK");
+        adapter.addFragment(new BuildAdministrationFragment().newInstance(wardID, nfcUID, sdlocID, wardName, position, time, tricker), "ADMINISTRATION");
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                positionPage = position;
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        viewPager.setAdapter(adapter);
+    }
 
 }

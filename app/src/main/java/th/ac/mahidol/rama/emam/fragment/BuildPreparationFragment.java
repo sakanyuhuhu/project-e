@@ -99,12 +99,12 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         time = getArguments().getString("time");
         prn = getArguments().getString("prn");
         tricker = getArguments().getString("save");
-
 //        Log.d("check", "BuildPreparationFragment wardID = "+wardID+" /nfcUID = "+nfcUID+" /sdlocID = "+sdlocID+" /wardName = "+wardName+" /timeposition = "+timeposition+" /time = "+time+" /prn = "+prn+" /tricker = "+tricker);
 
-        tvTime = (TextView) rootView.findViewById(R.id.tvTime);
+
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
+        tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
         tvAdministration = (TextView) rootView.findViewById(R.id.tvAdministration);
         tvNoPatient = (TextView) rootView.findViewById(R.id.tvNoPatient);
@@ -323,6 +323,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                             listMrn.add(p.getMRN());
                             p.setLink(getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
                             patientDao.add(p);
+//                            Log.d("check", "p.getStatus() = "+p.getStatus());
                         }
                     }
                     dao.setPatientDao(patientDao);
@@ -363,12 +364,11 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
 
 
     class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
-
         @Override
         public void onResponse(Call<CheckPersonWardDao> call, Response<CheckPersonWardDao> response) {
             CheckPersonWardDao dao = response.body();
             if (dao != null) {
-                if (Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
+                 if (Integer.parseInt(wardID) == Integer.parseInt(String.valueOf(dao.getWardId()))) {
                     saveCachePersonWard(dao);
                     RFID = dao.getRFID();
                     firstName = dao.getFirstName();
@@ -412,8 +412,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
                             }
                         }
                     } else {
-                        Toast.makeText(getActivity(), "กรุณา" +
-                                "ตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -433,6 +432,7 @@ public class BuildPreparationFragment extends Fragment implements View.OnClickLi
         public static String getCheckPhotoLinkDao(String getIdCardNo) {
             SoapManager soapManager = new SoapManager();
             String link = soapManager.getLinkPhoto("GETPATPHOTO", getIdCardNo);
+//            Log.d("check", "LINK = "+link);
             return link.replace("GW3", "GW3.rama.mahidol.ac.th");
         }
     }

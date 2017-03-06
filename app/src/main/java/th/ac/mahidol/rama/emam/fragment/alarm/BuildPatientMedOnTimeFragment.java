@@ -206,7 +206,7 @@ public class BuildPatientMedOnTimeFragment extends Fragment implements View.OnCl
             dao.setListDrugCardDao(listDrug);
             buildPatientMedOnTimeAdapter.setDao(dao);
             listView.setAdapter(buildPatientMedOnTimeAdapter);
-                   }
+        }
 
         @Override
         public void onFailure(Call<ListDrugCardDao> call, Throwable t) {

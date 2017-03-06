@@ -66,8 +66,7 @@ public class BuildAddMedicationPatientAllFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_patientall_addmedication, container, false);
         initInstances(rootView, savedInstanceState);
         return rootView;
@@ -85,7 +84,7 @@ public class BuildAddMedicationPatientAllFragment extends Fragment{
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
-//        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
+        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
         loadPatientMRN(sdlocID);
     }
 
@@ -177,7 +176,7 @@ public class BuildAddMedicationPatientAllFragment extends Fragment{
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
-//            progressDialog.dismiss();
+            progressDialog.dismiss();
         }
 
         @Override

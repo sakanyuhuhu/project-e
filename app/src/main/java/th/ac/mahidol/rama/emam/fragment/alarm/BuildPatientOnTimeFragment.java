@@ -1,7 +1,9 @@
 package th.ac.mahidol.rama.emam.fragment.alarm;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.alarm.AlarmBroadcastReceiver;
 import th.ac.mahidol.rama.emam.activity.alarm.PatientMedOnTimeActivity;
 import th.ac.mahidol.rama.emam.adapter.alarm.BuildPatientNextTimeAdapter;
 import th.ac.mahidol.rama.emam.adapter.alarm.BuildPatientPreviousTimeAdapter;
@@ -33,6 +37,7 @@ public class BuildPatientOnTimeFragment extends Fragment {
     private String wardID, sdlocID, wardName, toDayDate, checkType, adminTimeNext, adminTimePre;
     private int currentTime;
     private TextView tvPreTime, tvNextTime;
+    private Button btnStopSound;
     private ListView lvPatienNext, lvPatientPrevious;
     private BuildPatientNextTimeAdapter buildPatientNextTimeAdapter;
     private BuildPatientPreviousTimeAdapter buildPatientPreviousTimeAdapter;
@@ -45,12 +50,9 @@ public class BuildPatientOnTimeFragment extends Fragment {
         super();
     }
 
-    public static BuildPatientOnTimeFragment newInstance(String wardID, String sdlocID, String wardName) {
+    public static BuildPatientOnTimeFragment newInstance() {
         BuildPatientOnTimeFragment fragment = new BuildPatientOnTimeFragment();
         Bundle args = new Bundle();
-        args.putString("wardId", wardID);
-        args.putString("sdlocId", sdlocID);
-        args.putString("wardname", wardName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,15 +79,18 @@ public class BuildPatientOnTimeFragment extends Fragment {
     }
 
     private void initInstances(View rootView, Bundle savedInstanceState) {
-        wardID = getArguments().getString("wardId");
-        sdlocID = getArguments().getString("sdlocId");
-        wardName = getArguments().getString("wardname");
+        SharedPreferences prefs = getContext().getSharedPreferences("SETWARD", Context.MODE_PRIVATE);
+        wardID = prefs.getString("wardId", null);
+        sdlocID = prefs.getString("sdlocId", null);
+        wardName = prefs.getString("wardname", null);
 
         progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
         tvPreTime = (TextView) rootView.findViewById(R.id.tvPreTime);
         tvNextTime = (TextView) rootView.findViewById(R.id.tvNextTime);
         lvPatienNext = (ListView) rootView.findViewById(R.id.lvPatienNext);
         lvPatientPrevious = (ListView) rootView.findViewById(R.id.lvPatientPrevious);
+        btnStopSound = (Button) rootView.findViewById(R.id.btnStopSound);
+
         buildPatientNextTimeAdapter = new BuildPatientNextTimeAdapter();
         buildPatientPreviousTimeAdapter = new BuildPatientPreviousTimeAdapter();
 
@@ -103,6 +108,13 @@ public class BuildPatientOnTimeFragment extends Fragment {
         tvPreTime.setText("กรุณาตรวจสอบการบริหารยา " + (currentTime - 1) + ".00 น.");
 
         loadPatientNextData(sdlocID, adminTimeNext, checkType, toDayDate);
+
+        btnStopSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlarmBroadcastReceiver alarmBroadcastReceiver = new AlarmBroadcastReceiver().stopSound();
+            }
+        });
 
     }
 

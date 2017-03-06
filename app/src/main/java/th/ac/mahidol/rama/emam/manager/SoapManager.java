@@ -97,7 +97,6 @@ public class SoapManager {
             resultString = (SoapPrimitive) soapEnvelope.getResponse();
 //            Log.d("check", "resultString = "+ resultString);
 
-
         } catch (Exception ex) {
             Log.e("check", "Error: " + ex.getMessage());
         }

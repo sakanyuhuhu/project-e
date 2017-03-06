@@ -19,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.alarm.AlarmActivity;
 import th.ac.mahidol.rama.emam.dao.buildCheckPersonWard.CheckPersonWardDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initInstance();
+
 
     }
 
@@ -76,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
             nfcUID = nfcTagID;
 
             if(sdlocID != null & wardName != null & wardID != null){
+                intent = new Intent(MainActivity.this, AlarmActivity.class);
                 loadPersonWard(nfcUID,sdlocID);
+                startActivity(intent);
             }
             else{
                 intent = new Intent(MainActivity.this, SelectWardActivity.class);
@@ -145,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     class PersonWardLoadCallback implements Callback<CheckPersonWardDao> {
 
         @Override
@@ -160,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("wardname", wardName);
                     startActivity(intent);
                     finish();
+
                 }
                 else{
                     Toast.makeText(MainActivity.this, "กรุณาตรวจสอบสิทธิ์การใช้งาน", Toast.LENGTH_SHORT).show();

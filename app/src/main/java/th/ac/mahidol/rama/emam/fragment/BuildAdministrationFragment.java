@@ -101,9 +101,9 @@ public class BuildAdministrationFragment extends Fragment implements View.OnClic
         time = getArguments().getString("time");
         tricker = getArguments().getString("save");
 
-        tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvUserName = (TextView) rootView.findViewById(R.id.tvUserName);
         btnLogin = (Button) rootView.findViewById(R.id.btnLogin);
+        tvTime = (TextView) rootView.findViewById(R.id.tvTime);
         tvDoublecheck = (TextView) rootView.findViewById(R.id.tvDoublecheck);
         tvPreparation = (TextView) rootView.findViewById(R.id.tvPreparation);
         tvNoPatient = (TextView) rootView.findViewById(R.id.tvNoPatient);

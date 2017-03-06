@@ -103,7 +103,7 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_history_doublecheck, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_history, container, false);
         initInstances(rootView, savedInstanceState);
         return rootView;
     }
@@ -316,8 +316,7 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
-            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
-            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+
             if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
@@ -329,6 +328,8 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
                 tvDrugAdr.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+                        List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
@@ -351,6 +352,7 @@ public class BuildHistory_DoubleCheckFragment extends Fragment implements View.O
                         builder.show();
                     }
                 });
+
             } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }

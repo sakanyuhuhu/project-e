@@ -5,13 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
-import th.ac.mahidol.rama.emam.fragment.BuildAdministrationFragment;
-import th.ac.mahidol.rama.emam.fragment.BuildDoubleCheckFragment;
-import th.ac.mahidol.rama.emam.fragment.BuildPreparationFragment;
-
 
 public class ManageViewPagerAdapter extends FragmentStatePagerAdapter {
-    private String wardID, sdlocID, nfcUID, wardName, time, prn, tricker;
+    private String wardID, sdlocID, nfcUID , wardName, time, prn, tricker;
     public static int position;
     private int timeposition;
     public ManageViewPagerAdapter(FragmentManager manager, String wardID, String nfcUID, String sdlocID, String wardName, int position, String time, String prn, String tricker) {
@@ -31,16 +27,17 @@ public class ManageViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         this.position = position;
         Log.d("check", "nfcUID = "+nfcUID + " position = "+position);
-        switch (position){
-            case 0:
-                return BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, prn, tricker);
-            case 1:
-                return BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
-            case 2:
-                return BuildAdministrationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
-            default:
-                return null;
-        }
+//        switch (position){
+//            case 0:
+//                return BuildPreparationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, prn, tricker);
+//            case 1:
+//                return BuildDoubleCheckFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
+//            case 2:
+//                return BuildAdministrationFragment.newInstance(wardID, nfcUID, sdlocID, wardName, timeposition, time, tricker);
+//            default:
+//                return null;
+//        }
+        return null;
     }
 
     @Override
@@ -52,7 +49,7 @@ public class ManageViewPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return time + "                 PREPARATION";
+                return time + "              PREPARATION";
             case 1:
                 return "DOUBLE CHECK";
             case 2:

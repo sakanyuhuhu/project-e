@@ -17,7 +17,6 @@ public class BuildPatientAdapter extends BaseAdapter {
 
     public void setDao(ListPatientDataDao dao){
         this.dao = dao;
-
     }
 
     @Override
@@ -42,31 +41,18 @@ public class BuildPatientAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
         BuildPatientListView patientListView;
-        if(view != null)
-            patientListView = (BuildPatientListView) view;
-        else
-            patientListView = new BuildPatientListView(viewGroup.getContext());
-
+        patientListView = new BuildPatientListView(viewGroup.getContext());
         patientListView.setPatient(dao.getPatientDao().get(position));
-//        patientListView.setImamgeUrl(dao.getPatientDao().get(position).getLink());
 
         if(position > lastPosition) {
-            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
-                    R.anim.up_from_bottom);
+            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(), R.anim.up_from_bottom);
             patientListView.startAnimation(anim);
             lastPosition = position;
         }
 
         return patientListView;
 
-        //////////
-        //Old code
-        /////////
 
-//        BuildPreparationListView patientListView;
-//        patientListView = new BuildPreparationListView(viewGroup.getContext());
-//        patientListView.setPatient(dao.getPatientDao().get(position));
-//        return patientListView;
 
     }
 }

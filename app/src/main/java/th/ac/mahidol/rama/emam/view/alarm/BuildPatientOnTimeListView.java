@@ -1,6 +1,5 @@
 package th.ac.mahidol.rama.emam.view.alarm;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,14 +34,6 @@ public class BuildPatientOnTimeListView extends BaseCustomViewGroup {
         initInflate();
         initInstances();
         initWithAttrs(attrs, defStyleAttr, 0);
-    }
-
-    @TargetApi(21)
-    public BuildPatientOnTimeListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initInflate();
-        initInstances();
-        initWithAttrs(attrs, defStyleAttr, defStyleRes);
     }
 
     private void initInflate() {

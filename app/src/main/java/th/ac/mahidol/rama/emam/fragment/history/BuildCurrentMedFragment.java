@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -40,7 +39,6 @@ public class BuildCurrentMedFragment extends Fragment {
     private String nfcUID, wardID, sdlocID, wardName, toDayDate;
     private int position;
     private ListView listView;
-    private Spinner spinner1;
     private BuildCurrentMedAdapter buildCurrentMedAdapter;
     private BuildHistoryHeaderPatientDataView buildHistoryHeaderPatientDataView;
     private PatientDataDao patient;
@@ -93,9 +91,7 @@ public class BuildCurrentMedFragment extends Fragment {
         wardName = getArguments().getString("wardname");
         position = getArguments().getInt("position");
         patient = getArguments().getParcelable("patient");
-        Log.d("check", "BuildCurrentMedFragment nfcUID = " + nfcUID + " /sdlocID = " + sdlocID + " /wardName = " + wardName + " /position = " + position);
 
-        spinner1 = (Spinner) rootView.findViewById(R.id.spinner1);
         listView = (ListView) rootView.findViewById(R.id.lvCurrentMed);
 
         buildHistoryHeaderPatientDataView = (BuildHistoryHeaderPatientDataView) rootView.findViewById(R.id.headerPatientAdapter);
@@ -109,29 +105,7 @@ public class BuildCurrentMedFragment extends Fragment {
             buildHistoryHeaderPatientDataView.setData(patient, position);
         }
 
-//        getOnClickSpinner();
     }
-
-//    private void getOnClickSpinner() {
-//        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                String selectedItem = parent.getItemAtPosition(position).toString();
-//                if (selectedItem.equals("All")) {
-//                    Log.d("check", "All");
-//                } else if (selectedItem.equals("Active")) {
-//                    Log.d("check", "Active");
-//                } else if (selectedItem.equals("Discontinue")) {
-//                    Log.d("check", "Discontinue");
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
-//    }
 
     @Override
     public void onStart() {
@@ -178,6 +152,8 @@ public class BuildCurrentMedFragment extends Fragment {
 
     public class getDrugIPD extends AsyncTask<Void, Void, List<CurrentMedDao>> {
         private int i = 0;
+        private String[] specTime1;
+        private String specTime2;
 
         @Override
         protected void onPostExecute(List<CurrentMedDao> currentMedDaos) {
@@ -194,10 +170,39 @@ public class BuildCurrentMedFragment extends Fragment {
                         dateStop = sdfForDrugUseDate.parse(c.getStopdt()+" "+c.getStoptm());
                         datetoDay = sdfForDrugUseDate.parse(toDayDate);
                         if(datetoDay.compareTo(dateStart) > 0 & datetoDay.compareTo(dateStop) > 0){
-                            Log.d("check", "datetoDay = "+datetoDay+"    dateStart = "+dateStart+"    dateStop = "+dateStop);
-//                            Log.d("check", "drug name = "+c.getName()+"  /takeaction = "+c.getTakeaction()+"  /tstamp = "+c.getTstamp() + "  /offpid = "+c.getOffpid()
-//                                    +"  /start = "+c.getStartdt()+c.getStarttm() + "  /stop = "+c.getStopdt()+c.getStoptm()+" /specday = "+c.getSpecday()+"  /spectime = "+c.getSpectime());
-                                medDaoList.add(c);
+                            if(c.getSpectime() != null){
+                                specTime1 = c.getSpectime().split(",");
+                                String[] arrSpectime = new String[specTime1.length];
+                                for(int i=0; i<specTime1.length ; i++){
+                                    if(specTime1[i].substring(0,1).equals("0")){
+                                        specTime2 = specTime1[i].substring(1,2);
+                                        arrSpectime[i] = specTime2;
+                                    }
+                                    else{
+                                        specTime2 = specTime1[i].substring(0,2);
+                                        arrSpectime[i] = specTime2;
+                                    }
+                                }
+
+                                if(arrSpectime.length == 1){
+                                    c.setSpectime(arrSpectime[0]);
+                                } else if(arrSpectime.length == 2){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]);
+                                } else if(arrSpectime.length == 3){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]);
+                                } else if(arrSpectime.length == 4){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]);
+                                } else if(arrSpectime.length == 5){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]);
+                                } else if(arrSpectime.length == 6){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]+"-"+arrSpectime[5]);
+                                } else if(arrSpectime.length == 7){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]+"-"+arrSpectime[5]+"-"+arrSpectime[6]);
+                                } else if(arrSpectime.length == 8){
+                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]+"-"+arrSpectime[5]+"-"+arrSpectime[6]+"-"+arrSpectime[7]);
+                                }
+                            }
+                            medDaoList.add(c);
                         }
                     } catch (ParseException e) {
                         e.getStackTrace();
@@ -236,11 +241,9 @@ public class BuildCurrentMedFragment extends Fragment {
                 xmlReader.parse(inStream);
                 itemsList = searchCurrentMedXMLHandler.getItemsList();
 
-//                Log.w("AndroidParseXMLActivity", "Done");
             } catch (Exception e) {
 //                Log.w("AndroidParseXMLActivity", e);
             }
-
             return (ArrayList<CurrentMedDao>) itemsList;
         }
 

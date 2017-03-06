@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.gson.Gson;
 
@@ -41,8 +43,10 @@ public class MainSelectMenuActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ListView mListView;
     private TextView tvName, tvRFID, tvWard;
+    private ToggleButton tgbSoundAlarm;
     private String sdlocID, nfcUID, wardName, RFID, firstName, lastName, wardID;
     private String[] mDrawerTitle = {"Home", "Medication Management", "History & Medication List", "Add Medication", "Setting", "บันทึกการให้ยา", "Log out"};
+    private MediaPlayer media;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
         tvRFID = (TextView) findViewById(R.id.tvRFID);
         tvWard = (TextView) findViewById(R.id.tvWard);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-
+        tgbSoundAlarm = (ToggleButton) findViewById(R.id.tgbSoundAlarm);
 
         if(nfcUID != null) {
             loadPersonWard(nfcUID,sdlocID);
@@ -110,6 +114,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                 }
                 save = position;
                 if(position == 0){
+                    // Home
                     Intent intent = new Intent(MainSelectMenuActivity.this, MainSelectMenuActivity.class);
                     intent.putExtra("wardId", wardID);
                     intent.putExtra("sdlocId", sdlocID);
@@ -117,6 +122,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 1){
+                    // Medication Management
                     Intent intent = new Intent(MainSelectMenuActivity.this,TimelineActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("wardId", wardID);
@@ -125,6 +131,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 2){
+                    // History & Medication List
                     Intent intent = new Intent(MainSelectMenuActivity.this, PatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("wardId", wardID);
@@ -133,6 +140,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3){
+                    // Add Medication List
                     Intent intent = new Intent(MainSelectMenuActivity.this, AddMedicationPatientAllActivity.class);
                     intent.putExtra("nfcUId", nfcUID);
                     intent.putExtra("wardId", wardID);
@@ -141,13 +149,15 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 4){
+                    // Setting
                     Intent intent = new Intent(MainSelectMenuActivity.this, SelectWardActivity.class);
                     startActivity(intent);
                 }
                 else if(position == 5){
-
+                    // บันทึกการให้ยา
                 }
                 else if(position == 6){
+                    // Log out
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainSelectMenuActivity.this);
                     builder.setTitle("EMAM");
                     builder.setMessage("คุณต้องการออกจากระบบใช่หรือไม่?");
@@ -164,8 +174,41 @@ public class MainSelectMenuActivity extends AppCompatActivity {
                     builder.show();
                 }
             }
+
+
+        });
+
+        tgbSoundAlarm.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if(((ToggleButton) view).isChecked()){
+//                    Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+//                    media = MediaPlayer.create(MainSelectMenuActivity.this,alarmUri);
+//                    media.setLooping(true);
+//                    media.start();
+                    saveCacheSound("OPEN");
+
+//                    Intent intent = new Intent("th.ac.mahidol.rama.emam.android.action.broadcast");
+//                    sendBroadcast(intent);
+
+                } else {
+//                    if(media!=null)
+//                        media.stop();
+                    saveCacheSound("CLOSE");
+
+                }
+            }
         });
     }
+
+    private void saveCacheSound(String setSound){
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences("SetSound", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("sound", setSound);
+        editor.apply();
+    }
+
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -187,6 +230,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
             return true;
         return super.onOptionsItemSelected(item);
     }
+
 
     private void saveCachePersonWard(CheckPersonWardDao checkPersonWardDao){
         String json = new Gson().toJson(checkPersonWardDao);
@@ -229,6 +273,7 @@ public class MainSelectMenuActivity extends AppCompatActivity {
             Log.d("check", "Prepare PersonWardLoadCallback Failure " + t);
         }
     }
-    
+
+
 }
 

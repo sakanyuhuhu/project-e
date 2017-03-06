@@ -75,7 +75,8 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         super();
     }
 
-    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName, int timeposition, int position, PatientDataDao patientDouble, String time) {
+    public static BuildDoubleCheckForPatientFragment newInstance(String nfcUID, String wardID, String sdlocID, String wardName, String RFID, String firstName, String lastName,
+                                                                 int timeposition, int position, PatientDataDao patientDouble, String time) {
         BuildDoubleCheckForPatientFragment fragment = new BuildDoubleCheckForPatientFragment();
         Bundle args = new Bundle();
         args.putString("nfcUId", nfcUID);
@@ -313,6 +314,17 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                         intent.putExtra("save", tricker);
                         getActivity().startActivity(intent);
                         getActivity().finish();
+
+//                        Intent intent = new Intent(getContext(), PreparationActivity.class);
+//                        intent.putExtra("nfcUId", nfcUID);
+//                        intent.putExtra("wardId", wardID);
+//                        intent.putExtra("sdlocId", sdlocID);
+//                        intent.putExtra("wardname", wardName);
+//                        intent.putExtra("position", timeposition);
+//                        intent.putExtra("time", time);
+//                        getActivity().startActivity(intent);
+//                        getActivity().finish();
+
                     } else {
                         Toast.makeText(getContext(), "กรุณาเขียนคำอธิบายสำหรับทุกๆ ตัวยาที่ไม่ได้ใส่เครื่องหมายถูก", Toast.LENGTH_LONG).show();
                     }
@@ -337,25 +349,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             getActivity().startActivity(intent);
             getActivity().finish();
         } else if (view.getId() == R.id.btnCancel) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
-            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
-                    intent.putExtra("nfcUId", nfcUID);
-                    intent.putExtra("wardId", wardID);
-                    intent.putExtra("sdlocId", sdlocID);
-                    intent.putExtra("wardname", wardName);
-                    intent.putExtra("position", timeposition);
-                    intent.putExtra("time", time);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
-                }
-            });
-            builder.setNegativeButton("ไม่ใช่", null);
-            builder.create();
-            builder.show();
+            calcelAndBack();
         }
     }
 
@@ -368,30 +362,44 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
-                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
-                            intent.putExtra("nfcUId", nfcUID);
-                            intent.putExtra("wardId", wardID);
-                            intent.putExtra("sdlocId", sdlocID);
-                            intent.putExtra("wardname", wardName);
-                            intent.putExtra("position", timeposition);
-                            intent.putExtra("time", time);
-                            getActivity().startActivity(intent);
-                            getActivity().finish();
-                        }
-                    });
-                    builder.setNegativeButton("ไม่ใช่", null);
-                    builder.create();
-                    builder.show();
+                    calcelAndBack();
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    private void calcelAndBack(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+        builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(getContext(), DoubleCheckActivity.class);
+                intent.putExtra("nfcUId", nfcUID);
+                intent.putExtra("wardId", wardID);
+                intent.putExtra("sdlocId", sdlocID);
+                intent.putExtra("wardname", wardName);
+                intent.putExtra("position", timeposition);
+                intent.putExtra("time", time);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+
+//                Intent intent = new Intent(getContext(), PreparationActivity.class);
+//                intent.putExtra("nfcUId", nfcUID);
+//                intent.putExtra("wardId", wardID);
+//                intent.putExtra("sdlocId", sdlocID);
+//                intent.putExtra("wardname", wardName);
+//                intent.putExtra("position", timeposition);
+//                intent.putExtra("time", time);
+//                getActivity().startActivity(intent);
+//                getActivity().finish();
+            }
+        });
+        builder.setNegativeButton("ไม่ใช่", null);
+        builder.create();
+        builder.show();
     }
 
 
@@ -528,6 +536,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                         checkNote = true;
                     }
                 }
+                d.setLink("http://10.6.165.86:8080/TestLinkDrug/resources/images/"+d.getDrugID()+".jpg");
             }
 
             buildDrugCardListManager.setDao(dao);
@@ -563,8 +572,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         @Override
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPreExecute();
-            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
-            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+            
             if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
@@ -576,6 +584,8 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
                 tvDrugAdr.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+                        List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);

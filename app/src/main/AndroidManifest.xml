@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MainApplication"
@@ -23,16 +24,29 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".activity.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-             <!--<intent-filter>-->
-                 <!--<action android:name="android.nfc.action.TAG_DISCOVERED" />-->
-                 <!--<category android:name="android.intent.category.DEFAULT" />-->
-             <!--</intent-filter>-->
         </activity>
+
+        <!--Start Auto Start-->
+        <receiver android:name=".activity.alarm.AlarmBroadcastReceiver" >
+            <intent-filter>
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <action android:name="th.ac.mahidol.rama.emam.android.action.broadcast"/>
+            </intent-filter>
+        </receiver>
+        <!--Alarm-->
+        <activity android:name=".activity.alarm.AlarmActivity" />
+        <activity android:name=".activity.alarm.PatientOnTimeActivity" />
+        <activity android:name=".activity.alarm.PatientMedOnTimeActivity" />
+
+        <service android:enabled="true" android:name=".manager.service" />
+        <!--End Auto Start-->
+
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.SelectWardActivity" />
         <activity android:name=".activity.MainSelectMenuActivity" />
@@ -54,23 +68,15 @@
         <activity android:name=".activity.LoginUserCenterActivity" />
         <activity android:name=".activity.LoginCenterActivity" />
         <activity android:name=".activity.AddDrugNotPrepareActivity" />
-
         <!--History-->
         <activity android:name=".activity.history.PatientAllActivity" />
         <activity android:name=".activity.history.HistoryActivity" />
         <!--Add Medication-->
         <activity android:name=".activity.addmedication.AddMedicationPatientAllActivity" />
         <activity android:name=".activity.addmedication.AddMedicationForPatientActivity" />
-
-        <!--Alarm-->
-        <activity android:name=".activity.alarm.AlarmActivity" />
-        <activity android:name=".activity.alarm.PatientOnTimeActivity" />
-        <receiver android:name=".activity.alarm.AlarmBroadcastReceiver" />
-        <activity android:name=".activity.alarm.PatientMedOnTimeActivity" />
-
         <!--Glide-->
-        <meta-data android:name="th.ac.mahidol.rama.emam.configuration.GlideConfiguration"
-            android:value="GlideModule"/>
+        <meta-data android:name="th.ac.mahidol.rama.emam.configuration.GlideConfiguration" android:value="GlideModule"/>
+
     </application>
 
 </manifest>

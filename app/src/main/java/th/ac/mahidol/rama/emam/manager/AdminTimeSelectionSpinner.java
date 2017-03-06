@@ -46,13 +46,12 @@ public class AdminTimeSelectionSpinner extends Spinner implements DialogInterfac
             throw new IllegalArgumentException("Argument 'which' is out of bounds.");
         }
     }
-
     @Override
     public boolean performClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Please select adminTime");
         builder.setMultiChoiceItems(_items, mSelection, this);
-        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 for(int i=0; i<_items.length;i++){
@@ -62,7 +61,7 @@ public class AdminTimeSelectionSpinner extends Spinner implements DialogInterfac
                 }
             }
         });
-        builder.setNegativeButton("Cancle", null);
+//        builder.setNegativeButton("Cancle", null);
         builder.show();
         return true;
     }
@@ -92,7 +91,7 @@ public class AdminTimeSelectionSpinner extends Spinner implements DialogInterfac
         _items = items;
         mSelection = new boolean[_items.length];
         simple_adapter.clear();
-//        simple_adapter.add(_items[0]); //show time on viewer but not set value.
+//        simple_adapter.add(_items[0]); //show time on viewer but not set value. This line set default vale 0:00
         Arrays.fill(mSelection, false);
     }
 

@@ -197,6 +197,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
     }
 
+
     private void loadDrugPRNData(DrugCardDao drugCardDao){
         Call<ListDrugCardDao> call = HttpManager.getInstance().getService().getCompareDrug(drugCardDao);
         call.enqueue(new DrugLoadCallback());
@@ -274,43 +275,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
         }
         else if(view.getId() == R.id.btnCancel){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
-            builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(prn.equals("prepare")){
-                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("wardId", wardID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("RFID", RFID);
-                        intent.putExtra("firstname", firstName);
-                        intent.putExtra("lastname", lastName);
-                        intent.putExtra("timeposition", timeposition);
-                        intent.putExtra("position", position);
-                        intent.putExtra("time", time);
-                        intent.putExtra("prn", prn);
-                        getActivity().startActivity(intent);
-                    }
-                    else {
-                        Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("wardId", wardID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("position", position);
-                        intent.putExtra("time", time);
-                        intent.putExtra("include", timelineDao);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-                    }
-                }
-            });
-            builder.setNegativeButton("ไม่ใช่", null);
-            builder.create();
-            builder.show();
+            cancelAndBack();
         }
     }
 
@@ -323,44 +288,54 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK){
-                    if(prn.equals("prepare")) {
-                        Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("wardId", wardID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("RFID", RFID);
-                        intent.putExtra("firstname", firstName);
-                        intent.putExtra("lastname", lastName);
-                        intent.putExtra("timeposition", timeposition);
-                        intent.putExtra("position", position);
-                        intent.putExtra("time", time);
-                        intent.putExtra("prn", prn);
-                        getActivity().startActivity(intent);
-                        return true;
-                    }
-                    else {
-                        Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
-                        intent.putExtra("nfcUId", nfcUID);
-                        intent.putExtra("wardId", wardID);
-                        intent.putExtra("sdlocId", sdlocID);
-                        intent.putExtra("wardname", wardName);
-                        intent.putExtra("position", position);
-                        intent.putExtra("time", time);
-                        intent.putExtra("include", timelineDao);
-                        getActivity().startActivity(intent);
-                        getActivity().finish();
-                        return true;
-                    }
+                    cancelAndBack();
+                    return true;
                 }
                 return false;
             }
         });
     }
 
-
-
-
+    private void cancelAndBack(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("คุณต้องการยกเลิกใช่หรือไม่?");
+        builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(prn.equals("prepare")){
+                    Intent intent = new Intent(getContext(), PreparationForPatientActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("RFID", RFID);
+                    intent.putExtra("firstname", firstName);
+                    intent.putExtra("lastname", lastName);
+                    intent.putExtra("timeposition", timeposition);
+                    intent.putExtra("position", position);
+                    intent.putExtra("time", time);
+                    intent.putExtra("patientDao", patientDao);
+                    intent.putExtra("prn", prn);
+                    getActivity().startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(getContext(), AddPatientPRNActivity.class);
+                    intent.putExtra("nfcUId", nfcUID);
+                    intent.putExtra("wardId", wardID);
+                    intent.putExtra("sdlocId", sdlocID);
+                    intent.putExtra("wardname", wardName);
+                    intent.putExtra("position", position);
+                    intent.putExtra("time", time);
+                    intent.putExtra("include", timelineDao);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+            }
+        });
+        builder.setNegativeButton("ไม่ใช่", null);
+        builder.create();
+        builder.show();
+    }
 
 
     class DrugLoadCallback implements Callback<ListDrugCardDao>{

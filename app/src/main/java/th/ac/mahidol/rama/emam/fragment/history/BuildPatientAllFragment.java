@@ -85,7 +85,7 @@ public class BuildPatientAllFragment extends Fragment{
 
         listView = (ListView) rootView.findViewById(R.id.lvPatientAdapter);
         buildPatientAllAdapter = new BuildAddPatientAllAdapter();
-//        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
+        progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
         loadPatientMRN(sdlocID);
     }
 
@@ -179,6 +179,7 @@ public class BuildPatientAllFragment extends Fragment{
                     p.setLink(BuildPreparationFragment.getPhotoForPatient.getCheckPhotoLinkDao(p.getIdCardNo()));
                     patientDao.add(p);
                 }
+
                 dao.setPatientDao(patientDao);
                 saveCachePatientData(dao);
                 buildPatientAllAdapter.setDao(dao);
@@ -200,7 +201,7 @@ public class BuildPatientAllFragment extends Fragment{
             }
             else
                 Toast.makeText(getActivity(), "ไม่มีผู้ป่วย", Toast.LENGTH_LONG).show();
-//            progressDialog.dismiss();
+            progressDialog.dismiss();
         }
 
         @Override

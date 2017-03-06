@@ -306,8 +306,6 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
         protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
 
-            final ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
-            final List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
             if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
@@ -319,6 +317,8 @@ public class BuildHistoryAdministrationFragment extends Fragment implements View
                 tvDrugAdr.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+                        List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);

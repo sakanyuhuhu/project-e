@@ -104,7 +104,32 @@
         <ListView
             android:id="@+id/lvMenu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
+            android:layout_height="wrap_content">
+        </ListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alarm On/Off"
+                android:id="@+id/tgbSoundAlarm"
+                android:layout_gravity="bottom"/>
+
+            <TextView
+                android:text=" Sound Alarm"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp"
+                android:layout_gravity="bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

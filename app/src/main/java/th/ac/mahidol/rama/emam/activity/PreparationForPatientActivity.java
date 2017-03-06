@@ -6,10 +6,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import th.ac.mahidol.rama.emam.R;
-import th.ac.mahidol.rama.emam.adapter.ViewPagerAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
-import th.ac.mahidol.rama.emam.fragment.BuildHistoryPrepareFragment;
 import th.ac.mahidol.rama.emam.fragment.BuildPreparationForPatientFragment;
 
 public class PreparationForPatientActivity extends AppCompatActivity {
@@ -42,27 +40,14 @@ public class PreparationForPatientActivity extends AppCompatActivity {
 
         initInstance(savedInstanceState);
 
-//        viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        setupViewPager(viewPager);
-//        tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(viewPager);
-
     }
 
     private void  initInstance(Bundle savedInstanceState){
-
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.contentContainer, BuildPreparationForPatientFragment.newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,listDrugCardDao, patientDao, prn)).commit();
         }
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new BuildPreparationForPatientFragment().newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time,listDrugCardDao, patientDao, prn), "PREPARATION");
-        adapter.addFragment(new BuildHistoryPrepareFragment().newInstance(nfcUID, wardID, sdlocID, wardName, RFID, firstName, lastName, timeposition, position, time, patientDao, prn), "HISTORY");
-        viewPager.setAdapter(adapter);
-    }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
