@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -86,10 +87,10 @@ public class BuildCurrentMedListView extends BaseCustomViewGroup {
     }
 
     public void setDrugName(CurrentMedDao dao){
-        if(dao.getRoute().equals("PO")){// & dao.isPrn() == false) {
+        if(dao.getRoute().equals("PO")){
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getName()));
-            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             if (dao.getTakeaction().equals("C")) {
                 tvType.setText("Type: Continue");
             }
@@ -106,13 +107,13 @@ public class BuildCurrentMedListView extends BaseCustomViewGroup {
                 tvType.setText("Type: One day dose");
             }
             tvRoute.setText("Route: " + dao.getRoute());
-            tvFrequency.setText("Frequency: " + dao.getQtytmg() + " (" + dao.getSpectime() + ")");
+            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getQtytmg() + " (" + dao.getSpectime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
         }
-        else if(dao.getRoute().equals("IV")){// & dao.isPrn() == false){
+        else if(dao.getRoute().equals("IV")){
             bg.setBackgroundColor(getResources().getColor(R.color.colorPink));
             tvDrugName.setText(String.valueOf(dao.getName()));
-            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             if (dao.getTakeaction().equals("C")) {
                 tvType.setText("Type: Continue");
             }
@@ -129,36 +130,13 @@ public class BuildCurrentMedListView extends BaseCustomViewGroup {
                 tvType.setText("Type: One day");
             }
             tvRoute.setText("Route: " + dao.getRoute());
-            tvFrequency.setText("Frequency: " + dao.getQtytmg() + " (" + dao.getSpectime() + ")");
+            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getQtytmg() + " (" + dao.getSpectime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
         }
-//        else if(dao.isPrn() == true){
-//            bg.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-//            tvDrugName.setText(String.valueOf(dao.getName()));
-//            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
-//            if (dao.getTakeaction().equals("C")) {
-//                tvType.setText("Type: Continue");
-//            }
-//            else if(dao.getTakeaction().equals("D")){
-//                tvType.setText("Type: Delete");
-//            }
-//            else if(dao.getTakeaction().equals("O")){
-//                tvType.setText("Type: Off");
-//            }
-//            else if(dao.getTakeaction().equals("S")){
-//                tvType.setText("Type: Stat Dose");
-//            }
-//            else {
-//                tvType.setText("Type: One day");
-//            }
-//            tvRoute.setText("Route: " + dao.getRoute());
-//            tvFrequency.setText("Frequency: " + dao.getQtytmg() + " (" + dao.getSpectime() + ")");
-//            tvSite.setText("Site: " + dao.getSite());
-//        }
         else {
             bg.setBackgroundColor(getResources().getColor(R.color.colorBluesky));
             tvDrugName.setText(String.valueOf(dao.getName()));
-            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             if (dao.getTakeaction().equals("C")) {
                 tvType.setText("Type: Continue");
             }
@@ -175,7 +153,7 @@ public class BuildCurrentMedListView extends BaseCustomViewGroup {
                 tvType.setText("Type: One day");
             }
             tvRoute.setText("Route: " + dao.getRoute());
-            tvFrequency.setText("Frequency: " + dao.getQtytmg() + " (" + dao.getSpectime() + ")");
+            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getQtytmg() + " (" + dao.getSpectime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
         }
     }

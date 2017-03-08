@@ -101,7 +101,7 @@ public class BuildCurrentMedFragment extends Fragment {
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         toDayDate = sdfForDrugUseDate.format(datetoDay);
 
-        if(patient != null){
+        if (patient != null) {
             buildHistoryHeaderPatientDataView.setData(patient, position);
         }
 
@@ -158,50 +158,52 @@ public class BuildCurrentMedFragment extends Fragment {
         @Override
         protected void onPostExecute(List<CurrentMedDao> currentMedDaos) {
             super.onPostExecute(currentMedDaos);
-            Log.d("check", "*****CurrentMedDao onPostExecute = " + currentMedDaos.size());
+            Log.d("check", "*****CurrentMedDao Callservice = " + currentMedDaos.size());
             ListCurrentMedDao listCurrentMedDao = new ListCurrentMedDao();
             List<CurrentMedDao> medDaoList = new ArrayList<CurrentMedDao>();
             Date dateStart, dateStop;
             SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             for (CurrentMedDao c : currentMedDaos) {
-                if(!c.getTakeaction().trim().equals("O")| c.getOffpid().equals("")){
+                if (!c.getTakeaction().trim().equals("O") | c.getOffpid().equals("")) {
                     try {
-                        dateStart = sdfForDrugUseDate.parse(c.getStartdt()+" "+c.getStarttm());
-                        dateStop = sdfForDrugUseDate.parse(c.getStopdt()+" "+c.getStoptm());
+                        dateStart = sdfForDrugUseDate.parse(c.getStartdt() + " " + c.getStarttm());
+                        dateStop = sdfForDrugUseDate.parse(c.getStopdt() + " " + c.getStoptm());
                         datetoDay = sdfForDrugUseDate.parse(toDayDate);
-                        if(datetoDay.compareTo(dateStart) > 0 & datetoDay.compareTo(dateStop) > 0){
-                            if(c.getSpectime() != null){
+                        if (datetoDay.compareTo(dateStart) > 0 & datetoDay.compareTo(dateStop) > 0) {
+                            if (c.getSpectime() != null) {
                                 specTime1 = c.getSpectime().split(",");
                                 String[] arrSpectime = new String[specTime1.length];
-                                for(int i=0; i<specTime1.length ; i++){
-                                    if(specTime1[i].substring(0,1).equals("0")){
-                                        specTime2 = specTime1[i].substring(1,2);
-                                        arrSpectime[i] = specTime2;
-                                    }
-                                    else{
-                                        specTime2 = specTime1[i].substring(0,2);
-                                        arrSpectime[i] = specTime2;
+                                for (int i = 0; i < specTime1.length; i++) {
+                                    if(!specTime1[i].equals("")) {
+                                        if (specTime1[i].substring(0, 1).equals("0")) {
+                                            specTime2 = specTime1[i].substring(1, 2);
+                                            arrSpectime[i] = specTime2;
+                                        } else {
+                                            specTime2 = specTime1[i].substring(0, 2);
+                                            arrSpectime[i] = specTime2;
+                                        }
                                     }
                                 }
 
-                                if(arrSpectime.length == 1){
+                                if (arrSpectime.length == 1) {
                                     c.setSpectime(arrSpectime[0]);
-                                } else if(arrSpectime.length == 2){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]);
-                                } else if(arrSpectime.length == 3){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]);
-                                } else if(arrSpectime.length == 4){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]);
-                                } else if(arrSpectime.length == 5){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]);
-                                } else if(arrSpectime.length == 6){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]+"-"+arrSpectime[5]);
-                                } else if(arrSpectime.length == 7){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]+"-"+arrSpectime[5]+"-"+arrSpectime[6]);
-                                } else if(arrSpectime.length == 8){
-                                    c.setSpectime(arrSpectime[0]+"-"+arrSpectime[1]+"-"+arrSpectime[2]+"-"+arrSpectime[3]+"-"+arrSpectime[4]+"-"+arrSpectime[5]+"-"+arrSpectime[6]+"-"+arrSpectime[7]);
+                                } else if (arrSpectime.length == 2) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1]);
+                                } else if (arrSpectime.length == 3) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1] + "-" + arrSpectime[2]);
+                                } else if (arrSpectime.length == 4) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1] + "-" + arrSpectime[2] + "-" + arrSpectime[3]);
+                                } else if (arrSpectime.length == 5) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1] + "-" + arrSpectime[2] + "-" + arrSpectime[3] + "-" + arrSpectime[4]);
+                                } else if (arrSpectime.length == 6) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1] + "-" + arrSpectime[2] + "-" + arrSpectime[3] + "-" + arrSpectime[4] + "-" + arrSpectime[5]);
+                                } else if (arrSpectime.length == 7) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1] + "-" + arrSpectime[2] + "-" + arrSpectime[3] + "-" + arrSpectime[4] + "-" + arrSpectime[5] + "-" + arrSpectime[6]);
+                                } else if (arrSpectime.length == 8) {
+                                    c.setSpectime(arrSpectime[0] + "-" + arrSpectime[1] + "-" + arrSpectime[2] + "-" + arrSpectime[3] + "-" + arrSpectime[4] + "-" + arrSpectime[5] + "-" + arrSpectime[6] + "-" + arrSpectime[7]);
                                 }
                             }
+
                             medDaoList.add(c);
                         }
                     } catch (ParseException e) {
@@ -210,7 +212,7 @@ public class BuildCurrentMedFragment extends Fragment {
                 }
             }
             listCurrentMedDao.setCurrentMedDaoList(medDaoList);
-            Log.d("check", "*****CurrentMedDao medDaoList = " + medDaoList.size());
+            Log.d("check", "*****CurrentMedDao New = " + medDaoList.size());
             buildCurrentMedAdapter.setDao(listCurrentMedDao);
             listView.setAdapter(buildCurrentMedAdapter);
         }

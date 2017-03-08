@@ -70,10 +70,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
         buildDrugForPatientListView.setDrugName(dao.getListDrugCardDao().get(position), statusPatient, listHAD);
 
         CheckBox checkBox = buildDrugForPatientListView.isCheck();
-
-        /////////////////////
-        //start
-        ////////////////////
         if (statusPatient != null) {
             if (statusPatient.equals("1")) {
                 dao.getListDrugCardDao().get(position).setComplete("1");
@@ -89,23 +85,16 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                 }
             }
         }
-        /////////////////////
-        //stop
-        ////////////////////
 
         checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete() != null ? dao.getListDrugCardDao().get(position).getComplete().equals("1") ? true : false : false);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                /////////////////////
-                //start
-                ////////////////////
+
                 if (isChecked == true) {
                     buildDrugForPatientListView.setChangeNote("0");
                 }
-                /////////////////////
-                //stop
-                ////////////////////
+
                 dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1" : "0");
                 dao.getListDrugCardDao().get(position).setStatus("normal");
                 dao.getListDrugCardDao().get(position).setCheckNote("0");
@@ -168,9 +157,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
             }
         });
 
-        /////////////////////
-        //start
-        ////////////////////
 //        Log.d("check", "statusPatient = " + statusPatient + "    getComplete = " + dao.getListDrugCardDao().get(position).getComplete());
         if (statusPatient != null & dao.getListDrugCardDao().get(position).getComplete() != null) {
             if (statusPatient.equals("1") & dao.getListDrugCardDao().get(position).getComplete().equals("1")) {
@@ -195,9 +181,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                 }
             }
         }
-        /////////////////////
-        //stop
-        ////////////////////
 
         if (dao.getListDrugCardDao().get(position).getStatus() != null) {
             if (dao.getListDrugCardDao().get(position).getStatus().equals("hold")) {

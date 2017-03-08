@@ -10,11 +10,10 @@ import android.widget.BaseAdapter;
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListCurrentMedDao;
 import th.ac.mahidol.rama.emam.view.history.BuildCurrentMedListView;
-import th.ac.mahidol.rama.emam.view.history.BuildCurrentMedTodayListView;
-import th.ac.mahidol.rama.emam.view.history.BuildCurrentMedTomorrowListView;
 
 public class BuildCurrentMedAdapter extends BaseAdapter {
     private ListCurrentMedDao dao;
+    int lastPosition = -1;
 
     public void setDao(ListCurrentMedDao dao){
         this.dao = dao;
@@ -42,38 +41,18 @@ public class BuildCurrentMedAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        if(position == 0) {
-            BuildCurrentMedTodayListView buildCurrentMedTodayListView;
-            buildCurrentMedTodayListView = new BuildCurrentMedTodayListView(viewGroup.getContext());
-            buildCurrentMedTodayListView.setDrugName(dao.getCurrentMedDaoList().get(position));
 
-            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
-                    R.anim.up_from_bottom);
-            buildCurrentMedTodayListView.startAnimation(anim);
+        BuildCurrentMedListView buildCurrentMedListView;
+        buildCurrentMedListView = new BuildCurrentMedListView(viewGroup.getContext());
+        buildCurrentMedListView.setDrugName(dao.getCurrentMedDaoList().get(position));
 
-            return buildCurrentMedTodayListView;
-        }
-        else if (position == 24){
-            BuildCurrentMedTomorrowListView buildCurrentMedTomorrowListView;
-            buildCurrentMedTomorrowListView = new BuildCurrentMedTomorrowListView(viewGroup.getContext());
-            buildCurrentMedTomorrowListView.setDrugName(dao.getCurrentMedDaoList().get(position));
-
-            Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
-                    R.anim.up_from_bottom);
-            buildCurrentMedTomorrowListView.startAnimation(anim);
-
-            return buildCurrentMedTomorrowListView;
-        }
-        else {
-            BuildCurrentMedListView buildCurrentMedListView;
-            buildCurrentMedListView = new BuildCurrentMedListView(viewGroup.getContext());
-            buildCurrentMedListView.setDrugName(dao.getCurrentMedDaoList().get(position));
-
+        if(position > lastPosition) {
             Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
                     R.anim.up_from_bottom);
             buildCurrentMedListView.startAnimation(anim);
+            lastPosition = position;
+        }
 
             return buildCurrentMedListView;
-        }
     }
 }

@@ -34,10 +34,10 @@
 
         <!--Start Auto Start-->
         <receiver android:name=".activity.alarm.AlarmBroadcastReceiver" >
-            <intent-filter>
+            <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
-                <action android:name="th.ac.mahidol.rama.emam.android.action.broadcast"/>
-            </intent-filter>
+                <!--&lt;!&ndash;<action android:name="th.ac.mahidol.rama.emam.android.action.broadcast"/>&ndash;&gt;-->
+            <!--</intent-filter>-->
         </receiver>
         <!--Alarm-->
         <activity android:name=".activity.alarm.AlarmActivity" />

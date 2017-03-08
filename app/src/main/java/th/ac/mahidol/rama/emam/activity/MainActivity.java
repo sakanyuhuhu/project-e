@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         initInstance();
 
-
     }
 
     private void initInstance() {

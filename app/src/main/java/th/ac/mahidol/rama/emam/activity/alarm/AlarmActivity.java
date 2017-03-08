@@ -24,8 +24,7 @@ public class AlarmActivity extends AppCompatActivity{
         Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 234324243, intent, 0);//234324243
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        /* Repeating on every 30 second interval or 30 minutes(1000 * 60 * 30) */
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (1000 * 60 * 30), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (1000 * 60 * 30), pendingIntent); //(1000 * 60 * 30)
 
     }
 }

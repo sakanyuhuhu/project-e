@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,8 +179,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                 drugCardDao.setDrugUseDate(toDayDate);
                 drugCardDao.setMRN(patientDao.getMRN());
                 drugCardDao.setCheckType("First Check");
-
-
 
                 loadMedicalData(drugCardDao);
             } else {
@@ -496,6 +495,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         @Override
         public void onResponse(Call<List<String>> call, Response<List<String>> response) {
             listHAD = response.body();
+            Log.d("check", "ListHADCallback = "+listHAD.size());
         }
 
         @Override
@@ -520,8 +520,6 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         listDaoPRN.add(d);
                     }
                     daoDrug.setListDrugCardDao(listDaoPRN);
-                    buildDrugCardListManager.setDao(daoDrug);
-                    tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
                 } else if (dao.getListDrugCardDao().size() != 0 & daoPRN.getListDrugCardDao().size() != 0) {
                     daoDrug = new ListDrugCardDao();
                     List<String> checkDrugPrn = new ArrayList<>();
@@ -560,9 +558,9 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                         }
                         d.setLink("http://10.6.165.86:8080/TestLinkDrug/resources/images/"+d.getDrugID()+".jpg");
                     }
-                    buildDrugCardListManager.setDao(daoDrug);
-                    tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
                 }
+                buildDrugCardListManager.setDao(daoDrug);
+                tvDate.setText(dateFortvDate + " (จำนวนยา " + daoDrug.getListDrugCardDao().size() + ")");
             } else {
                 if (dao.getListDrugCardDao().size() != 0) {
                     daoDrug = new ListDrugCardDao();
@@ -570,16 +568,10 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
                     List<String> listDrugId = new ArrayList<>();
                     for (DrugCardDao d : dao.getListDrugCardDao()) {
                         if (d.getPrn().equals("0")) {
-                            /////////
-                            //start edit 17-01-2017
-                            /////////
                             if (!listDrugId.contains(d.getDrugID())) {
                                 listDrugId.add(d.getDrugID());
                                 listDaoNoPRN.add(d);
                             }
-                            /////////
-                            //end edit 17-01-2017
-                            /////////
                         }
                         if (d.getPrn().equals("1") & d.getComplete() != null) {
                             if (d.getComplete().equals("1") | d.getComplete().equals("0")) {

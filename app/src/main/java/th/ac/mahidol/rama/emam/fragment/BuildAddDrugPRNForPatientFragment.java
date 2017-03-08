@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -40,9 +41,11 @@ import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddDrugPRNForPatientAdapter;
+import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CheckLastPRNListDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.ListPatientDataDao;
 import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
@@ -56,10 +59,11 @@ import th.ac.mahidol.rama.emam.view.BuildHeaderPatientDataWhiteView;
 public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.OnClickListener, Serializable{
     private String  nfcUID, wardID, sdlocID, wardName, dateFortvDate, time, firstName, lastName, RFID, toDayDate, prn, tomorrowDate, mrn;
     private int position, timeposition;
-    private ListView listView;
-    private TextView tvDate, tvTime, tvDrugAdr;
+    private ListView listView, listViewAdr;
+    private TextView tvDate, tvTime, tvDrugAdr, tvNumAdr;
     private BuildHeaderPatientDataWhiteView buildHeaderPatientDataWhiteView;
     private BuildAddDrugPRNForPatientAdapter buildAddDrugPRNForPatientAdapter;
+    private BuildListDrugAdrAdapter buildListDrugAdrAdapter;
     private ListDrugCardDao dao, listDrugCardDao;
     private ListPatientDataDao listPatientDataDao;
     private TimelineDao timelineDao;
@@ -132,6 +136,7 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         listView = (ListView) rootView.findViewById(R.id.lvPrepareForPatientAdapter);
         buildHeaderPatientDataWhiteView = (BuildHeaderPatientDataWhiteView)rootView.findViewById(R.id.headerPatientAdapter);
         buildAddDrugPRNForPatientAdapter = new BuildAddDrugPRNForPatientAdapter();
+        buildListDrugAdrAdapter = new BuildListDrugAdrAdapter();
 
         tvTime = (TextView) rootView.findViewById(R.id.tvTimer);
         tvDate = (TextView) rootView.findViewById(R.id.tvDate);
@@ -342,10 +347,6 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         @Override
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
-//            Log.d("check", "dao PRN = "+dao.getListDrugCardDao());
-//            for(DrugCardDao d : dao.getListDrugCardDao()){
-//                Log.d("check", "DrugID = ["+d.getDrugID()+"] / Name = "+d.getTradeName());
-//            }
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
             buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao, patientDao.getMRN());
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);
@@ -360,10 +361,10 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
 
     public class getADRForPatient extends AsyncTask<Void, Void, List<DrugAdrDao>>{
         @Override
-        protected void onPostExecute(List<DrugAdrDao> drugAdrDaos) {
+        protected void onPostExecute(final List<DrugAdrDao> drugAdrDaos) {
             super.onPostExecute(drugAdrDaos);
 
-            if(drugAdrDaos.size() != 0){
+            if (drugAdrDaos.size() != 0) {
                 String tempString = "การแพ้ยา:แตะสำหรับดูรายละเอียด";
                 SpannableString spanString = new SpannableString(tempString);
                 spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
@@ -371,6 +372,33 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
                 spanString.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString.length(), 0);
                 tvDrugAdr.setText(spanString);
                 tvDrugAdr.setTextColor(getResources().getColor(R.color.colorRed));
+                tvDrugAdr.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ListDrugAdrDao listDrugAdrDao = new ListDrugAdrDao();
+                        List<DrugAdrDao> drugAdrDaoList = new ArrayList<DrugAdrDao>();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View dialogView = inflater.inflate(R.layout.custom_dialog_adr, null);
+                        listViewAdr = (ListView) dialogView.findViewById(R.id.listViewAdr);
+                        tvNumAdr = (TextView) dialogView.findViewById(R.id.tvNumAdr);
+                        for (DrugAdrDao d : drugAdrDaos) {
+                            DrugAdrDao drugAdrDao = new DrugAdrDao();
+                            drugAdrDao.setDrugname(d.getDrugname());
+                            drugAdrDao.setSideEffect(d.getSideEffect());
+                            drugAdrDao.setNaranjo(d.getNaranjo());
+                            drugAdrDaoList.add(drugAdrDao);
+                        }
+
+                        listDrugAdrDao.setDrugAdrDaoList(drugAdrDaoList);
+                        buildListDrugAdrAdapter.setDao(getContext(), listDrugAdrDao);
+                        tvNumAdr.setText("ประวัติการแพ้ยา(" + listDrugAdrDao.getDrugAdrDaoList().size() + ")");
+                        listViewAdr.setAdapter(buildListDrugAdrAdapter);
+                        builder.setView(dialogView);
+                        builder.create();
+                        builder.show();
+                    }
+                });
             }
             else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");

@@ -151,28 +151,24 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
     }
 
     public ImageView imageViewNote(String statusPatient, String getComplete){
-        /////////////////////
-        //start
-        ////////////////////
+
         if (statusPatient != null & getComplete != null) {
             if (statusPatient.equals("1") & getComplete.equals("1")) {
                 imgvNote.setEnabled(false);
             } else if (statusPatient.equals("0") & getComplete.equals("1")) {
                 imgvNote.setEnabled(false);
+            } else if (statusPatient.equals("2") & getComplete.equals("1")) {
+                imgvNote.setEnabled(false);
             } else {
                 imgvNote.setImageResource(R.drawable.notechange);
             }
         }
-        /////////////////////
-        //stop
-        ////////////////////
+
         return imgvNote;
     }
 
     public ImageView setChangeNote(String checkNote){
-        /////////////////////
-        //start
-        ////////////////////
+
 //        Log.d("check", "checkNote = "+checkNote);
         if(checkNote != null) {
             if (checkNote.equals("0"))
@@ -180,9 +176,6 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
             else if (checkNote.equals("1"))
                 imgvNote.setImageResource(R.drawable.notechange);
         }
-        /////////////////////
-        //stop
-        ////////////////////
 
         return imgvNote;
 

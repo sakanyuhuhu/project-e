@@ -390,9 +390,9 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
                 xmlReader.parse(inStream);
                 itemsList = searchDrugAdrXMLHandler.getItemsList();
 
-                Log.w("AndroidParseXMLActivity", "Done");
+//                Log.w("AndroidParseXMLActivity", "Done");
             } catch (Exception e) {
-                Log.w("AndroidParseXMLActivity", e);
+//                Log.w("AndroidParseXMLActivity", e);
             }
 
             return (ArrayList<DrugAdrDao>) itemsList;

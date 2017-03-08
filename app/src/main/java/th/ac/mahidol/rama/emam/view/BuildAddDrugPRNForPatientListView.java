@@ -86,23 +86,6 @@ public class BuildAddDrugPRNForPatientListView extends BaseCustomViewGroup {
     }
 
     public void setDrugPRNName(DrugCardDao dao){
-//        tvDrugName.setText(String.valueOf(dao.getTradeName()));
-//        tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
-//
-//        if (dao.getAdminType().equals("C"))
-//            tvType.setText("Type: Continue");
-//        else
-//            tvType.setText("Type: One day");
-//
-//        tvRoute.setText("Route: " + dao.getRoute());
-//        tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
-//        tvSite.setText("Site: " + dao.getSite());
-
-
-        ///////////////////////////
-        //Start
-        //////////////////////////
-
         if(dao.getRoute().equals("PO")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
