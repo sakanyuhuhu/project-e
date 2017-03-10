@@ -267,6 +267,7 @@ public class BuildHistory_PreparationFragment extends Fragment implements View.O
             for(DrugCardDao d : dao.getListDrugCardDao()){
                 if(!listDrugId.contains(d.getDrugID())){
                     listDrugId.add(d.getDrugID());
+                    d.setLink("http://10.6.165.86:8080/TestLinkDrug/resources/images/"+d.getDrugID()+".jpg");
                     drugCardDaoList.add(d);
                 }
             }

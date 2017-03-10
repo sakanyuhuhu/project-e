@@ -16,6 +16,7 @@
             android:padding="5dp">
 
             <ImageView
+                android:id="@+id/ivPhotoMed"
                 android:layout_width="30dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_vertical"

@@ -2,13 +2,19 @@ package th.ac.mahidol.rama.emam.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
@@ -19,6 +25,7 @@ public class BuildAddDrugPRNForPatientListView extends BaseCustomViewGroup {
 
     private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite;
     private LinearLayout bg;
+    private ImageView ivPhotoMed;
 
     public BuildAddDrugPRNForPatientListView(Context context) {
         super(context);
@@ -60,6 +67,7 @@ public class BuildAddDrugPRNForPatientListView extends BaseCustomViewGroup {
         tvRoute = (TextView) findViewById(R.id.tvRoute);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         tvSite = (TextView) findViewById(R.id.tvSite);
+        ivPhotoMed = (ImageView) findViewById(R.id.ivPhotoMed);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -86,6 +94,21 @@ public class BuildAddDrugPRNForPatientListView extends BaseCustomViewGroup {
     }
 
     public void setDrugPRNName(DrugCardDao dao){
+
+        URL url = null;
+        try {
+            url = new URL(dao.getLink());
+            try {
+                if(!url.equals("")){
+                    ivPhotoMed.setImageBitmap(BitmapFactory.decodeStream(url.openConnection().getInputStream()));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         if(dao.getRoute().equals("PO")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));

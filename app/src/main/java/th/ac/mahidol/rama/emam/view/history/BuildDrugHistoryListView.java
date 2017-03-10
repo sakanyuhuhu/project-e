@@ -1,4 +1,4 @@
-package th.ac.mahidol.rama.emam.view;
+package th.ac.mahidol.rama.emam.view.history;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.view.BaseCustomViewGroup;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 

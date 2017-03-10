@@ -42,7 +42,6 @@ import th.ac.mahidol.rama.emam.activity.AddPatientPRNActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildAddDrugPRNForPatientAdapter;
 import th.ac.mahidol.rama.emam.adapter.BuildListDrugAdrAdapter;
-import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.CheckLastPRNListDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugAdrDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugAdrDao;
@@ -70,7 +69,6 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
     private Date datetoDay;
     private Button btnAdd, btnCancel;
     private PatientDataDao patientDao;
-    private CheckLastPRNListDao checkLastPRNListDao;
     private BuildAddPRNPatientManager buildAddPRNPatientManager = new BuildAddPRNPatientManager();
 
     public BuildAddDrugPRNForPatientFragment() {
@@ -348,6 +346,9 @@ public class BuildAddDrugPRNForPatientFragment extends Fragment implements View.
         public void onResponse(Call<ListDrugCardDao> call, Response<ListDrugCardDao> response) {
             dao = response.body();
             tvDate.setText(dateFortvDate + " (จำนวนยา "+dao.getListDrugCardDao().size()+")");
+            for(DrugCardDao d : dao.getListDrugCardDao()){
+                d.setLink("http://10.6.165.86:8080/TestLinkDrug/resources/images/"+d.getDrugID()+".jpg");
+            }
             buildAddDrugPRNForPatientAdapter.setDao(getContext(),  dao, patientDao.getMRN());
             listView.setAdapter(buildAddDrugPRNForPatientAdapter);
         }

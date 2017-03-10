@@ -126,7 +126,6 @@ public class BuildDrugForPatientListView extends BaseCustomViewGroup {
             url = new URL(dao.getLink());//("http://10.6.165.86:8080/TestLinkDrug");//resources/images/MIRX-T-.jpg");
             try {
                 if(!url.equals("")){
-//                    Log.d("check", "url > "+url);
                     ivPhotoMed.setImageBitmap(BitmapFactory.decodeStream(url.openConnection().getInputStream()));
                 }
             } catch (IOException e) {

@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
-import th.ac.mahidol.rama.emam.view.BuildDrugHistoryListView;
+import th.ac.mahidol.rama.emam.view.history.BuildDrugHistoryListView;
 
 public class BuildDrugHistoryAdapter extends BaseAdapter {
     private DrugCardDao dao;

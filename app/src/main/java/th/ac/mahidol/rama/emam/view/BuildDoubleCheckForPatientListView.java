@@ -2,6 +2,7 @@ package th.ac.mahidol.rama.emam.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Html;
@@ -11,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
@@ -19,7 +24,7 @@ import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
 
     private TextView tvDrugName, tvDosage, tvType, tvRoute, tvFrequency, tvSite, tvComplete;
-    private ImageView imgvNote;
+    private ImageView imgvNote, ivPhotoMed;
     private LinearLayout bg;
 
     public BuildDoubleCheckForPatientListView(Context context) {
@@ -51,7 +56,7 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
     }
 
     private void initInflate() {
-        inflate(getContext(), R.layout.view_list_doublecheck_for_patient, this);
+        inflate(getContext(), R.layout.view_list_drug_for_patient, this);
     }
 
     private void initInstances() {
@@ -64,6 +69,7 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
         tvSite = (TextView) findViewById(R.id.tvSite);
         tvComplete = (TextView) findViewById(R.id.tvComplete);
         imgvNote = (ImageView) findViewById(R.id.imgvNote);
+        ivPhotoMed = (ImageView) findViewById(R.id.ivPhotoMed);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -90,9 +96,7 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
     }
 
     public void setDrugName(DrugCardDao dao, String statusPatient){
-        /////////////////////
-        //start
-        ////////////////////
+
         if (dao.getComplete() != null & statusPatient != null) {
             if (dao.getComplete().equals("1")) {
                 tvComplete.setText("เตรียมยาสมบูรณ์");
@@ -102,9 +106,21 @@ public class BuildDoubleCheckForPatientListView extends BaseCustomViewGroup {
                 tvComplete.setTextColor(getResources().getColor(R.color.colorRed));
             }
         }
-        /////////////////////
-        //stop
-        ////////////////////
+
+        URL url = null;
+        try {
+            url = new URL(dao.getLink());//("http://10.6.165.86:8080/TestLinkDrug");//resources/images/MIRX-T-.jpg");
+            try {
+                if(!url.equals("")){
+                    ivPhotoMed.setImageBitmap(BitmapFactory.decodeStream(url.openConnection().getInputStream()));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         if(dao.getRoute().equals("PO") & dao.getPrn().equals("0")) {
             bg.setBackgroundColor(getResources().getColor(R.color.colorWhite));
             tvDrugName.setText(String.valueOf(dao.getTradeName()));

@@ -265,6 +265,7 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
             List<DrugCardDao> listDrugTime = new ArrayList<>();
             for (DrugCardDao d : dao.getListDrugCardDao()) {
                 if (d.getActivityHour().equals(admintime[0])) {
+                    d.setLink("http://10.6.165.86:8080/TestLinkDrug/resources/images/"+d.getDrugID()+".jpg");
                     listDrugTime.add(d);
                 }
             }

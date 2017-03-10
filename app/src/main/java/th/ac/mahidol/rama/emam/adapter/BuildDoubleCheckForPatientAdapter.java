@@ -58,67 +58,72 @@ public class BuildDoubleCheckForPatientAdapter extends BaseAdapter{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        buildDoubleCheckForPatientListView = new BuildDoubleCheckForPatientListView(viewGroup.getContext());
-        buildDoubleCheckForPatientListView.setDrugName(dao.getListDrugCardDao().get(position), statusPatient);
 
-        CheckBox checkBox = buildDoubleCheckForPatientListView.isCheck();
+//        if (convertView != null)
+//            buildDoubleCheckForPatientListView = (BuildDoubleCheckForPatientListView) convertView;
+//        else {
+            buildDoubleCheckForPatientListView = new BuildDoubleCheckForPatientListView(viewGroup.getContext());
+            buildDoubleCheckForPatientListView.setDrugName(dao.getListDrugCardDao().get(position), statusPatient);
 
-        /////////////////////
-        //start
-        ////////////////////
-        if(statusPatient != null){
-            if(statusPatient.equals("1")){
-                dao.getListDrugCardDao().get(position).setComplete("1");
-                checkBox.isChecked();
-                checkBox.setEnabled(false);
-            }
-            else{
-                if(dao.getListDrugCardDao().get(position).getComplete() != null){
-                    if(dao.getListDrugCardDao().get(position).getComplete().equals("1")){
-                        dao.getListDrugCardDao().get(position).setComplete("1");
-                        checkBox.isChecked();
-                        checkBox.setEnabled(false);
+            CheckBox checkBox = buildDoubleCheckForPatientListView.isCheck();
+
+            /////////////////////
+            //start
+            ////////////////////
+            if (statusPatient != null) {
+                if (statusPatient.equals("1")) {
+                    dao.getListDrugCardDao().get(position).setComplete("1");
+                    checkBox.isChecked();
+                    checkBox.setEnabled(false);
+                } else {
+                    if (dao.getListDrugCardDao().get(position).getComplete() != null) {
+                        if (dao.getListDrugCardDao().get(position).getComplete().equals("1")) {
+                            dao.getListDrugCardDao().get(position).setComplete("1");
+                            checkBox.isChecked();
+                            checkBox.setEnabled(false);
+                        }
                     }
                 }
             }
-        }
-        /////////////////////
-        //stop
-        ////////////////////
+            /////////////////////
+            //stop
+            ////////////////////
 
-        checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete()!= null ? dao.getListDrugCardDao().get(position).getComplete().equals("1")?true : false : false);
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                /////////////////////
-                //start
-                ////////////////////
-                if(isChecked == true){
-                    buildDoubleCheckForPatientListView.setChangeNote("0");
+            checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete() != null ? dao.getListDrugCardDao().get(position).getComplete().equals("1") ? true : false : false);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    /////////////////////
+                    //start
+                    ////////////////////
+                    if (isChecked == true) {
+                        buildDoubleCheckForPatientListView.setChangeNote("0");
+                    }
+                    /////////////////////
+                    //stop
+                    ////////////////////
+                    dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1" : "0");
+                    dao.getListDrugCardDao().get(position).setStatus("normal");
+                    dao.getListDrugCardDao().get(position).setCheckNote("0");
+                    dao.getListDrugCardDao().get(position).setDescriptionTemplate("");
+                    dao.getListDrugCardDao().get(position).setDescription("");
+                    dao.getListDrugCardDao().get(position).setStrRadio("");
+                    dao.getListDrugCardDao().get(position).setCheckType("Second Check");
+                    dao.getListDrugCardDao().get(position).setStrType(null);
+                    dao.getListDrugCardDao().get(position).setStrSize(null);
+                    dao.getListDrugCardDao().get(position).setStrForget(null);
                 }
-                /////////////////////
-                //stop
-                ////////////////////
-                dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1":"0");
-                dao.getListDrugCardDao().get(position).setStatus("normal");
-                dao.getListDrugCardDao().get(position).setCheckNote("0");
-                dao.getListDrugCardDao().get(position).setDescriptionTemplate("");
-                dao.getListDrugCardDao().get(position).setDescription("");
-                dao.getListDrugCardDao().get(position).setStrRadio("");
-                dao.getListDrugCardDao().get(position).setCheckType("Second Check");
-                dao.getListDrugCardDao().get(position).setStrType(null);
-                dao.getListDrugCardDao().get(position).setStrSize(null);
-                dao.getListDrugCardDao().get(position).setStrForget(null);
-            }
-        });
+            });
 
-        ImageView imageViewNote = buildDoubleCheckForPatientListView.imageViewNote(statusPatient,dao.getListDrugCardDao().get(position).getComplete());
-        imageViewNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drugNoteDialog(position);
-            }
-        });
+            ImageView imageViewNote = buildDoubleCheckForPatientListView.imageViewNote(statusPatient, dao.getListDrugCardDao().get(position).getComplete());
+            imageViewNote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    drugNoteDialog(position);
+                }
+            });
+
+//        }
 
         if(position > lastPosition) {
             Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),

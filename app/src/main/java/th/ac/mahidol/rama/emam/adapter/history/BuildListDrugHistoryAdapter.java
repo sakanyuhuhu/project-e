@@ -14,6 +14,7 @@ import th.ac.mahidol.rama.emam.view.history.BuildListDrugHistoryListView;
 public class BuildListDrugHistoryAdapter extends BaseAdapter {
     private ListDrugCardDao dao;
     private String drugId;
+    int lastPosition = -1;
 
     public void setDao(ListDrugCardDao dao, String drugId){
         this.dao = dao;
@@ -60,9 +61,12 @@ public class BuildListDrugHistoryAdapter extends BaseAdapter {
             buildListDrugHistoryListView.setDrug(dao.getListDrugCardDao().get(position), drugId);
         }
 
+        if(position > lastPosition) {
         Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
                 R.anim.up_from_bottom);
         buildListDrugHistoryListView.startAnimation(anim);
+            lastPosition = position;
+        }
 
         return buildListDrugHistoryListView;
 

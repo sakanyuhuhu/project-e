@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
-import th.ac.mahidol.rama.emam.view.BuildHistoryListView;
+import th.ac.mahidol.rama.emam.view.history.BuildHistoryListView;
 
 public class BuildHistoryAdapter extends BaseAdapter {
     private Context context;
@@ -44,6 +44,7 @@ public class BuildHistoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
+
         BuildHistoryListView buildHistoryListView = new BuildHistoryListView(viewGroup.getContext());
         buildHistoryListView.setDrugName(dao.getListDrugCardDao().get(position));
 

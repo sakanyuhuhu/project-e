@@ -62,6 +62,7 @@ public class BuildAddDrugPRNForPatientAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
+
         buildAddDrugPRNForPatientListView = new BuildAddDrugPRNForPatientListView(viewGroup.getContext());
         buildAddDrugPRNForPatientListView.setDrugPRNName(dao.getListDrugCardDao().get(position));
 

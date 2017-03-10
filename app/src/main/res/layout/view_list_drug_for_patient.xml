@@ -97,42 +97,51 @@
             <LinearLayout
                 android:layout_width="130dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <CheckBox
                         android:id="@+id/chkCheckDrug"
                         android:layout_width="30dp"
                         android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="5" />
+                        android:layout_weight="5"
+                        android:layout_gravity="center"/>
 
                     <TextView
-                        android:id="@+id/tvComplete"
+                        android:text=" |"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp" />
+                        android:layout_gravity="center"
+                        android:textSize="45sp" />
+
+                    <ImageView
+                        android:id="@+id/imgvNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/note" />
+
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="1dp"
-                    android:layout_height="40dp"
+                <TextView
+                    android:id="@+id/tvComplete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:src="@android:drawable/status_bar_item_background" />
-
-                <ImageView
-                    android:id="@+id/imgvNote"
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:src="@drawable/note" />
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

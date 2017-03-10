@@ -116,15 +116,16 @@ public class BuildPatientOnTimeFragment extends Fragment {
         SharedPreferences prefsSound = getContext().getSharedPreferences("SetSound", Context.MODE_PRIVATE);
         setSound = prefsSound.getString("sound", null);
 
-        if(setSound.equals("OPEN")){
-            Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            media = MediaPlayer.create(getContext(),alarmUri);
-            media.setLooping(true);
-            media.start();
-        }
-        else{
-            if(media!=null)
-                media.stop();
+        if(setSound != null) {
+            if (setSound.equals("OPEN")) {
+                Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                media = MediaPlayer.create(getContext(), alarmUri);
+                media.setLooping(true);
+                media.start();
+            } else {
+                if (media != null)
+                    media.stop();
+            }
         }
 
         btnStopSound.setOnClickListener(new View.OnClickListener() {

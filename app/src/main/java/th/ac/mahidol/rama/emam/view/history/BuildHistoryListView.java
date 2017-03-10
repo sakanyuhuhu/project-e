@@ -1,22 +1,29 @@
-package th.ac.mahidol.rama.emam.view;
+package th.ac.mahidol.rama.emam.view.history;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import th.ac.mahidol.rama.emam.R;
 import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.DrugCardDao;
+import th.ac.mahidol.rama.emam.view.BaseCustomViewGroup;
 import th.ac.mahidol.rama.emam.view.state.BundleSavedState;
 
 
 public class BuildHistoryListView extends BaseCustomViewGroup {
 
     private TextView tvDrugName, tvDosage, tvRoute, tvFrequency, tvSite, tvMethod;
-    private ImageView imgvNote;
+    private ImageView imgvNote, ivPhotoMed;
 
     public BuildHistoryListView(Context context) {
         super(context);
@@ -58,6 +65,7 @@ public class BuildHistoryListView extends BaseCustomViewGroup {
         tvSite = (TextView) findViewById(R.id.tvSite);
         tvMethod = (TextView) findViewById(R.id.tvMethod);
         imgvNote = (ImageView) findViewById(R.id.imgvNote);
+        ivPhotoMed = (ImageView) findViewById(R.id.ivPhotoMed);
     }
 
     private void initWithAttrs(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -84,20 +92,34 @@ public class BuildHistoryListView extends BaseCustomViewGroup {
     }
 
     public void setDrugName(DrugCardDao dao){
+        URL url = null;
+        try {
+            url = new URL(dao.getLink());
+            try {
+                if(!url.equals("")){
+                    ivPhotoMed.setImageBitmap(BitmapFactory.decodeStream(url.openConnection().getInputStream()));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         if(dao.getComplete().equals("1")) {
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
-            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             tvRoute.setText("Route: " + dao.getRoute());
-            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
             tvMethod.setText("Method: " + dao.getMethod());
             imgvNote.setVisibility(INVISIBLE);
         }
         else {
             tvDrugName.setText(String.valueOf(dao.getTradeName()));
-            tvDosage.setText("Dosage: " + dao.getDose() + " " + String.valueOf(dao.getUnit()));
+            tvDosage.setText(Html.fromHtml("Dosage: <b>" + dao.getDose() + " " + String.valueOf(dao.getUnit()) + "</b>"));
             tvRoute.setText("Route: " + dao.getRoute());
-            tvFrequency.setText("Frequency: " + dao.getFrequency() + " (" + dao.getAdminTime() + ")");
+            tvFrequency.setText(Html.fromHtml("Frequency: <b>" + dao.getFrequency() + " (" + dao.getAdminTime() + ")</b>"));
             tvSite.setText("Site: " + dao.getSite());
             tvMethod.setText("Method: " + dao.getMethod());
             imgvNote.setVisibility(VISIBLE);
