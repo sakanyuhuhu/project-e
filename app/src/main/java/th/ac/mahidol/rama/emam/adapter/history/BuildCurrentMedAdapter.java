@@ -40,11 +40,16 @@ public class BuildCurrentMedAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
 
         BuildCurrentMedListView buildCurrentMedListView;
-        buildCurrentMedListView = new BuildCurrentMedListView(viewGroup.getContext());
-        buildCurrentMedListView.setDrugName(dao.getCurrentMedDaoList().get(position));
+        if(convertView != null){
+            buildCurrentMedListView = (BuildCurrentMedListView) convertView;
+        }else{
+            buildCurrentMedListView = new BuildCurrentMedListView(viewGroup.getContext());
+            buildCurrentMedListView.setDrugName(dao.getCurrentMedDaoList().get(position));
+        }
+
 
         if(position > lastPosition) {
             Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),
@@ -53,6 +58,6 @@ public class BuildCurrentMedAdapter extends BaseAdapter {
             lastPosition = position;
         }
 
-            return buildCurrentMedListView;
+        return buildCurrentMedListView;
     }
 }

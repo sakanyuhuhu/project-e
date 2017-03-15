@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -70,6 +71,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
     private PatientDataDao patientDouble;
     private Date datetoDay;
     private boolean checkNote = false;
+    private ProgressDialog progressDialog;
 
     public BuildDoubleCheckForPatientFragment() {
         super();
@@ -157,6 +159,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
         tvTime.setText(time);
 
         if (patientDouble != null) {
+            progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
             buildHeaderPatientDataWhiteView.setData(patientDouble, position);
             if (timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
@@ -336,6 +339,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
 
         } else if (view.getId() == R.id.tvHistory) {
             Intent intent = new Intent(getContext(), HistoryDoubleCheckActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
             intent.putExtra("wardId", wardID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardname", wardName);
@@ -611,6 +615,7 @@ public class BuildDoubleCheckForPatientFragment extends Fragment implements View
             } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
+            progressDialog.dismiss();
         }
 
         @Override

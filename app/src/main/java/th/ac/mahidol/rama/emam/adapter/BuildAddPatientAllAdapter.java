@@ -40,11 +40,16 @@ public class BuildAddPatientAllAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
 
         BuildAddPatientAllListView patientListView;
-        patientListView = new BuildAddPatientAllListView(viewGroup.getContext());
-        patientListView.setPatient(dao.getPatientDao().get(position));
+        if(convertView != null){
+            patientListView = (BuildAddPatientAllListView) convertView;
+        } else {
+            patientListView = new BuildAddPatientAllListView(viewGroup.getContext());
+            patientListView.setPatient(dao.getPatientDao().get(position));
+        }
+
 
         if(position > lastPosition) {
             Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),

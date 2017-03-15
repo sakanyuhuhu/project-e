@@ -1,6 +1,7 @@
 package th.ac.mahidol.rama.emam.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -13,6 +14,7 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import th.ac.mahidol.rama.emam.R;
+import th.ac.mahidol.rama.emam.activity.PreparationActivity;
 import th.ac.mahidol.rama.emam.activity.PreparationForPatientActivity;
 import th.ac.mahidol.rama.emam.adapter.BuildDrugHistoryAdapter;
 import th.ac.mahidol.rama.emam.adapter.BuildHistoryAdapter;
@@ -257,6 +260,41 @@ public class BuildHistoryPrepareFragment extends Fragment implements View.OnClic
         }
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP & keyCode == KeyEvent.KEYCODE_BACK) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("คุณต้องการจะยกเลิกใช่หรือไม่?");
+                    builder.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), PreparationActivity.class);
+                                intent.putExtra("nfcUId", nfcUID);
+                                intent.putExtra("wardId", wardID);
+                                intent.putExtra("sdlocId", sdlocID);
+                                intent.putExtra("wardname", wardName);
+                                intent.putExtra("position", timeposition);
+                                intent.putExtra("time", time);
+                                getActivity().startActivity(intent);
+                                getActivity().finish();
+                        }
+                    });
+                    builder.setNegativeButton("ไม่ใช่", null);
+                    builder.create();
+                    builder.show();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
     class DrugHistoryLoadCallback implements Callback<ListDrugCardDao> {
         @Override

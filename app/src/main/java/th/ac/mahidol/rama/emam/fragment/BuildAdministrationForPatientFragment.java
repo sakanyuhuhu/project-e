@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -83,6 +84,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
     long startMillis = 0;
     long endMillis = 0;
     private List<String> listHAD;
+    private ProgressDialog progressDialog;
 
     public BuildAdministrationForPatientFragment() {
         super();
@@ -178,6 +180,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
         getListHAD();
 
         if (patientAdmin != null) {
+            progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
             buildHeaderPatientDataWhiteView.setData(patientAdmin, position);
             if (timeposition <= 23) {
                 DrugCardDao drugCardDao = new DrugCardDao();
@@ -583,6 +586,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             }
         } else if (view.getId() == R.id.tvHistory) {
             Intent intent = new Intent(getContext(), HistoryAdministrationActivity.class);
+            intent.putExtra("nfcUId", nfcUID);
             intent.putExtra("sdlocId", sdlocID);
             intent.putExtra("wardId", wardID);
             intent.putExtra("wardname", wardName);
@@ -818,6 +822,7 @@ public class BuildAdministrationForPatientFragment extends Fragment implements V
             } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
+            progressDialog.dismiss();
         }
 
         @Override

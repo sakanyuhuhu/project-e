@@ -1,5 +1,6 @@
 package th.ac.mahidol.rama.emam.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,7 +74,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
     private Date datetoDay;
     private boolean checkNote = false;
     private List<String> listHAD;
-
+    private ProgressDialog progressDialog;
 
     public BuildPreparationForPatientFragment() {
         super();
@@ -171,6 +172,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
         getListHAD();
 
         if (patientDao != null) {
+            progressDialog = ProgressDialog.show(getContext(), "", "Loading", true);
             mrn = patientDao.getMRN();
             buildHeaderPatientDataWhiteView.setData(patientDao, position);
             if (timeposition <= 23) {
@@ -674,6 +676,7 @@ public class BuildPreparationForPatientFragment extends Fragment implements View
             } else {
                 tvDrugAdr.setText("การแพ้ยา:ไม่มีข้อมูลแพ้ยา");
             }
+            progressDialog.dismiss();
         }
 
         @Override

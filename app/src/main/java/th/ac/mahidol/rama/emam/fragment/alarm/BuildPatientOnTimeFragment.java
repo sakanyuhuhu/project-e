@@ -36,7 +36,7 @@ import th.ac.mahidol.rama.emam.dao.buildPatientDataDAO.PatientDataDao;
 import th.ac.mahidol.rama.emam.manager.HttpManager;
 
 public class BuildPatientOnTimeFragment extends Fragment {
-    private String wardID, sdlocID, wardName, toDayDate, checkType, adminTimeNext, adminTimePre;
+    private String wardID, sdlocID, wardName, toDayDate, checkType, adminTimeNext, adminTimePre, setSound;
     private int currentTime;
     private TextView tvPreTime, tvNextTime;
     private Button btnStopSound;
@@ -46,7 +46,6 @@ public class BuildPatientOnTimeFragment extends Fragment {
     private ListPatientDataDao daoNext, daoPrevious;
     private Date datetoDay;
     private ProgressDialog progressDialog;
-    private String setSound;
     private MediaPlayer media;
 
 
@@ -100,7 +99,6 @@ public class BuildPatientOnTimeFragment extends Fragment {
 
         datetoDay = new Date();
         SimpleDateFormat sdfForDrugUseDate = new SimpleDateFormat("MM/dd/yyyy");
-        SimpleDateFormat sdfForCheckDate = new SimpleDateFormat("yyyy-MM-dd");
         toDayDate = sdfForDrugUseDate.format(datetoDay);
 
         Calendar c = Calendar.getInstance();

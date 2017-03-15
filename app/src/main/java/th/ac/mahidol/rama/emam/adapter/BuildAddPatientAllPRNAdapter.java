@@ -43,11 +43,17 @@ public class BuildAddPatientAllPRNAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
 
         BuildAddPatientAllPRNListView patientListView;
-        patientListView = new BuildAddPatientAllPRNListView(viewGroup.getContext());
-        patientListView.setPatient(dao.getPatientDao().get(position), timelineDao);
+
+        if(convertView != null){
+            patientListView = (BuildAddPatientAllPRNListView) convertView;
+        } else {
+            patientListView = new BuildAddPatientAllPRNListView(viewGroup.getContext());
+            patientListView.setPatient(dao.getPatientDao().get(position), timelineDao);
+        }
+
 
         if(position > lastPosition) {
             Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(),

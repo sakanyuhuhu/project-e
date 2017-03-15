@@ -17,11 +17,7 @@ import th.ac.mahidol.rama.emam.dao.buildDrugCardDataDAO.ListDrugCardDao;
 public class BuildDrugCardListManager {
 
     private Context mContext;
-    private ListDrugCardDao dao;
-    private ListDrugCardDao daoAll;
-    private ListDrugCardDao daoPO;
-    private ListDrugCardDao daoIV;
-    private ListDrugCardDao daoOTHER;
+    private ListDrugCardDao dao, daoAll, daoPO, daoIV, daoOTHER;
 
     public BuildDrugCardListManager( ){
         mContext = Contextor.getInstance().getContext();

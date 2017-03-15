@@ -37,7 +37,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
     private BuildDrugForPatientListView buildDrugForPatientListView;
     int lastPosition = -1;
 
-
     public void setDao(Context context, ListDrugCardDao dao, String statusPatient, List<String> listHAD) {
         this.dao = dao;
         this.context = context;
@@ -118,7 +117,6 @@ public class BuildPreparationForPatientAdapter extends BaseAdapter {
                     drugNoteDialog(position);
                 }
             });
-
 //        }
 
         if (position > lastPosition) {

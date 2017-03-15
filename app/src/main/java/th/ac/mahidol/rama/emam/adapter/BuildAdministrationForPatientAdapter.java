@@ -74,10 +74,6 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
 
             CheckBox checkBox = buildDrugForPatientListView.isCheck();
 
-            /////////////////////
-            //start
-            ////////////////////
-
             if (statusPatient != null) {
                 if (statusPatient.equals("1")) {
                     dao.getListDrugCardDao().get(position).setComplete("1");
@@ -93,23 +89,16 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                     }
                 }
             }
-            /////////////////////
-            //stop
-            ////////////////////
 
             checkBox.setChecked(dao.getListDrugCardDao().get(position).getComplete() != null ? dao.getListDrugCardDao().get(position).getComplete().equals("1") ? true : false : false);
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    /////////////////////
-                    //start
-                    ////////////////////
+
                     if (isChecked == true) {
                         buildDrugForPatientListView.setChangeNote("0");
                     }
-                    /////////////////////
-                    //stop
-                    ////////////////////
+
                     dao.getListDrugCardDao().get(position).setComplete(isChecked ? "1" : "0");
                     dao.getListDrugCardDao().get(position).setStatus("normal");
                     dao.getListDrugCardDao().get(position).setCheckNote("0");
@@ -118,6 +107,7 @@ public class BuildAdministrationForPatientAdapter extends BaseAdapter {
                     dao.getListDrugCardDao().get(position).setIdRadio(R.id.rdb1);
                     dao.getListDrugCardDao().get(position).setStrRadio("");
                     dao.getListDrugCardDao().get(position).setCheckType("Administration");
+
                 }
             });
 
